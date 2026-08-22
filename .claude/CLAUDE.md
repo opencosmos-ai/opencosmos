@@ -59,7 +59,8 @@ opencosmos/
 5. **[DESIGN-PHILOSOPHY.md](../DESIGN-PHILOSOPHY.md)** — The North Star for all design work. Four principles.
 6. **[AGENTS.md](../AGENTS.md)** — Technical guide: file organization, document organization, build commands, conventions.
 7. **[docs/architecture.md](../docs/architecture.md)** — Infrastructure decisions, service map, and data flow.
-8. **[docs/chronicle.md](../docs/chronicle.md)** — The story behind the decisions.
+8. **[docs/decisions/](../docs/decisions/)** — ADRs: why load-bearing choices were made. Check here before changing something that looks arbitrary; write one when you make a call a future reader would find surprising. See [0001](../docs/decisions/0001-adopt-architecture-decision-records.md).
+9. **[docs/chronicle.md](../docs/chronicle.md)** — The narrative story behind the work.
 
 ---
 
@@ -70,6 +71,7 @@ See [AGENTS.md § Document Organization](../AGENTS.md#document-organization) for
 - **Root (5 max):** README, WELCOME, DESIGN-PHILOSOPHY, CHANGELOG, CONTRIBUTING
 - **Root (agent context):** AGENTS.md, .claude/CLAUDE.md
 - **docs/:** Architecture, migration plans, research, chronicle, retrospectives
+- **docs/decisions/:** ADRs — numbered, append-only, one per load-bearing decision
 - **knowledge/:** RAG-indexed corpus — see [knowledge/README.md](../knowledge/README.md)
 - **packages/\*/:** Package-specific docs (COSMO_SYSTEM_PROMPT.md, etc.)
 

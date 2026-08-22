@@ -132,7 +132,8 @@ Root should contain only the files every visitor or contributor needs immediatel
 |----------|---------------|-----------|
 | **Root** | README, WELCOME, DESIGN-PHILOSOPHY, CHANGELOG, CONTRIBUTING | 5 |
 | **Root (agent context)** | AGENTS.md, .claude/CLAUDE.md | 2 |
-| **docs/** | Architecture, infrastructure decisions, migration plans, research, narrative history (chronicle), retrospectives | No limit |
+| **docs/** | Architecture, migration plans, research, narrative history (chronicle), retrospectives | No limit |
+| **docs/decisions/** | ADRs — numbered, append-only, one per load-bearing decision | No limit |
 | **docs/archive-and-deprecated/** | Historical documents superseded by current work | No limit |
 | **knowledge/** | Anything that should be RAG-indexed — organized by role. See [knowledge/README.md](knowledge/README.md) for schema | No limit |
 | **packages/\*/** | Package-specific docs that live with their code (COSMO_SYSTEM_PROMPT.md, etc.) | As needed |
@@ -293,7 +294,9 @@ Non-negotiable. Every UI must:
 
 ## Changelog
 
-Log significant changes in [CHANGELOG.md](CHANGELOG.md) with ISO timestamps. For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
+Log significant changes in [CHANGELOG.md](CHANGELOG.md) with ISO timestamps.
+
+**Where reasoning goes.** A changelog entry explains *this change, now, in this form*. A decision that is expensive to reverse, that constrains future work, or whose rationale is non-obvious also gets an ADR in **[docs/decisions/](docs/decisions/)** — see [0001](docs/decisions/0001-adopt-architecture-decision-records.md) for purpose, conventions, and structure. Writing an ADR does not require asking first; it is the one kind of new markdown file you should create on your own initiative. Check `docs/decisions/` before changing something that looks arbitrary — it may be load-bearing. For narrative history, see [docs/chronicle.md](docs/chronicle.md).
 
 **Format:**
 ```markdown
@@ -337,7 +340,8 @@ When in doubt, ask Shalom.
 - **[DESIGN-PHILOSOPHY.md](DESIGN-PHILOSOPHY.md)** — The North Star
 - **[packages/ai/COSMO_SYSTEM_PROMPT.md](packages/ai/COSMO_SYSTEM_PROMPT.md)** — Cosmo's voice and values
 - **[docs/architecture.md](docs/architecture.md)** — Infrastructure decisions and service map
-- **[docs/chronicle.md](docs/chronicle.md)** — The story behind the decisions
+- **[docs/decisions/](docs/decisions/)** — ADRs: why load-bearing choices were made, and what was rejected
+- **[docs/chronicle.md](docs/chronicle.md)** — The narrative story behind the work
 - **[docs/projects/opencosmos-migration.md](docs/projects/opencosmos-migration.md)** — Active migration plan
 - **[CHANGELOG.md](CHANGELOG.md)** — Work history
 - **[OpenCosmos/UI repo](https://github.com/shalomormsby/opencosmos-ui)** — Where the design system lives
