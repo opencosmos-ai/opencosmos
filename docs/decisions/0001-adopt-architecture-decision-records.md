@@ -2,6 +2,8 @@
 
 **Date:** 2026-08-22 · **Status:** Accepted
 
+_Records why load-bearing choices were made, so they survive the session that made them and are not undone by someone who cannot see the reason._
+
 ## Context
 
 A codebase records what it does. It rarely records why, and almost never records what was rejected and on what grounds. That gap costs two specific things.
@@ -22,6 +24,8 @@ Record each load-bearing decision as a small, numbered, immutable markdown file 
 - **Status:** `Proposed` · `Accepted` · `Superseded by NNNN`.
 - **Append-only.** Never edit a record to change its meaning. To reverse a decision, write a new one that supersedes it and link both directions. The history of reversals is itself information.
 - **Header:** `**Date:** YYYY-MM-DD · **Status:** …` plus any `Supersedes` / `Superseded by` / `Relates to` cross-links.
+- **Summary line:** one italic sentence directly beneath the header, saying what the record is for. It orients a reader opening the file, and `pnpm adr:index` harvests it into the index table in [README.md](README.md).
+- **No frontmatter.** The heading carries the number and title and the header line carries the status; restating either in frontmatter would duplicate facts that then drift apart. The index is generated from the documents rather than from a parallel set of metadata.
 
 ### What belongs here
 
