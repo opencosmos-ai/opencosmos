@@ -1,0 +1,208 @@
+# Which scan page holds the Chinese for which hexagram.
+#
+# The Chinese is NOT transcribed here and must not be. It is vertical
+# columnar type, which the OCR in scripts/xenso/ocr-pdf.swift cannot read,
+# and a transcription produced by a language model from these images would
+# be indistinguishable from that model's memory of the Yijing while wearing
+# the authority of an 1876 printing. sources/zhouyi/ is the text; this is a
+# pointer to a photograph of another witness, for checking it by eye.
+#
+# Open one with:
+#   swiftc -O scripts/xenso/page-ink.swift -o /tmp/page-ink -framework PDFKit -framework AppKit
+#   /tmp/page-ink knowledge/iching/sources/.cache/mcclatchie-1876.pdf --export <seq> --dir /tmp
+#
+# Generated 2026-09-11. 108 Chinese pages across 64 hexagrams.
+
+pages:
+  - hexagram: 1
+    english: [36, 38, 40, 42, 43, 44, 46, 47, 48, 50, 52]
+    chinese: [37, 39, 41, 45, 49, 51, 53]
+  - hexagram: 2
+    english: [54, 55, 56, 57, 58, 60, 62]
+    chinese: [59, 61, 63]
+  - hexagram: 3
+    english: [64, 66]
+    chinese: [65, 67]
+  - hexagram: 4
+    english: [68, 70, 71]
+    chinese: [69]
+  - hexagram: 5
+    english: [72, 74, 75]
+    chinese: [73]
+  - hexagram: 6
+    english: [76, 78, 79]
+    chinese: [77]
+  - hexagram: 7
+    english: [80, 82, 83]
+    chinese: [81]
+  - hexagram: 8
+    english: [84, 86, 87]
+    chinese: [85]
+  - hexagram: 9
+    english: [88, 89, 90, 91]
+    chinese: []
+  - hexagram: 10
+    english: [92, 94, 95]
+    chinese: [93]
+  - hexagram: 11
+    english: [96, 97, 98, 100]
+    chinese: [99, 101]
+  - hexagram: 12
+    english: [102, 104, 105, 106]
+    chinese: [103, 107]
+  - hexagram: 13
+    english: [108, 110]
+    chinese: [109, 111]
+  - hexagram: 14
+    english: [112, 113, 114]
+    chinese: [115]
+  - hexagram: 15
+    english: [116, 117, 118, 119]
+    chinese: []
+  - hexagram: 16
+    english: [120, 122]
+    chinese: [121, 123]
+  - hexagram: 17
+    english: [124, 126]
+    chinese: [125, 127]
+  - hexagram: 18
+    english: [128, 130]
+    chinese: [129, 131]
+  - hexagram: 19
+    english: [132, 134]
+    chinese: [133, 135]
+  - hexagram: 20
+    english: [136, 138]
+    chinese: [137, 139]
+  - hexagram: 21
+    english: [140, 142]
+    chinese: [141, 143]
+  - hexagram: 22
+    english: [144, 146]
+    chinese: [145, 147]
+  - hexagram: 23
+    english: [148, 149, 150]
+    chinese: [151]
+  - hexagram: 24
+    english: [152, 153, 154]
+    chinese: [155]
+  - hexagram: 25
+    english: [156, 158]
+    chinese: [157, 159]
+  - hexagram: 26
+    english: [160, 161, 162]
+    chinese: [163]
+  - hexagram: 27
+    english: [164, 166]
+    chinese: [165, 167]
+  - hexagram: 28
+    english: [168, 170]
+    chinese: [169, 171]
+  - hexagram: 29
+    english: [172, 174, 175]
+    chinese: [173]
+  - hexagram: 30
+    english: [176, 177, 178]
+    chinese: [179]
+  - hexagram: 31
+    english: [180, 182]
+    chinese: [181, 183]
+  - hexagram: 32
+    english: [184, 186, 188]
+    chinese: [185, 187, 189]
+  - hexagram: 33
+    english: [190, 192, 193]
+    chinese: [191]
+  - hexagram: 34
+    english: [194, 195, 196]
+    chinese: [197]
+  - hexagram: 35
+    english: [198, 199, 200]
+    chinese: [201]
+  - hexagram: 36
+    english: [202, 204]
+    chinese: [203, 205]
+  - hexagram: 37
+    english: [206, 208]
+    chinese: [207, 209]
+  - hexagram: 38
+    english: [210, 212]
+    chinese: [211, 213]
+  - hexagram: 39
+    english: [214, 216, 217]
+    chinese: [215]
+  - hexagram: 40
+    english: [218, 220]
+    chinese: [219, 221]
+  - hexagram: 41
+    english: [222, 223, 224, 225, 226]
+    chinese: [227]
+  - hexagram: 42
+    english: [228, 230, 232]
+    chinese: [229, 231, 233]
+  - hexagram: 43
+    english: [234, 236, 237]
+    chinese: [235]
+  - hexagram: 44
+    english: [238, 240, 241]
+    chinese: [239]
+  - hexagram: 45
+    english: [242, 243, 244, 246]
+    chinese: [245, 247]
+  - hexagram: 46
+    english: [248, 250]
+    chinese: [249, 251]
+  - hexagram: 47
+    english: [252, 254, 256, 257]
+    chinese: [253, 255]
+  - hexagram: 48
+    english: [258, 259, 260]
+    chinese: [261]
+  - hexagram: 49
+    english: [262, 264]
+    chinese: [263, 265]
+  - hexagram: 50
+    english: [266, 268]
+    chinese: [267, 269]
+  - hexagram: 51
+    english: [270, 272, 274]
+    chinese: [271, 273, 275]
+  - hexagram: 52
+    english: [276, 278]
+    chinese: [277, 279]
+  - hexagram: 53
+    english: [280, 282]
+    chinese: [281, 283]
+  - hexagram: 54
+    english: [284, 286]
+    chinese: [285, 287]
+  - hexagram: 55
+    english: [288, 290, 291]
+    chinese: [289]
+  - hexagram: 56
+    english: [292, 294]
+    chinese: [293, 295]
+  - hexagram: 57
+    english: [296, 298]
+    chinese: [297, 299]
+  - hexagram: 58
+    english: [300, 302, 303]
+    chinese: [301]
+  - hexagram: 59
+    english: [304, 305, 306]
+    chinese: [307]
+  - hexagram: 60
+    english: [308, 310]
+    chinese: [309, 311]
+  - hexagram: 61
+    english: [312, 314, 315]
+    chinese: [313]
+  - hexagram: 62
+    english: [316, 318, 319]
+    chinese: [317]
+  - hexagram: 63
+    english: [320, 322]
+    chinese: [321, 323]
+  - hexagram: 64
+    english: [324, 326, 327]
+    chinese: [325]
