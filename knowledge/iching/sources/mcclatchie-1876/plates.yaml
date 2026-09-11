@@ -1,0 +1,68 @@
+# The plates — McClatchie 1876, front matter (roman pages vii–x).
+#
+# Exported as PNG with:
+#   swiftc -O scripts/xenso/page-ink.swift -o /tmp/page-ink -framework PDFKit -framework AppKit
+#   /tmp/page-ink knowledge/iching/sources/.cache/mcclatchie-1876.pdf \
+#       --export 14,15,16,17 --dir knowledge/iching/sources/mcclatchie-1876/figures --scale 4
+#
+# The figures are kept out of git by default: they are photographs of a book we
+# already hold, and the two that matter are formal objects this project can
+# state as data, which is what `encodes` records.
+
+plates:
+  - id: plate-1
+    seq: 14
+    printed: vii
+    title: "The Virtues of Khien, or Heaven and Man"
+    subject: "元亨利貞 laid out as four cosmic phases"
+    note: >
+      Directly relevant to the open question on 元亨利貞. McClatchie renders the
+      four as Origin, Luxuriance, Benefit and Completion, and this plate is his
+      argument for reading them as a sequence in nature rather than as an
+      oracle's verdict.
+    encodes: null
+
+  - id: plate-2
+    seq: 15
+    printed: viii
+    title: "The Eight Diagrams — Fuh-He's Arrangement"
+    subject: "先天八卦 — the Fu Xi, or Former Heaven, circular arrangement"
+    note: >
+      Each trigram with its compass direction and its place in the family —
+      Father, Mother, Eldest son, Second daughter, and so on. The family
+      relations are 說卦 chapter 10, which is vendored at ../wings/shuogua.md,
+      so the plate can be checked against its own source.
+    encodes:
+      south: qian
+      north: kun
+      east: li
+      west: kan
+
+  - id: plate-3
+    seq: 16
+    printed: ix
+    title: "The Eight Diagrams — Wăn Wang's Arrangement"
+    subject: "後天八卦 — the King Wen, or Later Heaven, arrangement"
+    note: >
+      The other of the two standard arrangements. 說卦 chapter 5 — 帝出乎震，齊乎巽 —
+      is its source, and is vendored at ../wings/shuogua.md.
+    encodes:
+      east: zhen
+      southeast: xun
+      south: li
+      southwest: kun
+      west: dui
+      northwest: qian
+      north: kan
+      northeast: gen
+
+  - id: plate-4
+    seq: 17
+    printed: x
+    title: "The Five Colours"
+    subject: "五色 against the compass points"
+    encodes: null
+
+# The errata on scan page 492 corrects a "PLATE VII", which is not in the front
+# matter of this copy. Recorded rather than resolved: either the plate is absent
+# from the 1973 reprint, or the errata is itself misnumbered.
