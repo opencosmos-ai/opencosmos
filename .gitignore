@@ -45,3 +45,6 @@ knowledge/incoming/
 # Quote validation batch inputs are regenerable from pending.jsonl; only the
 # agent outputs (the audit trail) are worth versioning.
 knowledge/quotes/_source/validation-batches/*.input.json
+
+# Vendored source material — the fetched wikitext and OCR the importer ran from.
+knowledge/iching/sources/.cache/
