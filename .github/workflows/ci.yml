@@ -53,3 +53,10 @@ jobs:
         env:
           TURBO_CONCURRENCY: 2
         run: pnpm build
+
+      # The ADR index is generated from the records themselves. Checking it here
+      # is what keeps it honest: a stale index is the failure mode that killed
+      # this repo's two previous decision-keeping habits, and an index that lies
+      # is worse than none because people stop trusting it.
+      - name: Check ADR index is current
+        run: pnpm adr:index --check

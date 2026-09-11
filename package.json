@@ -19,6 +19,7 @@
         "embed": "tsx scripts/knowledge/embed-knowledge.ts",
         "quotes:migrate-from-source": "tsx scripts/normalize-quotes/01-jsonl-to-yaml.ts",
         "quotes:add": "tsx scripts/normalize-quotes/08-add-quote.ts",
+        "adr:index": "tsx scripts/adr-index.ts",
         "quotes:lint": "tsx scripts/normalize-quotes/lint.ts",
         "quotes:checkpoint": "tsx scripts/normalize-quotes/02b-checkpoint.ts",
         "quotes:validate": "tsx --env-file=.env scripts/normalize-quotes/02-validate-provenance.ts",
