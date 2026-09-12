@@ -4,17 +4,17 @@ chinese: "坎"
 pinyin: "kǎn"
 lines: "010"
 image_chinese: "水"
-render: null
-forbidden: []
+render: "water"
+forbidden: ["the abysmal", "the pit", "danger"]
 status: draft
-glossary_refs: []
+glossary_refs: ["坎-kan"]
 ---
 
 # 坎 — the kan trigram
 
 Lines `010`, bottom to top. The Shuogua associates it with 水.
 
-*Undrafted.* The image is a textual fact; its English is not, and the two are
+**Rendered `water`** — the ruling and its argument are in [`../glossary/坎-kan.md`](../glossary/坎-kan.md). `status: draft` until Shalom locks it. The image is a textual fact; its English is not, and the two are
 easy to confuse here. 說卦 — now vendored at `sources/wings/shuogua.md`, where
 chapter 11 gives each trigram its full list of images — is the oldest reading of
 this trigram in existence and is still a reading. Rendering the trigram *as* its

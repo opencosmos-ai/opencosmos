@@ -4,17 +4,17 @@ chinese: "坤"
 pinyin: "kūn"
 lines: "000"
 image_chinese: "地"
-render: null
-forbidden: []
+render: "earth"
+forbidden: ["the receptive", "the passive", "Mother Earth"]
 status: draft
-glossary_refs: []
+glossary_refs: ["坤-kun"]
 ---
 
 # 坤 — the kun trigram
 
 Lines `000`, bottom to top. The Shuogua associates it with 地.
 
-*Undrafted.* The image is a textual fact; its English is not, and the two are
+**Rendered `earth`** — the ruling and its argument are in [`../glossary/坤-kun.md`](../glossary/坤-kun.md). `status: draft` until Shalom locks it. The image is a textual fact; its English is not, and the two are
 easy to confuse here. 說卦 — now vendored at `sources/wings/shuogua.md`, where
 chapter 11 gives each trigram its full list of images — is the oldest reading of
 this trigram in existence and is still a reading. Rendering the trigram *as* its
