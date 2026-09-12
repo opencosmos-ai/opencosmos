@@ -2,7 +2,7 @@
 
 Notable changes to `knowledge/iching/`. The root [`CHANGELOG.md`](../../CHANGELOG.md) covers the monorepo; this one covers a directory that has its own method, its own admission rules and its own principles, and whose changes would otherwise be legible only by reading a whole session back.
 
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-12
 
 ## What goes here, and what does not
 
@@ -40,6 +40,21 @@ This is a **chronological spine that points into them**, never a second copy.
 **Entries are milestones, not commits.** `git log` holds every change; this holds the ones that changed the shape of the work.
 
 ---
+
+## 2026-09-12 — McClatchie read a second time, and the instruments get measured
+
+Shalom opened `sources/mcclatchie-1876/04.md`, saw `**Sixtli-Nine`, and asked how bad it was. It was bad: roughly **one word in five** across the English body. The fix is not a better setting, it is **a second engine and a refusal to blend the two.**
+
+- **Tesseract is the primary now, on a measurement and nothing else.** Over all 462 English body pages, scored by the share of words no expanded dictionary recognises: **Apple Vision 19.8%, Tesseract 10.5%.** New [`scripts/xenso/ocr-tesseract.sh`](../../scripts/xenso/ocr-tesseract.sh) produces it — `brew install tesseract`, which sits outside the pnpm workspace and so cannot regenerate the shared lockfile that has broken sibling apps' builds before.
+- **Vision is kept, because agreement between two separately-trained engines is worth more than either engine's opinion of itself.** 72.7% of the body is read identically by both, and **inside that agreement the error rate is 3.9%** — while the 27.3% they disagree about carries **73% of all the remaining damage.** Corroboration does not repair anything; it says where to look.
+- **`disputed.yaml` — 5,039 word-level disagreements across the sixty-four, none resolved.** Both readings, the page, and enough context to find the spot on the scan. New [`scripts/xenso/ocr-consensus.ts`](../../scripts/xenso/ocr-consensus.ts) (`pnpm xenso:ocr-consensus`) does the same for any two passes. Each hexagram file carries its own `ocr_disputed_words:`.
+- **Automatic resolution was considered and rejected, and that is the load-bearing decision here.** Preferring whichever engine read a dictionary word would lower the measured error and make the text worse. Hexagram 4's Second-Nine read *"To marry now is **alas** lucky"* — fluent, and wrong for *also*. It now reads *"is **alse** lucky"*: still wrong, visibly so. **A source at this grade should announce its damage**, and an automatic fluency preference is a machine for hiding it.
+- **A bug the second engine exposed: 39 of 147 Chinese pages were being vendored as English.** `isChinesePage()` wanted `[NM]` directly after `CHI`, so the common "CHINESP TEXT." never matched, nor did a running head the scanner split across lines. Their columnar gibberish had been merging into the facing hexagram's text since the first import. The test now takes the head from *any* witness, or an English word count below 20 — an English page yields a median of 172 words here and a Chinese page a median of 1, with nothing in between.
+- **All 64 section headings are found, where the first pass found 61 and inferred 3.** Vision finds 61 and Tesseract 56; between them they have every one. `MC_HEADING` was widened for Tesseract's trailing scanner furniture, and `looksLikeDiagram()` replaces an ever-growing alternation with a letter-fold and an edit distance of two — extending that regex one engine at a time is how it becomes a liability.
+- **Structure recovered, because better characters find more boundaries.** All six line texts in **51 of 64** (was 40); 大象傳 split out in **57** (was 45); the full section set in **49** (was 39); the worst file went from 2 of 6 lines to 4. 135 inline trigram figures marked, against 102. Total text vendored rose 69,677 → 71,533 words, so none of this came from dropping anything.
+- **The resolution hypothesis was wrong, and the refutation is written down so nobody repeats the afternoon.** The rasters are 600 DPI and the first pass rendered them at 216, which looks like a plain mistake and is not: the source is bitonal, downsampling anti-aliases the glyphs into what the engines expect, and **600 DPI scored 16.6% against 216 DPI's 13.7%.** Everything from 120 to 300 was noise. `ocr-pdf.swift` now derives the scale from the page's own embedded raster and reports it, takes `--dpi`/`--revision`/`--no-langcorrect`/`--words`, and **no longer destroys out-of-range pages on a partial `--from/--to` run** — the old writer silently clobbered the other 488.
+- **New principle, provisional — [`an-instrument-is-not-a-witness-to-itself`](principles/an-instrument-is-not-a-witness-to-itself.md).** Vision reported a mean confidence of **0.98** on text where one word in five was wrong. A tool's account of its own accuracy is not evidence, and neither is a mechanism you can explain; both are hypotheses. It is provisional because both its cases come from this one investigation.
+- **The Chinese half is still not transcribed.** Nothing here changes that rule, and Tesseract was run `-l eng` only.
 
 ## 2026-09-11 — Two more witnesses, and the project starts keeping its own principles
 

@@ -20,6 +20,15 @@ principles:
     evidence:
       - "../README.md#十翼--the-wings"
       - "../method.md#5-the-wings-are-commentary"
+  - id: an-instrument-is-not-a-witness-to-itself
+    title: "An instrument's confidence in itself is not evidence, and neither is a plausible mechanism"
+    status: provisional
+    since: Fri Sep 11 2026 17:00:00 GMT-0700 (Pacific Daylight Time)
+    trigger: "a tool reports how well it did, or you can explain why a result came out the way it did, and you are about to believe either one"
+    applies: [tooling, sources]
+    check: xenso:ocr-consensus
+    evidence:
+      - "../sources/PROVENANCE.md#two-witnesses-and-what-their-agreement-is-worth"
   - id: frequency-sets-the-order
     title: "In a formulaic text, frequency sets the order of decisions — the shared unit before the particular"
     status: active

@@ -111,7 +111,7 @@ Already locked to **numinous potency, never "God" and never "the divine."** McCl
 
 Already locked in the glossary to *god — any god* — with "God", "the Lord", "Creator", "heaven" and "emperor" all forbidden. It appears here in the Shuogua's account of the trigram cycle, and it will be the first place a reader feels a creator arriving.
 
-**And there is a worked example of the failure sitting in `sources/`.** McClatchie's Book IV renders 帝出乎震 as *"The (Supreme) Emperor issues forth in the Chin Diagram"* and, one chapter later, the same character as *"God"* — **two of the five forbidden renderings, in one text, four pages apart.** Read [`sources/mcclatchie-1876/book-4-treatise-on-the-diagrams.md`](sources/mcclatchie-1876/book-4-treatise-on-the-diagrams.md) beside [`sources/wings/shuogua.md`](sources/wings/shuogua.md) before rendering 帝 anywhere: it is the cleanest demonstration in the repository of what the lock is for.
+**And there is a worked example of the failure sitting in `sources/`.** McClatchie's Book IV renders 帝出乎震 as *"The (Supreme) Emperor issues forth in the Chin Diagram"* — his Chapter V — and in Chapter VI the same character as *"God is the appellation of him who adorns the Myriad of things"* — **two of the five forbidden renderings, in one text, one chapter apart.** Read [`sources/mcclatchie-1876/book-4-treatise-on-the-diagrams.md`](sources/mcclatchie-1876/book-4-treatise-on-the-diagrams.md) beside [`sources/wings/shuogua.md`](sources/wings/shuogua.md) before rendering 帝 anywhere: it is the cleanest demonstration in the repository of what the lock is for.
 
 ---
 

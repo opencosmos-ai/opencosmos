@@ -35,7 +35,7 @@
  */
 
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs'
-import { join, resolve, dirname } from 'node:path'
+import { join, resolve, dirname, basename } from 'node:path'
 import { createHash } from 'node:crypto'
 import { load } from 'js-yaml'
 
@@ -1195,12 +1195,56 @@ function mcPages(text: string): Page[] {
 
 /**
  * The Chinese pages carry the running head "CHINESE TEXT." and nothing else the
- * scanner could read — the body is vertical columnar type, which Vision does not
- * do. The head itself OCRs every which way ("MININE TENT", "CININE TEXT"), so
+ * scanner could read — the body is vertical columnar type, which neither engine
+ * does. The head itself OCRs every which way ("MININE TENT", "CININE TEXT"), so
  * the test is deliberately loose.
+ *
+ * Loose was still not loose enough. This regex alone found 108 of the 147
+ * Chinese pages in the body: it wants `[NM]` directly after `CHI`, so the very
+ * common "CHINESP TEXT." slips through, and so does a head the scanner broke
+ * across two lines ("CHIN / Po. / TEXT."). The 39 it missed had their columnar
+ * gibberish merged into the facing hexagram's English. `mcChinesePages` below
+ * is the actual test; this is one of its two signals.
  */
 function isChinesePage(body: string): boolean {
   return /C[HI1lN]{2,4}[NM][EI1]?[SN]E?\s+TE.T|MININE\s+TENT|CININE|^\s*TEAT\s*$/im.test(body)
+}
+
+/** Words an English page yields. Vertical Chinese type yields almost none. */
+function englishWordCount(body: string): number {
+  return (body.match(/[A-Za-z][A-Za-z']{2,}/g) ?? []).length
+}
+
+/**
+ * Which pages in a range are not English, decided from every witness at once.
+ *
+ * Two independent signals, because each engine fails at this differently.
+ * Tesseract reads the body type far better but skips the running head on most
+ * Chinese pages, so it alone finds only 47 of 147; Apple Vision reads the head
+ * and misses 39. The word count is the signal that does not care which engine
+ * ran: across the body an English page yields a median of 172 words and a
+ * Chinese page a median of 1, with nothing at all in between. The threshold sits
+ * in that gap and the result is stable anywhere from 12 to 30.
+ *
+ * A page counts as Chinese if ANY witness saw the running head, or if the
+ * primary yielded too few words to be a page of English prose. Blank leaves fall
+ * on the Chinese side of that test, which is correct for every use here: they
+ * hold no English either.
+ */
+const MC_ENGLISH_MIN_WORDS = 20
+
+function mcChinesePages(witnesses: Page[][], from: number, to: number): Set<number> {
+  const out = new Set<number>()
+  const [primary] = witnesses
+  for (const p of primary) {
+    if (p.seq < from || p.seq > to) continue
+    if (englishWordCount(p.body) < MC_ENGLISH_MIN_WORDS) { out.add(p.seq); continue }
+    for (const w of witnesses) {
+      const page = w.find(q => q.seq === p.seq)
+      if (page && isChinesePage(page.body)) { out.add(p.seq); break }
+    }
+  }
+  return out
 }
 
 const GOOGLE = /D[ig1íğl]{1,4}[il1]?[tz]{1,3}[ei]?d?\s+by\s*Google|by\s+Google\s*$/i
@@ -1213,7 +1257,7 @@ function stripChrome(body: string, headingLine: string | null): string[] {
     .filter(l => l.trim())
     .filter(l => !GOOGLE.test(l))
     .filter(l => !/^\s*[\dIilvxVXG.,;:•\-—'"]{1,8}\s*$/.test(l))            // folio numbers and specks
-    .filter(l => !/^\s*[\dIilG]{0,3}[.,]?\s*(THE|TRE|TIB|THF)\b.{0,28}$/i.test(l) || l === headingLine)
+    .filter(l => !/^\s*[\dIilG|]{0,3}\s*[.,:;]?\s*(THE|TRE|TIB|THF)\b.{0,28}$/i.test(l) || l === headingLine)
     .filter(l => !/^\s*(APPENDIX|PLATES|PREFACE|INTRODUCT)/i.test(l))
 }
 
@@ -1223,6 +1267,19 @@ function stripChrome(body: string, headingLine: string | null): string[] {
  * body lines running to about 60 and notes to 75 and beyond. The notes are also
  * where the OCR degrades worst, which is a second reason not to carry them.
  */
+/**
+ * The two OCR witnesses, in `.cache/` and gitignored.
+ *
+ * `-tesseract` is the vendored text and `-vision` corroborates it. Both are the
+ * same `\f[seq=N conf=…]` page format. Regenerate them with:
+ *   scripts/xenso/ocr-tesseract.sh  (primary)
+ *   scripts/xenso/ocr-pdf.swift     (witness; --scale 3 is right, see its header)
+ */
+const MC_PRIMARY = 'mcclatchie-1876-tesseract.txt'
+const MC_PRIMARY_NAME = 'tesseract'
+const MC_WITNESS_NAME = 'apple vision'
+const MC_WITNESS = 'mcclatchie-1876-vision.txt'
+
 const MC_BODY_WIDTH = 68
 
 /**
@@ -1292,7 +1349,7 @@ function mcPosition(token: string): number {
 // "Włn Wing says", "Win Worg says". He prints the attribution on most sections
 // but not all, so a section without one is not a parse failure — its 彖 simply
 // stays inside the judgment, and `sections:` in the frontmatter says so.
-const MC_TUAN = /W[aăäãeiouïłĭ]{1,2}[unm]?\s+W[aioe][nrg]{0,2}[gq]?\s+s[auiynv]{1,3}[ys]{0,2}\s*[:;]/i
+const MC_TUAN = /W[aăäãeiouïłĭ]{1,2}[unmt]{0,2}\s+W[aioe][nrg]{0,2}[gq]?\s+s[auiynv]{1,3}[ys]{0,2}\s*[:;]/i
 // "Chow Kung says", and what the scanner makes of it: "Chuw Kung sayy",
 // "('hun Kung siys", "Chow Kung say's". The initial consonant is sometimes gone
 // altogether, so only "Kung" is required to be intact.
@@ -1357,6 +1414,32 @@ function mcSection(run: string): McSection {
  */
 const INLINE_FIGURE = /\(\s*[EGTIF=\s]{1,4}\)|\bE\s*=\s*\)/g
 
+/**
+ * Drop the wreckage of a trigram figure from the head of a section.
+ *
+ * McClatchie opens most sections with the hexagram drawn as stacked rules.
+ * Vision skipped them; Tesseract tries, and produces a line of scraps —
+ * "ed —. o——_> ——_ se —_— ZX" — immediately before the first numbered
+ * paragraph. `markFigures` only catches the parenthesised inline figures, which
+ * is the right scope for it.
+ *
+ * The anchor is the paragraph number, not the debris: a run is only dropped if a
+ * standalone "1" turns up in the first dozen tokens and almost everything before
+ * it is wordless. A judgment that genuinely opens "It is useless to marry a wife"
+ * has no such token and is returned untouched.
+ */
+function stripLeadingFigureDebris(s: string): string {
+  const toks = s.split(/\s+/).filter(Boolean)
+  for (let i = 0; i < Math.min(toks.length, 12); i++) {
+    if (!/^1\s*[.,:;]?$/.test(toks[i])) continue
+    const before = toks.slice(0, i)
+    if (!before.length) return toks.slice(i + 1).join(' ')
+    const wordless = before.filter(t => !/[A-Za-z]{3,}/.test(t)).length
+    return wordless / before.length >= 0.8 ? toks.slice(i + 1).join(' ') : s
+  }
+  return s
+}
+
 function markFigures(s: string): { text: string; count: number } {
   let count = 0
   const text = s.replace(INLINE_FIGURE, () => { count++; return '⟦trigram figure⟧' })
@@ -1388,8 +1471,64 @@ const mcNumber = (raw: string): number | null => {
  * ending in something that was once "Diagram". Paragraph 1 of a section is a
  * sentence and never passes it.
  */
-const MC_HEADING = /^\s*([\dIlioOSGBZJTEDQAt]{1,2})\s*[.,:;eo]?((?:\s+\S+){1,4})\s*$/
+/**
+ * A section heading: "19. THE Lin DIAGRAM."
+ *
+ * Widened for a second engine. Tesseract keeps the line's shape but drops
+ * different characters than Vision does — it leaves scanner furniture on the
+ * end ("9, me Seaou Ch'th DIAGRAM, | |", "27, the EZ piadkaM. ;") and sets the
+ * numeral as "IL." where Vision reads "11." — so the trailing junk is consumed
+ * rather than anchored against, and `L` joins the numeral class.
+ */
+const MC_HEADING = /^[\s|.'"]*([\dIlioOSGBZJTEDQAtLRUC]{1,2})\s*[-.,:;eo°'`´"]*((?:\s+\S+){1,5}?)[\s|.,;:'"°\-—_[\]\\/]*$/
 const MC_DIAGRAM = /AGRA|IAGR|GRAM|GRAN|GRAS|ORAS|RAMS?\b|ACKAN|[ÓÖ]RAM|aRAM|ODAN|ciaN|DIAG/i
+
+/**
+ * Does a word look like "DIAGRAM" through this scan?
+ *
+ * The literal alternation above was built from what Vision produced. Tesseract
+ * mangles the same word along different axes — praGRaM, pracnamM, piadkaM,
+ * viaGnaM, piacnamM — and extending the list one engine at a time is how a
+ * regex becomes a liability. So: fold the letter pairs this scan actually
+ * confuses (D/P/B/V, G/C/Q, R/N/K/M, I/L/J/T…), then allow an edit distance of
+ * two against DIAGRAM.
+ *
+ * Two is deliberate. At three it starts accepting "Luxuriance" and "implies",
+ * which are the commonest words on the page. It is only ever asked about a line
+ * that already has a heading's shape, so the cost of a near miss is low and the
+ * cost of a false positive is a hexagram assigned to the wrong page.
+ */
+const MC_FOLD: Record<string, string> = {
+  P: 'D', B: 'D', V: 'D', U: 'D', F: 'D', '0': 'O', '1': 'I', L: 'I', J: 'I', T: 'I',
+  C: 'G', Q: 'G', '6': 'G', N: 'R', K: 'R', H: 'R', M: 'R', W: 'R', S: 'R', E: 'R',
+  '4': 'A', O: 'A', Z: 'R', Y: 'R', X: 'R',
+}
+const mcFold = (w: string) => [...w.toUpperCase()].map(c => MC_FOLD[c] ?? c).join('')
+const MC_DIAGRAM_FOLDED = mcFold('DIAGRAM')
+
+function editDistance(a: string, b: string): number {
+  let prev = [...Array(b.length + 1).keys()]
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i]
+    for (let j = 1; j <= b.length; j++) {
+      cur.push(Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)))
+    }
+    prev = cur
+  }
+  return prev[b.length]
+}
+
+function looksLikeDiagram(segment: string): boolean {
+  if (MC_DIAGRAM.test(segment)) return true
+  for (const word of segment.split(/\s+/)) {
+    const core = word.replace(/[^A-Za-z0-9]/g, '')
+    if (core.length < 5) continue
+    for (let i = 0; i <= Math.max(0, core.length - 5); i++) {
+      if (editDistance(mcFold(core.slice(i, i + 9)), MC_DIAGRAM_FOLDED) <= 2) return true
+    }
+  }
+  return false
+}
 
 /** The first numbered paragraph on a page, or null. Section openings restart at 1. */
 function firstParagraphNumber(body: string): number | null {
@@ -1423,20 +1562,46 @@ function monotoneAnchors<T>(items: T[], value: (t: T) => number): T[] {
 async function importMcClatchie() {
   console.log('\nMcClatchie 1876 — the first English I Ching')
 
+  // Two witnesses, read separately and never blended.
+  //
+  // Tesseract is the primary because it was measured to be the primary: over the
+  // 462-page English body it scores 10.5% unrecognised words against Apple
+  // Vision's 19.8%, on the same pages by the same count. Vision is kept because
+  // where the two independently agree the residual error is 3.9%, and that is a
+  // far better signal than either engine's own confidence — Vision reports a
+  // mean 0.98 on pages where roughly one word in five is wrong.
+  //
+  // Nothing here votes between them. The vendored text is the primary's reading,
+  // unaltered; the disagreements go to `disputed.yaml` for a person with the
+  // scan open. Picking the more plausible of two readings would bias the text
+  // toward fluency, which is exactly the failure `never-supply-what-the-source-
+  // withheld` is about: it would read better and announce its damage less.
   const at = args.indexOf('--from')
   const given = at >= 0 ? args[at + 1] : undefined
-  const cached = join(CACHE, 'mcclatchie-1876-ocr.txt')
-  const path = given ? resolve(process.cwd(), given) : cached
-  if (!existsSync(path)) {
-    fail(`no OCR text at ${path}`)
-    console.log('    Produce it with scripts/xenso/ocr-pdf.swift, or pass --from <file>.')
+  const primaryPath = given ? resolve(process.cwd(), given) : join(CACHE, MC_PRIMARY)
+  const witnessPath = join(CACHE, MC_WITNESS)
+  const legacyPath = join(CACHE, 'mcclatchie-1876-ocr.txt')
+
+  const source = existsSync(primaryPath) ? primaryPath : legacyPath
+  if (!existsSync(source)) {
+    fail(`no OCR text at ${primaryPath}`)
+    console.log('    Produce it with scripts/xenso/ocr-tesseract.sh, or pass --from <file>.')
     return
   }
-  const raw = /\.pdf$/i.test(path) ? textFromPdf(path) : readFileSync(path, 'utf8')
-  if (path !== cached) writeFileSync(cached, raw)
+  const raw = /\.pdf$/i.test(source) ? textFromPdf(source) : readFileSync(source, 'utf8')
 
   const pages = mcPages(raw.replace(/\r\n?/g, '\n'))
   if (!pages.length) { fail('no page markers found in the OCR text'); return }
+
+  const witness = existsSync(witnessPath)
+    ? mcPages(readFileSync(witnessPath, 'utf8').replace(/\r\n?/g, '\n'))
+    : []
+  const witnesses = witness.length ? [pages, witness] : [pages]
+  if (witness.length) {
+    pass(`two OCR witnesses — ${basename(source)} (primary) and ${MC_WITNESS}`)
+  } else {
+    console.log(`  · only one OCR witness (${basename(source)}); no disputed.yaml will be written`)
+  }
 
   // Book I and II are the sixty-four; Book III is the Great Treatise, Book IV
   // the Shuogua, and then the Order of the Diagrams and the Appendix. Each gets
@@ -1454,24 +1619,46 @@ async function importMcClatchie() {
       from: 406, to: 416,
       note: 'Wings 9 — the text\'s own account of why King Wen order runs as it does. Chinese at ../wings/xugua.md.' },
   ]
-  const chinese = pages.filter(p => p.seq >= BODY_FROM && p.seq <= BODY_TO && isChinesePage(p.body))
-  const english = pages.filter(p => p.seq >= BODY_FROM && p.seq <= BODY_TO && !isChinesePage(p.body))
+  const notEnglish = mcChinesePages(witnesses, BODY_FROM, 491)
+  const chinese = pages.filter(p => p.seq >= BODY_FROM && p.seq <= BODY_TO && notEnglish.has(p.seq))
+  const english = pages.filter(p => p.seq >= BODY_FROM && p.seq <= BODY_TO && !notEnglish.has(p.seq))
   pass(`${pages.length} pages OCR'd — ${english.length} English, ${chinese.length} Chinese, in the translated body`)
 
   // Candidate section openings, and the heading line each one sits on.
+  //
+  // Every witness is asked, because the engines lose different headings. On this
+  // scan Vision finds 61 of 64 and Tesseract 56, but between them they find all
+  // 64 — including the three that the previous single-witness run could only
+  // recover by counting paragraph numbers. A heading is structure, not text:
+  // reading it from whichever engine saw it supplies no words to the corpus.
   const headings = new Map<number, string>()
+  const headingFrom = new Map<number, string>()
   type Cand = { seq: number; n: number | null; line: string }
   const cands: Cand[] = []
-  for (const p of english) {
-    const lines = p.body.split('\n').map(l => l.trim()).filter(Boolean).slice(0, 4)
-    for (const line of lines) {
+  const headingIn = (body: string): { line: string; n: number | null } | null => {
+    for (const line of body.split('\n').map(l => l.trim()).filter(Boolean).slice(0, 4)) {
       if (line.length > 48) continue
       const m = MC_HEADING.exec(line)
-      if (!m || !MC_DIAGRAM.test(m[2])) continue
-      headings.set(p.seq, line)
-      cands.push({ seq: p.seq, n: mcNumber(m[1]), line })
-      break
+      if (!m || !looksLikeDiagram(m[2])) continue
+      return { line, n: mcNumber(m[1]) }
     }
+    return null
+  }
+  for (const p of english) {
+    let hit = headingIn(p.body)
+    let from = MC_PRIMARY_NAME
+    if (!hit) {
+      for (const w of witnesses.slice(1)) {
+        const page = w.find(q => q.seq === p.seq)
+        if (!page) continue
+        hit = headingIn(page.body)
+        if (hit) { from = MC_WITNESS_NAME; break }
+      }
+    }
+    if (!hit) continue
+    headings.set(p.seq, hit.line)
+    headingFrom.set(p.seq, from)
+    cands.push({ seq: p.seq, n: hit.n, line: hit.line })
   }
 
   // The sixty-four sections come out of the scan in order; what the scanner
@@ -1529,6 +1716,8 @@ async function importMcClatchie() {
   let tuanFound = 0
   let xiangFound = 0
   const thin: number[] = []
+  const disputesByHexagram = new Map<number, Dispute[]>()
+  const allDisputes: Dispute[] = []
   const inventory: string[] = []
 
   for (let i = 0; i < ordered.length; i++) {
@@ -1538,17 +1727,23 @@ async function importMcClatchie() {
     const cn = chinese.filter(p => p.seq >= startSeq && p.seq <= endSeq).map(p => p.seq)
 
     const run = own.map(p => mcPageBody(p, headings)).filter(Boolean).join(' ')
-    const marked = markFigures(run)
+    const marked = markFigures(stripLeadingFigureDebris(run))
     figureTotal += marked.count
     const sec = mcSection(marked.text)
     if (sec.lines.length !== 6 || !sec.judgment) thin.push(n)
     if (sec.tuan) tuanFound++
     if (sec.daxiang) xiangFound++
 
+    const ds = witness.length ? mcDisputes(own, witness, new Set(own.map(p => p.seq))) : []
+    if (ds.length) disputesByHexagram.set(n, ds)
+    allDisputes.push(...ds)
+
     inventory.push(`  - hexagram: ${n}\n    english: [${own.map(p => p.seq).join(', ')}]\n    chinese: [${cn.join(', ')}]`)
     writeFileSync(
       join(out, `${String(n).padStart(2, '0')}.md`),
-      mcclatchieFile(n, startSeq, own.map(p => p.seq), cn, headings.get(startSeq) ?? '', sec, inferred.includes(n)),
+      mcclatchieFile(n, startSeq, own.map(p => p.seq), cn, headings.get(startSeq) ?? '', sec,
+        inferred.includes(n), headingFrom.get(startSeq) ?? MC_PRIMARY_NAME,
+        witness.length ? ds.filter(d => d.kind === 'word').length : null),
     )
   }
 
@@ -1564,19 +1759,32 @@ async function importMcClatchie() {
 
   // ── the Wings, which McClatchie also translated ───────────────────────────
   for (const sec of SECTIONS) {
-    const own = pages.filter(p => p.seq >= sec.from && p.seq <= sec.to && !isChinesePage(p.body))
-    const paras = mcDivided(mcBodyParagraphs(own, new Map()).map(x => markFigures(x).text))
+    const own = pages.filter(p => p.seq >= sec.from && p.seq <= sec.to && !notEnglish.has(p.seq))
+    const paras = mcDividedPages(own, witnesses, new Map())
     writeFileSync(join(out, `${sec.slug}.md`), mcclatchieSection(sec, paras, own))
     console.log(`  ✓ ${sec.title} — ${paras.length} paragraphs, ${own.length} English pages`)
   }
 
   // ── the Appendix, which is the reason this book matters ───────────────────
-  const appendix = pages.filter(p => p.seq >= 418 && p.seq <= 491 && !isChinesePage(p.body))
-  const appParas = mcDivided(mcBodyParagraphs(appendix, new Map()).map(x => markFigures(x).text))
+  const appendix = pages.filter(p => p.seq >= 418 && p.seq <= 491 && !notEnglish.has(p.seq))
+  const appParas = mcDividedPages(appendix, witnesses, new Map())
   writeFileSync(join(out, 'appendix.md'), mcclatchieAppendix(appParas, appendix))
   pass(`appendix vendored separately — ${appParas.length} paragraphs from ${appendix.length} pages`)
 
   // ── the plates, and the inventory of Chinese pages we did not transcribe ──
+  if (witness.length) {
+    const tokens = english.reduce((t, p) => t + mcTokens(mcPageBody(p, headings)).length, 0)
+    const corroborated = Math.max(0, tokens - allDisputes.length)
+    writeFileSync(join(out, 'disputed.yaml'),
+      mcDisputedYaml(disputesByHexagram, allDisputes, corroborated, tokens))
+    const words = allDisputes.filter(d => d.kind === 'word').length
+    pass(`${corroborated} of ${tokens} words in the sixty-four corroborated by both engines `
+      + `(${(100 * corroborated / Math.max(tokens, 1)).toFixed(1)}%)`)
+    console.log(`  · ${words} word-level disagreements listed in disputed.yaml, none resolved — `
+      + 'choosing between two readings needs the scan, and choosing the more plausible one automatically')
+    console.log('    would bias the text toward fluent English, which is the error that stops announcing itself.')
+  }
+
   writeFileSync(join(out, 'plates.yaml'), MC_PLATES)
   writeFileSync(
     join(out, 'chinese-pages.yaml'),
@@ -1674,6 +1882,129 @@ plates:
 # from the 1973 reprint, or the errata is itself misnumbered.
 `
 
+/**
+ * Where the two OCR witnesses read the same stretch of page differently.
+ *
+ * This is the whole point of keeping a second engine. Neither is trustworthy
+ * alone — 10.5% and 19.8% of words unrecognised — and neither reports its own
+ * failures usefully: Vision averages 0.98 confidence on pages where one word in
+ * five is wrong. But agreement between two separately-trained engines is
+ * informative in a way that either engine's self-report is not. On this book,
+ * 72.7% of the text is read identically by both, and inside that agreement the
+ * error rate falls to 3.9%. The other 27.3% carries 73% of all the remaining
+ * damage.
+ *
+ * So the disagreements are collected, never resolved. Choosing between two
+ * readings is a job for a person with the scan open, and choosing the
+ * better-looking one automatically would be worse than leaving it: it would
+ * bias the text toward fluent English, which is exactly the error that stops
+ * announcing itself. `alas` for `also` reads perfectly.
+ */
+type Dispute = { seq: number; kind: string; context: string; readings: Record<string, string> }
+
+function mcTokens(text: string): string[] {
+  return (text.match(/\S+/g) ?? []).filter(w => /[a-z0-9]/i.test(w))
+}
+
+const mcNorm = (w: string) => w.toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '')
+const mcLetters = (w: string) => w.replace(/[^a-zA-Z]/g, '')
+
+/** Longest common subsequence, as difflib-style opcodes. */
+function mcOpcodes(a: string[], b: string[]): [number, number, number, number][] {
+  const n = a.length, m = b.length
+  const dp: Uint32Array[] = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1))
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = m - 1; j >= 0; j--) {
+      dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1])
+    }
+  }
+  const ops: [number, number, number, number][] = []
+  let i = 0, j = 0
+  while (i < n && j < m) {
+    if (a[i] === b[j]) { i++; j++; continue }
+    const i0 = i, j0 = j
+    if (dp[i + 1][j] >= dp[i][j + 1]) i++; else j++
+    const last = ops[ops.length - 1]
+    if (last && last[1] === i0 && last[3] === j0) { last[1] = i; last[3] = j }
+    else ops.push([i0, i, j0, j])
+  }
+  if (i < n || j < m) ops.push([i, n, j, m])
+  return ops
+}
+
+function mcDisputes(primary: Page[], witness: Page[], seqs: Set<number>): Dispute[] {
+  const out: Dispute[] = []
+  for (const page of primary) {
+    if (!seqs.has(page.seq)) continue
+    const other = witness.find(q => q.seq === page.seq)
+    if (!other) continue
+    const a = mcTokens(page.body), b = mcTokens(other.body)
+    if (!a.length || !b.length) continue
+    for (const [i1, i2, j1, j2] of mcOpcodes(a.map(mcNorm), b.map(mcNorm))) {
+      const mine = a.slice(i1, i2).join(' ')
+      const theirs = b.slice(j1, j2).join(' ')
+      if (!mine && !theirs) continue
+      const both = [mine, theirs].filter(Boolean)
+      const kind = !mine || !theirs
+        ? (both.every(v => mcLetters(v).length <= 2) ? 'debris' : 'omission')
+        : mcLetters(mine).toLowerCase() === mcLetters(theirs).toLowerCase() ? 'punct' : 'word'
+      out.push({
+        seq: page.seq,
+        kind,
+        context: a.slice(Math.max(0, i1 - 4), i2 + 4).join(' '),
+        readings: { tesseract: mine || '—', 'apple vision': theirs || '—' },
+      })
+    }
+  }
+  return out
+}
+
+function mcDisputedYaml(byHexagram: Map<number, Dispute[]>, total: Dispute[], corroborated: number, tokens: number): string {
+  const words = total.filter(d => d.kind === 'word').length
+  const head = [
+    '# disputed.yaml — where the two OCR witnesses disagree. GENERATED; do not hand-edit.',
+    '#',
+    '# Tesseract is the vendored reading and Apple Vision corroborates it. Every',
+    '# position below is one where they read the page differently, and NONE of them',
+    '# has been resolved: this is a worklist for someone with the scan open, not a',
+    '# record of corrections made.',
+    '#',
+    '# Open a page with:  scripts/xenso/page-ink.swift <pdf> --export <seq> --dir . --scale 8',
+    '#',
+    '# kinds:  word      both engines read a word and disagreed — the worklist',
+    '#         omission  one engine missed words the other found',
+    '#         debris    a scrap against nothing, mostly inline trigram diagrams',
+    '#         punct     the same letters under different punctuation',
+    '',
+    'summary:',
+    `  generated: ${TODAY}`,
+    '  primary: tesseract',
+    '  witness: "apple vision"',
+    `  tokens: ${tokens}`,
+    `  corroborated: ${corroborated}`,
+    `  corroborated_pct: ${tokens ? (100 * corroborated / tokens).toFixed(1) : '0'}`,
+    `  disputed: ${total.length}`,
+    `  disputed_word: ${words}`,
+    '',
+    'hexagrams:',
+  ]
+  const body: string[] = []
+  for (const n of [...byHexagram.keys()].sort((a, b) => a - b)) {
+    const ds = byHexagram.get(n)!.filter(d => d.kind === 'word')
+    if (!ds.length) continue
+    body.push(`  - hexagram: ${n}`)
+    body.push(`    disputed_word: ${ds.length}`)
+    body.push('    spans:')
+    for (const d of ds) {
+      body.push(`      - page: ${d.seq}`)
+      body.push(`        tesseract: ${yamlString(d.readings.tesseract)}`)
+      body.push(`        vision: ${yamlString(d.readings['apple vision'])}`)
+      body.push(`        context: ${yamlString(d.context.slice(0, 160))}`)
+    }
+  }
+  return head.concat(body).join('\n') + '\n'
+}
+
 function mcclatchieFile(
   n: number,
   startSeq: number,
@@ -1682,6 +2013,8 @@ function mcclatchieFile(
   heading: string,
   sec: McSection,
   inferred: boolean,
+  headingFrom: string,
+  disputedWords: number | null,
 ): string {
   const hex = HEX[n - 1]
   const fm = [
@@ -1699,9 +2032,18 @@ function mcclatchieFile(
     ...(inferred
       ? ['located_by: "position between neighbouring sections — this hexagram\'s printed number did not survive the scan"']
       : []),
+    ...(headingFrom !== MC_PRIMARY_NAME
+      ? [`scan_heading_read_by: ${yamlString(headingFrom)}   # the primary engine lost this heading; the witness held it`]
+      : []),
     `lines_found: ${sec.lines.length}`,
     `sections: [${['judgment', sec.tuan && 'tuan', sec.daxiang && 'daxiang', sec.lines.length && 'lines'].filter(Boolean).join(', ')}]`,
-    'transcription: "machine OCR of the 1876 text via Apple Vision, unproofread"',
+    ...(disputedWords === null
+      ? ['transcription: "machine OCR of the 1876 text via Tesseract, unproofread"']
+      : [
+          'transcription: "machine OCR of the 1876 text, unproofread — Tesseract, corroborated word-by-word against an independent Apple Vision pass"',
+          'ocr_witnesses: [tesseract, "apple vision"]',
+          `ocr_disputed_words: ${disputedWords}   # positions where the two engines read this hexagram differently; see disputed.yaml`,
+        ]),
     'obtained: "https://babel.hathitrust.org/cgi/pt?id=mdp.39015085786880"',
     'editorial_notes: "footnotes not vendored; inline trigram figures marked ⟦trigram figure⟧"',
     'rights: "public domain by age; first published 1876"',
@@ -1740,6 +2082,92 @@ function mcclatchieFile(
  * text nobody will read end-to-end is most of its usefulness.
  */
 const MC_DIVISION = /\b(?:CH[IA][AI]?P[IT][EA]?R|CIIAPTER|CHAPIER)\s+([IVXL]{1,6}|[\dT]{1,2})\b[.,:]?|\bNOTE\s+([A-H])\b[.,:]?/gi
+
+/**
+ * Where a Chapter or Note heading opens a page, and which witness saw it.
+ *
+ * Same trouble as the hexagram headings, same answer. McClatchie sets each
+ * division on its own short line at the top of a page, and the two engines lose
+ * different ones: in the Appendix, Vision reads NOTE B, D, F and G as standalone
+ * lines while Tesseract folds them into the surrounding prose, and Tesseract
+ * holds A, C, E and H. Between them all eight survive. Anchoring the split to
+ * the page rather than to a position in the joined run is what makes asking a
+ * second witness possible at all.
+ *
+ * A letter the scan did not give up stays missing. "NOTE O." on scan page 433 is
+ * Note C in the book, and is not relabelled here — see
+ * `principles/never-supply-what-the-source-withheld.md`.
+ */
+function mcDivisionAt(seq: number, witnesses: Page[][]): { kind: string; label: string } | null {
+  for (const w of witnesses) {
+    const page = w.find(q => q.seq === seq)
+    if (!page) continue
+    for (const line of page.body.split('\n').map(l => l.trim()).filter(Boolean).slice(0, 4)) {
+      if (line.length > 40) continue
+      MC_DIVISION.lastIndex = 0
+      const m = MC_DIVISION.exec(line)
+      if (!m) continue
+      const label = (m[1] ?? m[2] ?? '').toUpperCase()
+      if (!label) continue
+      return { kind: m[2] ? 'Note' : 'Chapter', label }
+    }
+  }
+  return null
+}
+
+/**
+ * Divide a run of pages into the book's own Chapters and Notes, using every
+ * witness.
+ *
+ * Two ways of finding a division, and neither is sufficient alone.
+ *
+ * Scanning the joined run catches the headings McClatchie sets mid-page, which
+ * is how the Great Treatise runs — 21 chapters, most of them not starting a
+ * page. Anchoring to pages catches the ones only the *other* engine saw: in the
+ * Appendix each Note opens a page, and Tesseract folds four of the eight into
+ * the surrounding prose where Vision reads them as standalone lines.
+ *
+ * So take the union. A page-anchored division within 80 characters of one the
+ * run-scan already found is the same division seen twice, not a new one.
+ */
+function mcDividedPages(pages: Page[], witnesses: Page[][], headings: Map<number, string>): string[] {
+  let run = ''
+  const pageStart: [number, number][] = []
+  for (const page of pages) {
+    const text = markFigures(mcPageBody(page, headings)).text
+    if (!text) continue
+    if (run) run += '\n\n'
+    pageStart.push([page.seq, run.length])
+    run += text
+  }
+  if (!run) return []
+
+  type Mark = { at: number; skip: number; kind: string; label: string }
+  const marks: Mark[] = []
+  MC_DIVISION.lastIndex = 0
+  for (const m of run.matchAll(MC_DIVISION)) {
+    const label = (m[1] ?? m[2] ?? '').toUpperCase()
+    if (!label) continue
+    marks.push({ at: m.index!, skip: m[0].length, kind: m[2] ? 'Note' : 'Chapter', label })
+  }
+  for (const [seq, at] of pageStart) {
+    const div = mcDivisionAt(seq, witnesses)
+    if (!div) continue
+    if (marks.some(k => Math.abs(k.at - at) < 80)) continue
+    marks.push({ at, skip: 0, kind: div.kind, label: div.label })
+  }
+  marks.sort((a, b) => a.at - b.at)
+  if (marks.length < 2) return pages.map(q => markFigures(mcPageBody(q, headings)).text).filter(Boolean)
+
+  const out: string[] = []
+  const head = run.slice(0, marks[0].at).trim()
+  if (head) out.push(head)
+  marks.forEach((m, i) => {
+    const text = run.slice(m.at + m.skip, marks[i + 1]?.at ?? run.length).trim()
+    out.push(`## ${m.kind} ${m.label}\n\n${text}`)
+  })
+  return out
+}
 
 function mcDivided(paras: string[]): string[] {
   const run = paras.join('\n\n')

@@ -11,54 +11,54 @@
 #   swiftc -O scripts/xenso/page-ink.swift -o /tmp/page-ink -framework PDFKit -framework AppKit
 #   /tmp/page-ink knowledge/iching/sources/.cache/mcclatchie-1876.pdf --export <seq> --dir /tmp
 #
-# Generated 2026-09-11. 108 Chinese pages across 64 hexagrams.
+# Generated 2026-09-12. 147 Chinese pages across 64 hexagrams.
 
 pages:
   - hexagram: 1
-    english: [36, 38, 40, 42, 43, 44, 46, 47, 48, 50, 52]
-    chinese: [37, 39, 41, 45, 49, 51, 53]
+    english: [36, 38, 40, 42, 44, 46, 48, 50, 52]
+    chinese: [37, 39, 41, 43, 45, 47, 49, 51, 53]
   - hexagram: 2
-    english: [54, 55, 56, 57, 58, 60, 62]
-    chinese: [59, 61, 63]
+    english: [54, 56, 58, 60, 62]
+    chinese: [55, 57, 59, 61, 63]
   - hexagram: 3
     english: [64, 66]
     chinese: [65, 67]
   - hexagram: 4
-    english: [68, 70, 71]
-    chinese: [69]
+    english: [68, 70]
+    chinese: [69, 71]
   - hexagram: 5
-    english: [72, 74, 75]
-    chinese: [73]
+    english: [72, 74]
+    chinese: [73, 75]
   - hexagram: 6
-    english: [76, 78, 79]
-    chinese: [77]
+    english: [76, 78]
+    chinese: [77, 79]
   - hexagram: 7
-    english: [80, 82, 83]
-    chinese: [81]
+    english: [80, 82]
+    chinese: [81, 83]
   - hexagram: 8
-    english: [84, 86, 87]
-    chinese: [85]
+    english: [84, 86]
+    chinese: [85, 87]
   - hexagram: 9
-    english: [88, 89, 90, 91]
-    chinese: []
+    english: [88, 90]
+    chinese: [89, 91]
   - hexagram: 10
-    english: [92, 94, 95]
-    chinese: [93]
+    english: [92, 94]
+    chinese: [93, 95]
   - hexagram: 11
-    english: [96, 97, 98, 100]
-    chinese: [99, 101]
+    english: [96, 98, 100]
+    chinese: [97, 99, 101]
   - hexagram: 12
-    english: [102, 104, 105, 106]
-    chinese: [103, 107]
+    english: [102, 104, 106]
+    chinese: [103, 105, 107]
   - hexagram: 13
     english: [108, 110]
     chinese: [109, 111]
   - hexagram: 14
-    english: [112, 113, 114]
-    chinese: [115]
+    english: [112, 114]
+    chinese: [113, 115]
   - hexagram: 15
-    english: [116, 117, 118, 119]
-    chinese: []
+    english: [116, 118]
+    chinese: [117, 119]
   - hexagram: 16
     english: [120, 122]
     chinese: [121, 123]
@@ -81,17 +81,17 @@ pages:
     english: [144, 146]
     chinese: [145, 147]
   - hexagram: 23
-    english: [148, 149, 150]
-    chinese: [151]
+    english: [148, 150]
+    chinese: [149, 151]
   - hexagram: 24
-    english: [152, 153, 154]
-    chinese: [155]
+    english: [152, 154]
+    chinese: [153, 155]
   - hexagram: 25
     english: [156, 158]
     chinese: [157, 159]
   - hexagram: 26
-    english: [160, 161, 162]
-    chinese: [163]
+    english: [160, 162]
+    chinese: [161, 163]
   - hexagram: 27
     english: [164, 166]
     chinese: [165, 167]
@@ -99,11 +99,11 @@ pages:
     english: [168, 170]
     chinese: [169, 171]
   - hexagram: 29
-    english: [172, 174, 175]
-    chinese: [173]
+    english: [172, 174]
+    chinese: [173, 175]
   - hexagram: 30
-    english: [176, 177, 178]
-    chinese: [179]
+    english: [176, 178]
+    chinese: [177, 179]
   - hexagram: 31
     english: [180, 182]
     chinese: [181, 183]
@@ -111,14 +111,14 @@ pages:
     english: [184, 186, 188]
     chinese: [185, 187, 189]
   - hexagram: 33
-    english: [190, 192, 193]
-    chinese: [191]
+    english: [190, 192]
+    chinese: [191, 193]
   - hexagram: 34
-    english: [194, 195, 196]
-    chinese: [197]
+    english: [194, 196]
+    chinese: [195, 197]
   - hexagram: 35
-    english: [198, 199, 200]
-    chinese: [201]
+    english: [198, 200]
+    chinese: [199, 201]
   - hexagram: 36
     english: [202, 204]
     chinese: [203, 205]
@@ -129,35 +129,35 @@ pages:
     english: [210, 212]
     chinese: [211, 213]
   - hexagram: 39
-    english: [214, 216, 217]
-    chinese: [215]
+    english: [214, 216]
+    chinese: [215, 217]
   - hexagram: 40
     english: [218, 220]
     chinese: [219, 221]
   - hexagram: 41
-    english: [222, 223, 224, 225, 226]
-    chinese: [227]
+    english: [222, 224, 226]
+    chinese: [223, 225, 227]
   - hexagram: 42
     english: [228, 230, 232]
     chinese: [229, 231, 233]
   - hexagram: 43
-    english: [234, 236, 237]
-    chinese: [235]
+    english: [234, 236]
+    chinese: [235, 237]
   - hexagram: 44
-    english: [238, 240, 241]
-    chinese: [239]
+    english: [238, 240]
+    chinese: [239, 241]
   - hexagram: 45
-    english: [242, 243, 244, 246]
-    chinese: [245, 247]
+    english: [242, 244, 246]
+    chinese: [243, 245, 247]
   - hexagram: 46
     english: [248, 250]
     chinese: [249, 251]
   - hexagram: 47
-    english: [252, 254, 256, 257]
-    chinese: [253, 255]
+    english: [252, 254, 256]
+    chinese: [253, 255, 257]
   - hexagram: 48
-    english: [258, 259, 260]
-    chinese: [261]
+    english: [258, 260]
+    chinese: [259, 261]
   - hexagram: 49
     english: [262, 264]
     chinese: [263, 265]
@@ -177,8 +177,8 @@ pages:
     english: [284, 286]
     chinese: [285, 287]
   - hexagram: 55
-    english: [288, 290, 291]
-    chinese: [289]
+    english: [288, 290]
+    chinese: [289, 291]
   - hexagram: 56
     english: [292, 294]
     chinese: [293, 295]
@@ -186,23 +186,23 @@ pages:
     english: [296, 298]
     chinese: [297, 299]
   - hexagram: 58
-    english: [300, 302, 303]
-    chinese: [301]
+    english: [300, 302]
+    chinese: [301, 303]
   - hexagram: 59
-    english: [304, 305, 306]
-    chinese: [307]
+    english: [304, 306]
+    chinese: [305, 307]
   - hexagram: 60
     english: [308, 310]
     chinese: [309, 311]
   - hexagram: 61
-    english: [312, 314, 315]
-    chinese: [313]
+    english: [312, 314]
+    chinese: [313, 315]
   - hexagram: 62
-    english: [316, 318, 319]
-    chinese: [317]
+    english: [316, 318]
+    chinese: [317, 319]
   - hexagram: 63
     english: [320, 322]
     chinese: [321, 323]
   - hexagram: 64
-    english: [324, 326, 327]
-    chinese: [325]
+    english: [324, 326]
+    chinese: [325, 327]
