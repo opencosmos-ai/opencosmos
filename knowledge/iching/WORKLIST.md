@@ -41,9 +41,9 @@ not by position: the eight trigrams, then the verdict vocabulary as one decision
 | # | | Item | Where | Unit |
 |---|---|---|---|---|
 | | | **A · Drafting — the actual work** | | |
-| A1 | 🔶 | **The eight trigrams** — six proposed, two blocked on a call | `trigrams/` | 8 |
-| A2 | 🔴 | **巽 is two images** — 風 in 10 of its 大象傳, 木 in 5. One `render:` cannot hold both | `trigrams/05-xun.md` | 1 |
-| A3 | 🔴 | **澤 — what kind of water.** `lake` leads on the evidence; `marsh`, `pool`, `basin` live | `trigrams/02-dui.md` | 1 |
+| A1 | ✅ | ~~**The eight trigrams**~~ — all eight rendered, 2026-09-12 | `trigrams/` | 8 |
+| A2 | ✅ | ~~**巽 is two images**~~ — **`wind`**; the five 木 hexagrams carry wood in `image:` | `trigrams/05-xun.md` | 1 |
+| A3 | ✅ | ~~**澤 — what kind of water**~~ — **`lake`**, Shalom 2026-09-12 | `trigrams/02-dui.md` | 1 |
 | A4 | ⬜ | **The verdict vocabulary, decided as one set** — 吉 凶 咎 悔 吝 厲 无咎. 386 occurrences, 9.3% of the text; decide them individually and they will overlap | `glossary/` | ~7 |
 | A5 | ⬜ | **君子 (20×) and 小人 (10×)** — not in the parent glossary, so written from scratch. Register *and* gender; `universalize-and-name-the-seam` applies | `glossary/` | 2 |
 | A6 | ⬜ | **貞 (111×) · 亨 (48×) · 孚 (42×)** — the divinatory/ethical fork, the deepest open question in the project. Read all three translators before touching any of them | `glossary/` | 3 |
@@ -65,59 +65,34 @@ not by position: the eight trigrams, then the verdict vocabulary as one decision
 
 ---
 
-## A1 · The eight trigrams
+## A1 · The eight trigrams — done
 
-**Six are proposed and two are blocked.** The evidence is in `glossary/` — one entry each —
-and the reasoning common to all eight is this: **說卦 gives every trigram two glosses**, an
-action in chapter 7 (乾，健也) and an image in chapter 11 (乾為天), and the 大象傳 bound into
-every hexagram operates on the **images**:
+**sky · earth · thunder · wind · water · fire · mountain · lake**
 
-| | 天 | 地 | 雷 | 山 | 澤 | 水 | 風 | 火 | 木 |
-|---|---|---|---|---|---|---|---|---|---|
-| across the 64 大象傳 | 18 | 17 | 15 | 15 | 15 | 11 | 10 | 10 | 5 |
+Decided as one set, not as eight, which is now [[a-closed-set-is-one-decision]]. The common
+reasoning: 說卦 gives every trigram both an **action** (ch 7: 乾，健也) and an **image** (ch 11:
+乾為天), and the 大象傳 bound into every hexagram runs on the images — across the 64 they name
+天 18 times, 地 17, 雷 15, 山 15, 澤 15, 水 11, 風 10, 火 10, against 健 1, 順 2, 入 2, 麗 1, and
+動 陷 止 說 not at all.
 
-against 健 1 · 順 2 · 入 2 · 麗 1 · 動 0 · 陷 0 · 止 0 · 說 0. So rendering by image is not
-promoting one Wing's gloss over another — it is the reading the vendored text runs on.
+Constraints that came from the set rather than from any member: 坎 takes *water*, so 兌 cannot;
+乾 is held to *sky* by the lock on 天 across 122 occurrences; and 巽 takes *wind* because *wood*
+breaks the register the other seven hold. 說卦 confirms it — 天地定位，山澤通氣，**雷風**相薄，
+水火不相射 (ch 3) names the eight as four pairs, and 木 appears in none of its systematising
+passages.
 
-Proposed: 乾 **sky** · 坤 **earth** · 震 **thunder** · 坎 **water** · 離 **fire** · 艮 **mountain**.
-乾 is constrained by the lock on 天 (*sky*, "Heaven" forbidden) and 坤 by 天地 → *sky and earth*.
-
-## A2 · 巽 is two images 🔴
-
-風 in 10 of its 大象傳 (風行天上, 山下有風, 天下有風) and 木 in 5 (木上有火, 地中生木,
-山上有木, 木上有水, 澤滅木). 說卦 ch 11 lists both: 巽為木、為風. One `render:` shows one
-word, so one of these readings becomes invisible in five hexagrams — including 鼎 (50),
-whose whole image is fire over **wood**.
-
-**Recommendation: `wind`**, with the seam named in the entry and 木 carried in the
-hexagram-level notes for those five. Wind is the majority reading, it is what 巽 does
-(入, entering, penetrating), and "wood" cannot carry 風行水上. But this loses something
-real and the alternative — rendering per hexagram rather than per trigram — is a change
-to the data shape, which is Shalom's call.
-
-## A3 · 澤 — what kind of water 🔴
-
-15 occurrences, all in the 大象傳. Two of them constrain the English hard: **47 困 澤无水**
-("澤 without water") is incoherent if 澤 *is* the water, so 澤 is the hollow that holds it; and
-**60 節 澤上有水** puts water *above* it, because the hexagram is about a basin's capacity. And it
-cannot be "water" — 坎 already is.
-
-`lake` survives thirteen of the fifteen cleanly and pairs with 山 the way 咸 (31) and 損 (41)
-need; its one real strain, 60, is a strain in the Chinese too. `marsh` fits 47 best and fits the
-trigram worst — 說卦 glosses 兌 **說** (= 悅), delight, and *marsh* carries bog and stagnation.
-McClatchie's **Moisture** (12×) is true to 澤's other half — lustre, 恩澤, beneficence — and
-cannot be a tier that holds a fire (49) or lies empty (47).
-
-**Leading: `lake`.** That it is also the popular English is neither a reason to take it nor a
-reason to avoid it — [[convergence-is-evidence]]. → [`glossary/兌-dui.md`](glossary/兌-dui.md)
-
-*A3 was previously written as "marsh or lake" with lake ruled out for being Wilhelm's. That was
-not a reason, and the entry has been redone from the evidence.*
+**One thing still owed here:** the five hexagrams whose 大象傳 names 木 — **28 大過, 46 升,
+48 井, 50 鼎, 53 漸** — must render *wood* in their own `image:` field. That is a different
+sentence from the trigram's name, and 鼎 is a cauldron on a **wood** fire. Queued as part of A8.
 
 ---
 
 ## Closed — the ledger
 
+- **2026-09-12** · **The eight trigrams rendered** (A1, A2) — sky · earth · thunder · wind ·
+  water · fire · mountain · lake. The project's first English. → [glossary](glossary/)
+- **2026-09-12** · **澤 → `lake`** (A3). 47 困 澤无水 shows 澤 is the hollow, not the water;
+  lake survives 13 of 15 images and pairs with 山 as 咸 and 損 need. → [glossary](glossary/兌-dui.md)
 - **2026-09-12** · McClatchie OCR: two witnesses, corpus and scan adjudication, page
   truncation fixed. 7.19% → 4.50%; 60 of 64 complete. → [CHANGELOG](CHANGELOG.md)
 - **2026-09-12** · `method.md` §2 rewritten around **derivation**, after two related errors on

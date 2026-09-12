@@ -5,9 +5,9 @@ pinyin: "duì"
 kind: trigram
 lines: "110"
 shuogua_image: "澤"
-render: null
-forbidden: []
-status: open
+render: "lake"
+forbidden: ["the joyous", "the joyful"]
+status: draft
 since: 2026-09-12
 occurrences: { daxiang_image: 15, corpus_total: 16 }
 evidence:
@@ -15,7 +15,7 @@ evidence:
   - "../sources/mcclatchie-1876/31.md"
 ---
 
-# 兌 — open: what kind of water is 澤
+# 兌 — `lake`
 
 *Rewritten 2026-09-12. The first version ruled out **lake** on the ground that it is
 Wilhelm's, which is not a reason — see [[convergence-is-evidence]]. Every candidate below is
@@ -58,9 +58,9 @@ includes moisture, lustre, and beneficence — 恩澤, kindness — and on a mou
 *moisture* reads as dew and seepage where *lake* reads as a crater. But it cannot be a tier that
 something sits inside (49 澤中有火) or that can be empty (47), and the 大象傳 need a tier.
 
-## Where this stands
+## The ruling — `lake`, Shalom's call, 2026-09-12
 
-**`lake` and `marsh` are both live, and `lake` is the stronger of the two on the evidence** —
+**`lake` is the stronger reading on the evidence** —
 it survives thirteen of the fifteen cleanly, it pairs with 山 in the way 咸 and 損 need, and its
 one real strain (60) is a strain in the Chinese too. *Marsh* is the better fit for 47 and the
 worse fit for the trigram's own sense: 說卦 ch 7 glosses 兌 **說** (= 悅), **delight**, and ch 11
@@ -70,11 +70,18 @@ is a faintly unpleasant English word.
 **That the popular English is already *lake* is not an argument either way.** It is not a reason
 to take it and it is not a reason to avoid it.
 
-**Open, and Shalom's call.** → [`../WORKLIST.md`](../WORKLIST.md) § A3
+**Settled: `lake`.** The two strains are recorded rather than argued away. 60 節 (澤上有水,
+"water above the lake") reads oddly in English and reads oddly in Chinese — the hexagram is about
+a basin's capacity, and the oddity is the point. And *lake* does not carry 澤's other half —
+moisture, lustre, 恩澤 *beneficence* — which is a real loss and belongs in the notes wherever 兌
+governs a judgment rather than an image.
 
 ## What is ruled out, and why
 
-Nothing, yet — `forbidden:` is empty deliberately. *The Joyous* would render the **action** where
-the 大象傳 stack **images**, which is the same objection that rules out *the Receptive* for 坤 and
-*the Abysmal* for 坎; it is not listed until the rendering is settled, because a forbidden list
-is a ruling and there is no ruling here.
+- **"the Joyous", "the joyful"** — the action (說卦 ch 7: 說 = 悅) rather than the image, the same
+  objection that rules out *the Receptive* for 坤 and *the Abysmal* for 坎. 澤中有火 (49) is fire
+  in the lake, not fire in a joyousness.
+
+**Nothing else.** *Marsh*, *moisture*, *pool* and *basin* are not forbidden — they are simply not
+chosen, and each was the better reading somewhere. A `forbidden:` list names words that are
+**wrong**, not words that lost.

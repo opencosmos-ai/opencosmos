@@ -5,9 +5,9 @@ pinyin: "xùn"
 kind: trigram
 lines: "011"
 shuogua_image: "風 · 木"
-render: null
+render: "wind"
 forbidden: ["the gentle", "penetration"]
-status: open
+status: draft
 since: 2026-09-12
 occurrences: { daxiang_wind: 10, daxiang_wood: 5 }
 evidence:
@@ -15,7 +15,7 @@ evidence:
   - "../sources/mcclatchie-1876/book-4-treatise-on-the-diagrams.md"
 ---
 
-# 巽 — open: it is two images, and `render:` is one field
+# 巽 — `wind`
 
 **巽 is the only trigram 說卦 gives two images to**, and it gives them in the same breath:
 **巽為木、為風**. Both are live in the 大象傳, and they are not a gloss and a variant — they are
@@ -31,7 +31,33 @@ text does not support.** 鼎 (50) is the sharpest case: its whole 大象 is 木�
 **wood**, a cauldron on a cooking fire — and "wind" makes it meaningless. Equally, 渙 (59) is
 風行水上, wind moving over water, and "wood" makes *that* meaningless.
 
-## Why this is not resolvable by argument
+## The ruling — `wind`, Shalom's call, 2026-09-12
+
+**Two things decided it, and neither was the 10-to-5 count.**
+
+**First, 說卦 uses 風 every time it names the eight as a system.** Chapter 3 arranges them in four
+pairs — 天地定位，山澤通氣，**雷風**相薄，水火不相射, *"sky and earth set the positions; mountain
+and lake exchange breath; **thunder and wind** rouse each other; water and fire do not quench each
+other."* Chapter 4: 雷以動之，**風**以散之. Chapter 8: 橈萬物者，莫疾乎**風**. **木 appears in none
+of them** — it is one of eleven items in the ch 11 attribute list, beside "a straight cord", "an
+artificer" and "scent". Wind is the structural member of the set; wood is an attribute.
+
+**Second, the eighth word is constrained by the other seven.** sky · earth · thunder · water ·
+fire · mountain · lake are all things you can point at in a landscape. *Wood* is a material, and
+it breaks the level of abstraction the other seven hold. The eight are the alphabet of the book —
+every hexagram is two of them, so the set is read sixty-four times and its coherence is a property
+of the whole translation, not of this entry. See [[a-closed-set-is-one-decision]].
+
+## The five 木 hexagrams keep their wood, and nothing is lost
+
+The dilemma below was posed wrongly: it assumed `render:` had to carry the image for every
+hexagram 巽 appears in. It does not. **`image:` in each hexagram file is a separate rendering of a
+separate sentence** — the 大象傳 — and 鼎's is 木上有火, *fire above the wood*, a cauldron on a
+cooking fire. That is what that sentence says and that is how it will be rendered. The trigram's
+name and the hexagram's image are different objects, and asking one field to do both jobs is what
+made this look like a conflict.
+
+## Why the count alone does not resolve it
 
 Both readings are original, not late. The graph 巽 is not a picture of either; the 說卦 gives
 both without ranking them; and the 大象傳 uses both without signalling a switch. There is no
@@ -53,7 +79,7 @@ vendored in English.
    [`build-iching.ts`](../../../scripts/xenso/build-iching.ts) would need the image resolved at
    the hexagram level. Truest to the text, most work, and **Shalom's call, not mine.**
 
-**Blocked on that call.** → [`../WORKLIST.md`](../WORKLIST.md) § A2
+**Settled: `wind`**, with the wood carried by `image:` in 28, 46, 48, 50 and 53.
 
 ## What is ruled out, and why
 

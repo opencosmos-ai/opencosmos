@@ -4,9 +4,9 @@ chinese: "兌"
 pinyin: "duì"
 lines: "110"
 image_chinese: "澤"
-render: null
-forbidden: ["the joyous", "the lake of joy"]
-status: open
+render: "lake"
+forbidden: ["the joyous", "the joyful"]
+status: draft
 glossary_refs: ["兌-dui"]
 ---
 
@@ -14,7 +14,7 @@ glossary_refs: ["兌-dui"]
 
 Lines `110`, bottom to top. The Shuogua associates it with 澤.
 
-**Open, not undrafted.** This trigram has a question that argument cannot settle; it is stated in [`../glossary/兌-dui.md`](../glossary/兌-dui.md) and queued at [`../WORKLIST.md`](../WORKLIST.md). The image is a textual fact; its English is not, and the two are
+**Rendered `lake`** — Shalom's call, 2026-09-12. The ruling and its argument are in This trigram has a question that argument cannot settle; it is stated in [`../glossary/兌-dui.md`](../glossary/兌-dui.md) and queued at [`../WORKLIST.md`](../WORKLIST.md). The image is a textual fact; its English is not, and the two are
 easy to confuse here. 說卦 — now vendored at `sources/wings/shuogua.md`, where
 chapter 11 gives each trigram its full list of images — is the oldest reading of
 this trigram in existence and is still a reading. Rendering the trigram *as* its
