@@ -29,6 +29,16 @@ principles:
     check: xenso:ocr-consensus
     evidence:
       - "../sources/PROVENANCE.md#two-witnesses-and-what-their-agreement-is-worth"
+  - id: convergence-is-evidence
+    title: "A word is not spent because someone else used it, and agreement is evidence"
+    status: active
+    since: Fri Sep 11 2026 17:00:00 GMT-0700 (Pacific Daylight Time)
+    trigger: "you are about to rule out an English word, and the reason you can give is that a previous translator used it"
+    applies: [drafting, sources, process]
+    check: none
+    evidence:
+      - "../method.md#2-triangulating-meaning--the-four-corners"
+      - "../glossary/README.md#what-an-entry-owes"
   - id: frequency-sets-the-order
     title: "In a formulaic text, frequency sets the order of decisions — the shared unit before the particular"
     status: active

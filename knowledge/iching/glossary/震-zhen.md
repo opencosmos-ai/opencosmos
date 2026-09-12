@@ -44,3 +44,12 @@ carried in the hexagram notes.
 雷 across the 64 [`大象傳`](../sources/zhouyi/); McClatchie writes **Thunder** 19 times
 across his 大象傳 — and he is the only one of the three whose Image sections are vendored in
 English, so the three-corner triangulation is thinner here than it will be for the judgments.
+
+## What is ruled out, and why
+
+- **"the Arousing"** — the action rather than the image; 澤上有雷 (54) becomes an arousing above
+  the lake.
+- **"shock", "quake"** — both are live senses of 震 as a *character*, and neither is wrong about
+  the word. They are wrong as the **trigram's image**, which is the thing in the sky that the
+  大象傳 stack: 雷在天上 (大壯) is thunder in the sky, not a quake in the sky. The senses belong
+  in the hexagram notes at 51 震, where the trigram doubles and the judgment is about the shock.

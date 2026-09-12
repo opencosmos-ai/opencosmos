@@ -33,7 +33,7 @@ than 火 (明出地上, 明入地中), so a rendering that reached for "brightne
 collide with a lock it does not obviously touch. *Fire* stays clear of it.
 
 **The seam.** 說卦 ch 7 glosses 離 麗 — to attach, to cling, to depend on — which is the sense
-Wilhelm renders as *the Clinging* and which "fire" does not carry at all. 離 also means *to
+*the Clinging* renders, and which "fire" does not carry at all. 離 also means *to
 separate*, the near-opposite, and the graph carries both. That is a genuine two-headed word and
 the notes owe it.
 
@@ -43,3 +43,12 @@ the notes owe it.
 火 across the 64 [`大象傳`](../sources/zhouyi/); McClatchie writes **Fire** 12 times
 across his 大象傳 — and he is the only one of the three whose Image sections are vendored in
 English, so the three-corner triangulation is thinner here than it will be for the judgments.
+
+## What is ruled out, and why
+
+- **"brightness", "radiance", "enlightenment"** — these collide with a lock that is not obviously
+  in play. 明 is locked to *clear-seeing / clarity* across 54 occurrences, with **enlightenment,
+  illumination and brilliance forbidden**, and several 離 images use 明 rather than 火 (明出地上,
+  明入地中). A rendering here would silently spend the word 明 needs.
+- **"the Clinging"** — the action (麗) rather than the image; 木上有火 (鼎) becomes wood above a
+  clinging.

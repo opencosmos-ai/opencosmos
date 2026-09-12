@@ -42,3 +42,10 @@ sees a mountain is not far from the reader who sees stopping.
 山 across the 64 [`大象傳`](../sources/zhouyi/); McClatchie writes **Mountain** 15 times
 across his 大象傳 — and he is the only one of the three whose Image sections are vendored in
 English, so the three-corner triangulation is thinner here than it will be for the judgments.
+
+## What is ruled out, and why
+
+- **"Keeping Still", "stillness", "the immovable"** — the action (止) rather than the image. They
+  break every stacking: 山上有木 (漸) is wood on the mountain, not wood on a stillness. The
+  stopping is carried implicitly — a reader who sees a mountain is not far from one who sees
+  stopping — and explicitly in the notes at 52 艮.

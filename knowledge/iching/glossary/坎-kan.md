@@ -29,8 +29,9 @@ and McClatchie writes Water 12 times. No lock, no split.
 
 **The pull to render the danger instead should be resisted.** 說卦 ch 7 glosses 坎 陷, falling
 into a pit, and the trigram's hexagrams are the hardest in the book — 29 習坎, 39 蹇, 47 困.
-Wilhelm's *the Abysmal* renders that, and it is the same category error as *the Receptive*:
-it names the action, so 風行水上 ("wind moving over water") becomes unreadable.
+*The Abysmal* renders that, and makes the same category error as *the Receptive*: it names the
+action, so 風行水上 ("wind moving over water") becomes unreadable. The objection is to what the
+phrase does, not to whose it is.
 
 **The seam.** The danger is real and is lost. 坎 is not neutral water; it is water as the thing
 you fall into. `divergence-stays-open` does not fire — the corners agree on the image — but the
@@ -42,3 +43,10 @@ hexagram-level notes owe the reader the gloss, especially at 29, where the trigr
 水 across the 64 [`大象傳`](../sources/zhouyi/); McClatchie writes **Water** 12 times
 across his 大象傳 — and he is the only one of the three whose Image sections are vendored in
 English, so the three-corner triangulation is thinner here than it will be for the judgments.
+
+## What is ruled out, and why
+
+- **"the Abysmal", "the pit", "danger"** — all three render the action or the quality (說卦 ch 7:
+  陷) rather than the image, and all three break the stacking: 風行水上 (渙) is wind moving over
+  water, not wind moving over danger. The danger is real and belongs in the notes, especially at
+  29 習坎.

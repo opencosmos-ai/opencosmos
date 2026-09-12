@@ -54,3 +54,13 @@ vendored in English.
    the hexagram level. Truest to the text, most work, and **Shalom's call, not mine.**
 
 **Blocked on that call.** → [`../WORKLIST.md`](../WORKLIST.md) § A2
+
+## What is ruled out, and why
+
+- **"the Gentle", "penetration"** — the action (說卦 ch 7: 入) rather than the image, which is the
+  objection that rules out *the Receptive* for 坤 and *the Abysmal* for 坎. They also cannot stack:
+  風自火出 (家人) is wind issuing from fire, not a gentleness issuing from fire.
+
+Neither *wind* nor *wood* is ruled out. Both are 說卦's own, both are used by the 大象傳, and the
+whole difficulty is that the text supports each — see [[convergence-is-evidence]] on why "someone
+else chose this one" is not a tiebreaker.

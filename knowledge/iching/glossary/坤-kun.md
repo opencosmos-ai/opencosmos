@@ -34,9 +34,11 @@ Earth for 地 and Heaven for 天; we take one word from him and refuse the other
 reading of it.
 
 **The seam.** 說卦 ch 7 glosses 坤 順 — yielding, going-along-with — and ch 11 gives it 母,
-mother. "Earth" carries neither. Wilhelm's *the Receptive* tries to carry the first and is
-excluded here on two counts: it is a modern translation, and it renders the action rather than
-the image, which would break every 大象傳 that stacks 地 against another tier.
+mother. "Earth" carries neither. *The Receptive* does carry the first, and is ruled out for one
+reason only: it renders the **action** where the 大象傳 stack **images**, so 地中生木 ("wood grows
+within the earth") becomes wood growing within a receptivity. That objection is about the phrase
+and would hold whoever had written it. That it is also Wilhelm's is not a reason and is not
+offered as one — see [[convergence-is-evidence]].
 
 ---
 
@@ -44,3 +46,11 @@ the image, which would break every 大象傳 that stacks 地 against another tie
 地 across the 64 [`大象傳`](../sources/zhouyi/); McClatchie writes **Earth** 14 times
 across his 大象傳 — and he is the only one of the three whose Image sections are vendored in
 English, so the three-corner triangulation is thinner here than it will be for the judgments.
+
+## What is ruled out, and why
+
+- **"the Receptive"** — renders the action, not the image: 地中生木 (升) becomes wood growing
+  within a receptivity.
+- **"the passive"** — a valuation the Chinese does not make. 順 is going-along-with, which is
+  something done, not something failed to do.
+- **"Mother Earth"** — imports a deity, the same objection that rules "Heaven" out of 乾.

@@ -43,7 +43,7 @@ not by position: the eight trigrams, then the verdict vocabulary as one decision
 | | | **A · Drafting — the actual work** | | |
 | A1 | 🔶 | **The eight trigrams** — six proposed, two blocked on a call | `trigrams/` | 8 |
 | A2 | 🔴 | **巽 is two images** — 風 in 10 of its 大象傳, 木 in 5. One `render:` cannot hold both | `trigrams/05-xun.md` | 1 |
-| A3 | 🔴 | **澤 — marsh or lake** | `trigrams/02-dui.md` | 1 |
+| A3 | 🔴 | **澤 — what kind of water.** `lake` leads on the evidence; `marsh`, `pool`, `basin` live | `trigrams/02-dui.md` | 1 |
 | A4 | ⬜ | **The verdict vocabulary, decided as one set** — 吉 凶 咎 悔 吝 厲 无咎. 386 occurrences, 9.3% of the text; decide them individually and they will overlap | `glossary/` | ~7 |
 | A5 | ⬜ | **君子 (20×) and 小人 (10×)** — not in the parent glossary, so written from scratch. Register *and* gender; `universalize-and-name-the-seam` applies | `glossary/` | 2 |
 | A6 | ⬜ | **貞 (111×) · 亨 (48×) · 孚 (42×)** — the divinatory/ethical fork, the deepest open question in the project. Read all three translators before touching any of them | `glossary/` | 3 |
@@ -95,15 +95,24 @@ hexagram-level notes for those five. Wind is the majority reading, it is what �
 real and the alternative — rendering per hexagram rather than per trigram — is a change
 to the data shape, which is Shalom's call.
 
-## A3 · 澤 — marsh or lake 🔴
+## A3 · 澤 — what kind of water 🔴
 
-15 occurrences in the 大象傳. 澤 is low ground where water stands: marsh, wetland, pool —
-and by extension moisture, lustre, beneficence. Legge has *marsh*; Wilhelm–Baynes, which
-this project excludes, made *lake* the popular English.
+15 occurrences, all in the 大象傳. Two of them constrain the English hard: **47 困 澤无水**
+("澤 without water") is incoherent if 澤 *is* the water, so 澤 is the hollow that holds it; and
+**60 節 澤上有水** puts water *above* it, because the hexagram is about a basin's capacity. And it
+cannot be "water" — 坎 already is.
 
-**Recommendation: `marsh`.** It is what 澤 is, it pairs correctly with 山 in 咸 (31) and
-損 (41), and under the clarified rule in `method.md` §2 taking it is not borrowing from
-Legge — it is the English word for the thing. *Lake* is more comfortable and less true.
+`lake` survives thirteen of the fifteen cleanly and pairs with 山 the way 咸 (31) and 損 (41)
+need; its one real strain, 60, is a strain in the Chinese too. `marsh` fits 47 best and fits the
+trigram worst — 說卦 glosses 兌 **說** (= 悅), delight, and *marsh* carries bog and stagnation.
+McClatchie's **Moisture** (12×) is true to 澤's other half — lustre, 恩澤, beneficence — and
+cannot be a tier that holds a fire (49) or lies empty (47).
+
+**Leading: `lake`.** That it is also the popular English is neither a reason to take it nor a
+reason to avoid it — [[convergence-is-evidence]]. → [`glossary/兌-dui.md`](glossary/兌-dui.md)
+
+*A3 was previously written as "marsh or lake" with lake ruled out for being Wilhelm's. That was
+not a reason, and the entry has been redone from the evidence.*
 
 ---
 
@@ -111,7 +120,10 @@ Legge — it is the English word for the thing. *Lake* is more comfortable and l
 
 - **2026-09-12** · McClatchie OCR: two witnesses, corpus and scan adjudication, page
   truncation fixed. 7.19% → 4.50%; 60 of 64 complete. → [CHANGELOG](CHANGELOG.md)
-- **2026-09-12** · `method.md` §2: the inherited rule's reason restored, terms of art
-  carved out. "Never for a word" would have forbidden *thunder* for 雷.
+- **2026-09-12** · `method.md` §2 rewritten around **derivation**, after two related errors on
+  one day: "Never for a word" would have forbidden *thunder* for 雷, and 澤 was ruled away from
+  *lake* because the word is Wilhelm's — fusing the source-admission rule with a rule about
+  renderings. No English word is unavailable because a prior translator used it, and convergence
+  is evidence. → [[convergence-is-evidence]]
 - **2026-09-11** · Five sources vendored; `principles/` started. → [CHANGELOG](CHANGELOG.md)
 - **2026-08-19** · The substrate seeded, self-checking. → [CHANGELOG](CHANGELOG.md)

@@ -167,3 +167,5 @@ Thomas McClatchie's *A translation of the Confucian 易經*, Shanghai 1876, all 
 **Legge's footnotes** — his commentary, as opposed to his translation — are on the wanted-list rather than in the repository. They are where most of his construal actually lives, and most of his overlay too.
 
 **Any modern translation, of anything, for any reason.** Wilhelm–Baynes included.
+
+**This is a rule about files, and it reaches no further.** It says which editions may be vendored, on rights and provenance. It places **no English word out of reach** — not *lake*, not *the judgment*, not anything a modern translator happens to have used. A word is ruled out only when something is wrong with the word, and the reason is always a property of the word rather than of its author. See [`principles/convergence-is-evidence.md`](principles/convergence-is-evidence.md), which exists because this exact conflation was made on 2026-09-12.

@@ -52,3 +52,14 @@ vigour belongs in the hexagram-level notes, not in the one word on the card.
 天 across the 64 [`大象傳`](../sources/zhouyi/); McClatchie writes **Heaven** 18 times
 across his 大象傳 — and he is the only one of the three whose Image sections are vendored in
 English, so the three-corner triangulation is thinner here than it will be for the judgments.
+
+## What is ruled out, and why
+
+Each for what the word does. None for who wrote it — see [[convergence-is-evidence]].
+
+- **"Heaven", "the heavens", "the Almighty"** — they import a deity 天 does not carry. This is
+  not a local judgement: 天 is **locked** by the parent glossary across 122 occurrences, and the
+  lock names the harm. It would hold if no missionary had ever written the word.
+- **"the Creative"** — renders the **action** (說卦 ch 7: 健) where the 大象傳 stack **images**,
+  so 天與水違行 (訟) becomes a creativity moving contrary to water. It also imports creation *ex
+  nihilo*, which 乾 does not assert.
