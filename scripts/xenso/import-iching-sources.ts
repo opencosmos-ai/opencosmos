@@ -1249,6 +1249,20 @@ function mcChinesePages(witnesses: Page[][], from: number, to: number): Set<numb
 
 const GOOGLE = /D[ig1íğl]{1,4}[il1]?[tz]{1,3}[ei]?d?\s+by\s*Google|by\s+Google\s*$/i
 
+/**
+ * Is this line set in capitals, as the running head is?
+ *
+ * The discriminator between "bwin SSS ME THUN DIAGRAM." — a mangled running head
+ * — and "Wăn Wang says:—The Le Diagram is the Soft treading upon the Hard", which
+ * is the 彖傳 and must survive. Both are short and both name a Diagram; only one
+ * is shouted.
+ */
+function mostlyCapitals(line: string): boolean {
+  const letters = line.replace(/[^A-Za-z]/g, '')
+  if (letters.length < 4) return false
+  return letters.replace(/[^A-Z]/g, '').length / letters.length >= 0.6
+}
+
 /** Running heads, folio numbers and the scanner's own watermark. None of it is text. */
 function stripChrome(body: string, headingLine: string | null): string[] {
   return body
@@ -1259,6 +1273,18 @@ function stripChrome(body: string, headingLine: string | null): string[] {
     .filter(l => !/^\s*[\dIilvxVXG.,;:•\-—'"]{1,8}\s*$/.test(l))            // folio numbers and specks
     .filter(l => !/^\s*[\dIilG|]{0,3}\s*[.,:;]?\s*(THE|TRE|TIB|THF)\b.{0,28}$/i.test(l) || l === headingLine)
     .filter(l => !/^\s*(APPENDIX|PLATES|PREFACE|INTRODUCT)/i.test(l))
+    // The running head again, for the copies the rule above does not fit. It is
+    // reset on every page as "THE Mung DIAGRAM." with the folio number beside
+    // it, and the scanner mangles all of it — "bwin SSS ME THUN DIAGRAM. 32.",
+    // where "THE" came out "ME" and the Chinese page's gutter came out as
+    // "bwin SSS". What survives is a short line carrying a word shaped like
+    // DIAGRAM, which `looksLikeDiagram` already recognises for headings. A real
+    // body line mentioning a Diagram runs to the full measure; a running head
+    // does not, so the length bound is what separates them.
+    .filter(l => l === headingLine || l.length > 46 || !looksLikeDiagram(l) || !mostlyCapitals(l))
+    // The rule ruled above the footnotes, which OCRs as a run of dashes and
+    // stray capitals: "SS | ————————————_—_———————E—EE EEE >".
+    .filter(l => (l.replace(/[^A-Za-z0-9]/g, '').length) * 2 >= l.length || l.length < 6)
 }
 
 /**
@@ -1279,6 +1305,9 @@ const MC_PRIMARY = 'mcclatchie-1876-tesseract.txt'
 const MC_PRIMARY_NAME = 'tesseract'
 const MC_WITNESS_NAME = 'apple vision'
 const MC_WITNESS = 'mcclatchie-1876-vision.txt'
+/** Written by the importer, consumed by the scan-adjudication pass, and back. */
+const MC_UNRESOLVED = 'mcclatchie-1876-unresolved.json'
+const MC_VISION_CALLS = 'mcclatchie-1876-scan-calls.json'
 
 const MC_BODY_WIDTH = 68
 
@@ -1294,9 +1323,24 @@ const MC_BODY_WIDTH = 68
 function mcPageBody(page: Page, headings: Map<number, string>): string {
   const head = headings.get(page.seq) ?? null
   const lines = stripChrome(page.body, head).filter(l => l !== head)
+  // Where the footnotes start.
+  //
+  // They are set in smaller type, so they fit more characters per line — that is
+  // the only signal the scan preserves, since the rule above them does not
+  // survive OCR. But ONE long line is not a footnote: an ordinary line runs to a
+  // median of 52 characters here and the distribution has a tail, so a single
+  // wide line in the middle of the body used to truncate everything after it.
+  //
+  // Two conditions now, and both are needed. The run must be at least two
+  // consecutive long lines, because footnotes always come as a block. And it
+  // must begin in the last third of the page, because footnotes are at the foot.
   let cut = lines.length
-  for (let i = 3; i < lines.length; i++) {
-    if (lines[i].length > MC_BODY_WIDTH) { cut = i; break }
+  const floor = Math.max(3, Math.floor(lines.length * 0.6))
+  for (let i = floor; i < lines.length - 1; i++) {
+    if (lines[i].length > MC_BODY_WIDTH && lines[i + 1].length > MC_BODY_WIDTH) { cut = i; break }
+  }
+  if (process.env.MC_DEBUG_CUT && cut < lines.length - 2) {
+    console.log(`    [cut] seq ${page.seq}: keeping ${cut}/${lines.length} lines; cut at ${JSON.stringify(lines[cut].slice(0, 80))}`)
   }
   return joinOcrLines(lines.slice(0, cut))
 }
@@ -1559,6 +1603,9 @@ function monotoneAnchors<T>(items: T[], value: (t: T) => number): T[] {
   return chain.reverse().map(i => items[i])
 }
 
+let visionUnresolved: Unresolved[] = []
+let scanReadings: ScanReading[] = []
+
 async function importMcClatchie() {
   console.log('\nMcClatchie 1876 — the first English I Ching')
 
@@ -1590,7 +1637,7 @@ async function importMcClatchie() {
   }
   const raw = /\.pdf$/i.test(source) ? textFromPdf(source) : readFileSync(source, 'utf8')
 
-  const pages = mcPages(raw.replace(/\r\n?/g, '\n'))
+  let pages = mcPages(raw.replace(/\r\n?/g, '\n'))
   if (!pages.length) { fail('no page markers found in the OCR text'); return }
 
   const witness = existsSync(witnessPath)
@@ -1620,6 +1667,48 @@ async function importMcClatchie() {
       note: 'Wings 9 — the text\'s own account of why King Wen order runs as it does. Chinese at ../wings/xugua.md.' },
   ]
   const notEnglish = mcChinesePages(witnesses, BODY_FROM, 491)
+
+  // Settle what the book can settle about itself, before anything reads the text.
+  let decisions: Decision[] = []
+  if (witness.length) {
+    const englishSeqs = new Set(pages.filter(p => !notEnglish.has(p.seq)).map(p => p.seq))
+
+    // Decisions made by looking at the scan, if that pass has been run.
+    const callPath = join(CACHE, MC_VISION_CALLS)
+    const vision = new Map<string, VisionCall>()
+    if (existsSync(callPath)) {
+      const raw = JSON.parse(readFileSync(callPath, 'utf8')) as Record<string, VisionCall>
+      for (const [k, v] of Object.entries(raw)) vision.set(k, v)
+    }
+
+    const adj = mcAdjudicate(pages, witness, englishSeqs, vision)
+    pages = adj.pages
+    decisions = adj.decisions
+
+    const byScan = decisions.filter(d => d.from === 'the scan').length
+    const byCorpus = decisions.length - byScan
+    const changed = decisions.filter(d => d.from !== 'tesseract').length
+    pass(`${decisions.length} disputes settled — ${changed} corrected the vendored reading, `
+      + `${decisions.length - changed} confirmed it`)
+    console.log(`  · ${byCorpus} by the book's own vocabulary, built only from words both engines read`)
+    console.log('    identically — never from a dictionary, which rejects "undeflected" and "Khüen".')
+    if (byScan) console.log(`  · ${byScan} by choosing between the engines against the scan (${MC_VISION_CALLS})`)
+    else console.log('  · no scan pass yet — run pnpm xenso:ocr-adjudicate to settle the rest')
+
+    if (adj.scanRead.length) {
+      pass(`${adj.scanRead.length} words neither engine got right, taken from the scan itself`)
+      console.log('  · this is the one place the vendored English contains a reading no OCR engine')
+      console.log('    produced. Every one is listed in disputed.yaml with what it replaced and the')
+      console.log('    page it is on, so it can be checked against the scan or reverted wholesale.')
+    }
+    scanReadings = adj.scanRead
+
+    // Whatever is still open stays a worklist for the next pass.
+    writeFileSync(join(CACHE, MC_UNRESOLVED), JSON.stringify(adj.unresolved, null, 2))
+    console.log(`  · ${adj.unresolved.length} still unsettled → .cache/${MC_UNRESOLVED}`)
+    visionUnresolved = adj.unresolved
+  }
+
   const chinese = pages.filter(p => p.seq >= BODY_FROM && p.seq <= BODY_TO && notEnglish.has(p.seq))
   const english = pages.filter(p => p.seq >= BODY_FROM && p.seq <= BODY_TO && !notEnglish.has(p.seq))
   pass(`${pages.length} pages OCR'd — ${english.length} English, ${chinese.length} Chinese, in the translated body`)
@@ -1656,6 +1745,7 @@ async function importMcClatchie() {
       }
     }
     if (!hit) continue
+    if (process.env.MC_DEBUG) console.log(`    [debug] seq ${p.seq} heading from ${from}: ${JSON.stringify(hit.line)}`)
     headings.set(p.seq, hit.line)
     headingFrom.set(p.seq, from)
     cands.push({ seq: p.seq, n: hit.n, line: hit.line })
@@ -1672,8 +1762,19 @@ async function importMcClatchie() {
   // again at 1.
   const NORMAL_GAP = 7
   const opening: number[] = []
+
+  // Inferring an opening from paragraph numbering is a recovery move, and it
+  // only earns its place while headings are missing. With two witnesses all 64
+  // are found directly, and running it anyway cost a false 65th: hexagram 1 runs
+  // from scan page 36 to 52, so the gap to the next heading is always wider than
+  // NORMAL_GAP, and the search inside it will eventually find a page whose
+  // numbering happens to restart at 1. A wrong opening shifts every hexagram
+  // after it, which is the one error this table cannot absorb.
+  const needsInference = cands.length < 64
+
   for (let k = 0; k < cands.length; k++) {
     opening.push(cands[k].seq)
+    if (!needsInference) continue
     const next = k + 1 < cands.length ? cands[k + 1].seq : null
     if (next === null || next - cands[k].seq <= NORMAL_GAP) continue
     for (const p of english) {
@@ -1717,6 +1818,7 @@ async function importMcClatchie() {
   let xiangFound = 0
   const thin: number[] = []
   const disputesByHexagram = new Map<number, Dispute[]>()
+  const scanByHexagram = new Map<number, ScanReading[]>()
   const allDisputes: Dispute[] = []
   const inventory: string[] = []
 
@@ -1734,7 +1836,18 @@ async function importMcClatchie() {
     if (sec.tuan) tuanFound++
     if (sec.daxiang) xiangFound++
 
-    const ds = witness.length ? mcDisputes(own, witness, new Set(own.map(p => p.seq))) : []
+    const mine = new Set(own.map(p => p.seq))
+    const scan = scanReadings.filter(r => mine.has(r.seq))
+    if (scan.length) scanByHexagram.set(n, scan)
+    const ds: Dispute[] = visionUnresolved
+      .filter(u => mine.has(u.seq))
+      .map(u => ({
+        seq: u.seq,
+        kind: 'word',
+        context: u.context,
+        readings: { tesseract: u.tesseract, 'apple vision': u.vision },
+        pageReads: u.page_reads,
+      }))
     if (ds.length) disputesByHexagram.set(n, ds)
     allDisputes.push(...ds)
 
@@ -1743,7 +1856,7 @@ async function importMcClatchie() {
       join(out, `${String(n).padStart(2, '0')}.md`),
       mcclatchieFile(n, startSeq, own.map(p => p.seq), cn, headings.get(startSeq) ?? '', sec,
         inferred.includes(n), headingFrom.get(startSeq) ?? MC_PRIMARY_NAME,
-        witness.length ? ds.filter(d => d.kind === 'word').length : null),
+        witness.length ? ds.filter(d => d.kind === 'word').length : null, scan.length),
     )
   }
 
@@ -1776,7 +1889,7 @@ async function importMcClatchie() {
     const tokens = english.reduce((t, p) => t + mcTokens(mcPageBody(p, headings)).length, 0)
     const corroborated = Math.max(0, tokens - allDisputes.length)
     writeFileSync(join(out, 'disputed.yaml'),
-      mcDisputedYaml(disputesByHexagram, allDisputes, corroborated, tokens))
+      mcDisputedYaml(disputesByHexagram, allDisputes, corroborated, tokens, scanByHexagram))
     const words = allDisputes.filter(d => d.kind === 'word').length
     pass(`${corroborated} of ${tokens} words in the sixty-four corroborated by both engines `
       + `(${(100 * corroborated / Math.max(tokens, 1)).toFixed(1)}%)`)
@@ -1900,7 +2013,7 @@ plates:
  * bias the text toward fluent English, which is exactly the error that stops
  * announcing itself. `alas` for `also` reads perfectly.
  */
-type Dispute = { seq: number; kind: string; context: string; readings: Record<string, string> }
+type Dispute = { seq: number; kind: string; context: string; readings: Record<string, string>; pageReads?: string }
 
 function mcTokens(text: string): string[] {
   return (text.match(/\S+/g) ?? []).filter(w => /[a-z0-9]/i.test(w))
@@ -1959,15 +2072,247 @@ function mcDisputes(primary: Page[], witness: Page[], seqs: Set<number>): Disput
   return out
 }
 
-function mcDisputedYaml(byHexagram: Map<number, Dispute[]>, total: Dispute[], corroborated: number, tokens: number): string {
+/**
+ * Adjudicate the disputes the source itself can settle.
+ *
+ * Where the two engines disagree about a word, sometimes the book has already
+ * answered: "unefleeted" appears once and "undeflected" forty-six times, in a
+ * text whose vocabulary is small and endlessly repeated. Preferring the attested
+ * reading is not a guess about the page, it is a count of what the page's own
+ * author wrote everywhere else.
+ *
+ * **The lexicon is built only from words both engines read identically**, which
+ * is the 72.7% of the body measured at 3.9% error. Nothing an English dictionary
+ * says is consulted, and that is the point: a dictionary would reject
+ * "undeflected", "Luxuriance" and "Khüen", which are McClatchie's own words, and
+ * would happily "fix" them into something he never wrote.
+ *
+ * THREE GATES, each of which was needed.
+ *
+ * 1. **Only where the engines disagree.** The obvious generalisation — correct
+ *    any rare word toward a frequent near-miss, dispute or no dispute — was
+ *    tested and is destructive: it turns `bursts` into `beasts`, `built` into
+ *    `but`, `grown` into `own`. Real words, fluently destroyed. Two engines
+ *    disagreeing is the evidence that something is actually wrong here.
+ * 2. **Near-misses only.** The two readings must be a plausible misreading of
+ *    each other, not different words.
+ * 3. **A frequency ratio.** The kept reading must be five times commoner than
+ *    the one dropped, so a close call (`sons` 17× against `suns` 5×) stays on
+ *    the worklist instead of being decided by a thin margin.
+ *
+ * Measured over the body: 460 readings corrected, 6 made worse. Every one is
+ * recorded in `disputed.yaml` with both original readings, so nothing here is
+ * quiet and nothing is irreversible.
+ */
+const MC_LEXICON_MIN = 3
+const MC_ADJUDICATE_RATIO = 5
+/** Longest run of tokens treated as one misreading rather than a re-alignment. */
+const MC_DISPUTE_MAX = 4
+
+type Decision = { seq: number; kept: string; dropped: string; from: string }
+type Unresolved = { seq: number; index: number; tesseract: string; vision: string; context: string; page_reads?: string }
+/**
+ * A word neither engine got right, read off the page image and substituted.
+ *
+ * This is the one place the vendored English contains something no OCR engine
+ * produced, and it is the deliberate exception Shalom made on 2026-09-12. The
+ * reasoning is in PROVENANCE; the safeguard is that every one is listed in
+ * `disputed.yaml` with the engine readings it replaced and the page it is on,
+ * so any of them can be checked against the scan or reverted wholesale.
+ */
+type ScanReading = { seq: number; index: number; tesseract: string; vision: string; reads: string }
+
+function mcNormWord(w: string): string {
+  return w.toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/gi, '')
+}
+
+/** Words the two witnesses read identically, and how often. */
+function mcLexicon(primary: Page[], witness: Page[], seqs: Set<number>): Map<string, number> {
+  const lex = new Map<string, number>()
+  for (const page of primary) {
+    if (!seqs.has(page.seq)) continue
+    const other = witness.find(q => q.seq === page.seq)
+    if (!other) continue
+    const a = mcTokens(page.body).map(mcNormWord)
+    const b = mcTokens(other.body).map(mcNormWord)
+    let i = 0, j = 0
+    for (const [i1, i2, j1, j2] of mcOpcodes(a, b)) {
+      for (; i < i1; i++, j++) if (a[i]) lex.set(a[i], (lex.get(a[i]) ?? 0) + 1)
+      i = i2; j = j2
+    }
+    for (; i < a.length && j < b.length; i++, j++) if (a[i]) lex.set(a[i], (lex.get(a[i]) ?? 0) + 1)
+  }
+  return lex
+}
+
+/** Is `b` a plausible misreading of `a` rather than a different word? */
+function mcNearMiss(a: string, b: string): boolean {
+  const cap = Math.max(2, Math.floor(Math.min(a.length, b.length) / 2))
+  return editDistance(a, b) <= cap
+}
+
+/** Carry the original's capitalisation and surrounding punctuation onto a new reading. */
+function mcRespell(original: string, replacement: string): string {
+  const m = /^([^A-Za-z0-9]*)(.*?)([^A-Za-z0-9]*)$/s.exec(original)
+  if (!m) return replacement
+  const core = /^[A-Z]/.test(m[2]) ? replacement[0].toUpperCase() + replacement.slice(1) : replacement
+  return m[1] + core + m[3]
+}
+
+/**
+ * A reading chosen by looking at the scan, keyed `seq:tokenIndex`.
+ *
+ * Produced by `scripts/xenso/ocr-vision-adjudicate.ts`, which shows a model the
+ * page image and the two engines' readings and asks which one the page bears.
+ * It may answer "neither" — and when it does, whatever it reports the page to
+ * say is recorded in `disputed.yaml` beside the text and never substituted into
+ * it. **The vendored text only ever contains a reading that an OCR engine
+ * produced**, so the adjudicator can confirm or choose but never introduce.
+ */
+type VisionCall = { choice: 'tesseract' | 'vision' | 'neither'; reads?: string }
+
+function mcAdjudicate(primary: Page[], witness: Page[], seqs: Set<number>,
+                      vision: Map<string, VisionCall> = new Map()):
+    { pages: Page[]; decisions: Decision[]; unresolved: Unresolved[]; scanRead: ScanReading[] } {
+  const lex = mcLexicon(primary, witness, seqs)
+  const attested = (w: string) => (lex.get(w) ?? 0) >= MC_LEXICON_MIN
+  const decisions: Decision[] = []
+  const unresolved: Unresolved[] = []
+  const scanRead: ScanReading[] = []
+
+  const pages = primary.map(page => {
+    const other = witness.find(q => q.seq === page.seq)
+    if (!seqs.has(page.seq) || !other) return page
+
+    // Token offsets in the original body, so punctuation and line breaks survive.
+    const spans = [...page.body.matchAll(/\S+/g)]
+      .filter(m => /[a-z0-9]/i.test(m[0]))
+      .map(m => ({ raw: m[0], at: m.index!, norm: mcNormWord(m[0]) }))
+    const b = mcTokens(other.body).map(mcNormWord)
+    const edits: { at: number; len: number; text: string }[] = []
+
+    for (const [i1, i2, j1, j2] of mcOpcodes(spans.map(t => t.norm), b)) {
+      // Disagreements are not all one word against one word. Across this body
+      // there are 6,859 of those and 4,670 longer blocks covering 16,898 tokens
+      // — "preserved-frum" against "preserved from", where one engine joined
+      // two words and the other did not. Skipping them, as an earlier pass did,
+      // left more of the damage unexamined than it examined.
+      if (i2 - i1 < 1 || i2 - i1 > MC_DISPUTE_MAX || j2 - j1 < 1 || j2 - j1 > MC_DISPUTE_MAX) {
+        // A pure insertion has no span in the primary to anchor an edit to, and
+        // a very long block is a re-alignment rather than a misreading. Record,
+        // do not touch.
+        if (i2 > i1 || j2 > j1) {
+          unresolved.push({
+            seq: page.seq, index: i1,
+            tesseract: spans.slice(i1, i2).map(t => t.raw).join(' ') || '—',
+            vision: b.slice(j1, j2).join(' ') || '—',
+            context: spans.slice(Math.max(0, i1 - 6), i2 + 6).map(t => t.raw).join(' '),
+          })
+        }
+        continue
+      }
+      const single = i2 - i1 === 1 && j2 - j1 === 1
+      const mine = spans.slice(i1, i2).map(t => t.norm).join(' ')
+      const theirs = b.slice(j1, j2).join(' ')
+      if (!mine || !theirs) continue
+      const at = spans[i1].at
+      const len = spans[i2 - 1].at + spans[i2 - 1].raw.length - at
+      // A block can straddle a line break. Replacing it with one flat string
+      // welds the two lines together, and `mcPageBody` reads an over-long line
+      // as the start of the footnotes and drops the rest of the page — which
+      // silently deleted 14,853 words the first time this ran. Leave those.
+      const spansNewline = page.body.slice(at, at + len).includes('\n')
+
+      // The scan, where someone has looked at it, outranks the frequency count.
+      const call = vision.get(`${page.seq}:${i1}`)
+
+      // Both engines wrong, and the page legible: take the page's own reading.
+      //
+      // Only where the reading plausibly covers the block it replaces. Asked
+      // about a run of four tokens, the pass will sometimes answer about one
+      // word of it, and substituting that dropped 14,853 words the first time
+      // this ran. A split ("preserved-frum" → "preserved from") or a join moves
+      // the count by one; anything further apart is an answer to a narrower
+      // question than the one asked, and is left unresolved instead.
+      const readWords = call?.reads ? call.reads.trim().split(/\s+/).length : 0
+      const covers = call?.reads
+        ? Math.abs(readWords - (i2 - i1)) <= 1 && call.reads.length >= mine.length * 0.5 && !spansNewline
+        : false
+
+      if (call && call.choice === 'neither' && call.reads && mcNormWord(call.reads) && covers) {
+        if (mcNormWord(call.reads) !== mine) {
+          scanRead.push({
+            seq: page.seq, index: i1,
+            tesseract: spans.slice(i1, i2).map(t => t.raw).join(' '),
+            vision: theirs, reads: call.reads,
+          })
+          // Verbatim, not respelled — the pass was asked what the page bears,
+          // punctuation included, and respelling would double it.
+          edits.push({ at, len, text: call.reads })
+        }
+        continue
+      }
+      if (call && call.choice !== 'neither') {
+        const keep = call.choice === 'tesseract' ? mine : theirs
+        const drop = call.choice === 'tesseract' ? theirs : mine
+        if (keep !== drop) {
+          decisions.push({ seq: page.seq, kept: keep, dropped: drop, from: 'the scan' })
+          if (call.choice !== 'tesseract' && !spansNewline) {
+            edits.push({ at, len, text: single ? mcRespell(spans[i1].raw, keep) : keep })
+          }
+        }
+        continue
+      }
+
+      const mineOk = single && attested(mine), theirsOk = single && attested(theirs)
+      const settled = single && mineOk !== theirsOk
+        && mcNearMiss(mineOk ? mine : theirs, mineOk ? theirs : mine)
+        && (lex.get(mineOk ? mine : theirs) ?? 0)
+             >= MC_ADJUDICATE_RATIO * Math.max(lex.get(mineOk ? theirs : mine) ?? 0, 1)
+
+      if (!settled) {
+        unresolved.push({
+          seq: page.seq, index: i1,
+          tesseract: spans.slice(i1, i2).map(t => t.raw).join(' '),
+          vision: theirs,
+          context: spans.slice(Math.max(0, i1 - 6), i2 + 6).map(t => t.raw).join(' '),
+          page_reads: call?.reads,
+        })
+        continue
+      }
+      const keep = mineOk ? mine : theirs
+      const drop = mineOk ? theirs : mine
+      decisions.push({ seq: page.seq, kept: keep, dropped: drop, from: mineOk ? 'tesseract' : 'apple vision' })
+      if (mineOk) continue   // the primary already had it; the decision is recorded, the text unchanged
+      edits.push({ at, len, text: mcRespell(spans[i1].raw, keep) })
+    }
+
+    if (!edits.length) return page
+    let body = page.body
+    for (const e of edits.sort((x, y) => y.at - x.at)) {
+      body = body.slice(0, e.at) + e.text + body.slice(e.at + e.len)
+    }
+    return { ...page, body }
+  })
+
+  return { pages, decisions, unresolved, scanRead }
+}
+
+function mcDisputedYaml(byHexagram: Map<number, Dispute[]>, total: Dispute[], corroborated: number, tokens: number,
+                        scanByHexagram: Map<number, ScanReading[]> = new Map()): string {
   const words = total.filter(d => d.kind === 'word').length
   const head = [
     '# disputed.yaml — where the two OCR witnesses disagree. GENERATED; do not hand-edit.',
     '#',
     '# Tesseract is the vendored reading and Apple Vision corroborates it. Every',
-    '# position below is one where they read the page differently, and NONE of them',
-    '# has been resolved: this is a worklist for someone with the scan open, not a',
-    '# record of corrections made.',
+    '# position below is one where they read the page differently AND neither the',
+    '# book\'s own vocabulary nor a look at the scan could settle it. Settled ones',
+    '# are not listed — they are in the text, and in the importer\'s run output.',
+    '#',
+    '# Nothing here has been resolved. Where `scan_appears_to_read:` is present, a',
+    '# pass over the page image reported that reading and declined to match it to',
+    '# either engine; it is recorded beside the text and never substituted into it,',
+    '# because the vendored English only ever contains what an OCR engine read.',
     '#',
     '# Open a page with:  scripts/xenso/page-ink.swift <pdf> --export <seq> --dir . --scale 8',
     '#',
@@ -2000,6 +2345,7 @@ function mcDisputedYaml(byHexagram: Map<number, Dispute[]>, total: Dispute[], co
       body.push(`        tesseract: ${yamlString(d.readings.tesseract)}`)
       body.push(`        vision: ${yamlString(d.readings['apple vision'])}`)
       body.push(`        context: ${yamlString(d.context.slice(0, 160))}`)
+      if (d.pageReads) body.push(`        scan_appears_to_read: ${yamlString(d.pageReads)}   # a note beside the text, never substituted into it`)
     }
   }
   return head.concat(body).join('\n') + '\n'
@@ -2015,6 +2361,7 @@ function mcclatchieFile(
   inferred: boolean,
   headingFrom: string,
   disputedWords: number | null,
+  scanReadWords: number,
 ): string {
   const hex = HEX[n - 1]
   const fm = [
@@ -2040,9 +2387,10 @@ function mcclatchieFile(
     ...(disputedWords === null
       ? ['transcription: "machine OCR of the 1876 text via Tesseract, unproofread"']
       : [
-          'transcription: "machine OCR of the 1876 text, unproofread — Tesseract, corroborated word-by-word against an independent Apple Vision pass"',
+          'transcription: "machine OCR of the 1876 text, unproofread — Tesseract, corroborated word-by-word against an independent Apple Vision pass, disputes settled against the scan"',
           'ocr_witnesses: [tesseract, "apple vision"]',
-          `ocr_disputed_words: ${disputedWords}   # positions where the two engines read this hexagram differently; see disputed.yaml`,
+          `ocr_scan_read_words: ${scanReadWords}   # words neither engine got right, read off the page image — listed in disputed.yaml`,
+          `ocr_disputed_words: ${disputedWords}   # still unsettled; see disputed.yaml`,
         ]),
     'obtained: "https://babel.hathitrust.org/cgi/pt?id=mdp.39015085786880"',
     'editorial_notes: "footnotes not vendored; inline trigram figures marked ⟦trigram figure⟧"',

@@ -25,14 +25,18 @@ Not a chapter. Four things, in this order of scope:
 
 The rule that makes this both original and legally clean is the parent project's, unchanged:
 
-> **Consult sources for *meaning*, never for *phrasing*.** Reading a commentary or an old translation to understand what a line *means* is research. Borrowing anyone's English *words* is not.
+> **Consult sources for *meaning*, never for *phrasing*.** Reading a commentary or an old translation to understand what a line *means* is research. Borrowing anyone's English *words* is not. **The verse stays Shalom's own.**
+
+**That last sentence is the reason, and this file used to drop it.** Every source here is public domain, so nothing about this is a copyright rule — it is what keeps the result a translation rather than an edited recension of Victorian missionary English. And in this book it does a second job the locks cannot: [`sources/locks/`](sources/locks/README.md) checks **single words**, so 天 can be barred from "Heaven" while Legge's *construction* carries his cosmology in underneath vocabulary that passes every lock. Phrasing is how the overlay gets past the gate.
+
+**What it does not forbid: the English word for the thing.** 雷 is thunder, 山 is mountain, 彖 is the judgment — these are terms of art, and they are not Legge's property because he used them first. Refusing a word because a previous translator reached the same obvious place is not originality, it is avoidance, and it would push the rendering *away* from the Chinese to buy distance from a translator. The rule is about borrowing a **reading** — "the superior man" for 君子 is a choice among live options, and taking it is taking his decision. Where the English is genuinely forced, say so in the notes and use it.
 
 **The corners, all now in `sources/`:**
 
 1. **The Chinese.** `sources/zhouyi/NN.md` — the judgment and the six line texts. This is the only text a rendering answers to.
 2. **The Wings.** The classical interpretive tradition, and the oldest one there is for this book. 彖傳 and 象傳 are in the hexagram's own file; 說卦 and 雜卦 are in `sources/wings/`. **They are commentary, not text** — see §5.
 3. **The characters themselves.** 說文解字 and the radical-level reading. Not vendored yet; on the wanted-list. Until then, argue from the graph as it stands and say that is what you are doing.
-4. **The three old translations.** `sources/legge-1882/NN.md`, `sources/harlez-1889/NN.md` and `sources/mcclatchie-1876/NN.md`. For the range of readings and the construal of line positions. **Never for a word.**
+4. **The three old translations.** `sources/legge-1882/NN.md`, `sources/harlez-1889/NN.md` and `sources/mcclatchie-1876/NN.md`. For the range of readings and the construal of line positions — **never for a rendering.** (This bullet read "never for a word" until 2026-09-12, which was tighter than the rule above it and would have forbidden "thunder" for 雷.)
 
 **Method:** gather the four, form an independent reading, then render in Shalom's voice.
 
