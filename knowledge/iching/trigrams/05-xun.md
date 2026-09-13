@@ -4,17 +4,19 @@ chinese: "巽"
 pinyin: "xùn"
 lines: "011"
 image_chinese: "風"
-render: null
-forbidden: []
+render: "wind"
+forbidden: ["the gentle", "penetration"]
 status: draft
-glossary_refs: []
+glossary_refs: ["巽-xun"]
 ---
 
 # 巽 — the xun trigram
 
 Lines `011`, bottom to top. The Shuogua associates it with 風.
 
-*Undrafted.* The image is a textual fact; its English is not, and the two are
+**Rendered `wind`** — Shalom's call, 2026-09-12. 巽 carries two images and the ruling is in
+[`../glossary/巽-xun.md`](../glossary/巽-xun.md); the five hexagrams whose 大象傳 name 木 carry
+the wood in their own `image:` field, which is a different sentence doing a different job. The image is a textual fact; its English is not, and the two are
 easy to confuse here. 說卦 — now vendored at `sources/wings/shuogua.md`, where
 chapter 11 gives each trigram its full list of images — is the oldest reading of
 this trigram in existence and is still a reading. Rendering the trigram *as* its

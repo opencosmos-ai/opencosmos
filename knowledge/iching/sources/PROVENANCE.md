@@ -163,16 +163,23 @@ transcribed: 2026-09-11
 
 **The copy digitised is a facsimile.** HathiTrust's `mdp.39015085786880` is a **Taipei: Ch'eng Wen, 1973** photo-reprint of the 1876 edition — MARC date type `r`, reprint note, no edition statement, no new introduction, and the 1876 pagination preserved throughout. **Shalom made the call to admit it on 2026-09-11**: the work is public domain by age, a photographic facsimile of a public-domain printing creates no new copyright (*Bridgeman*, *Feist*), and this file already rests on the same reasoning for `commentaries/heshanggong/` in the parent project, which comes from a 1919 photo-reproduction of a Song printing. HathiTrust's own rights determination is `pdus`. The Ch'eng Wen front matter is outside the 1876 pagination and is not carried across.
 
-**How the text was got out, since none of the usual routes worked.** babel.hathitrust.org sits behind a Cloudflare challenge no script can pass, so Shalom downloaded the volume as a PDF by hand. That PDF then turned out to have **no text layer at all** — 498 JBIG2 page images and 23 JPEG2000 plates, and not one content stream containing a word of the book. So it was OCR'd locally with **[`scripts/xenso/ocr-pdf.swift`](../../../scripts/xenso/ocr-pdf.swift)**, which rasterises each page and runs Apple's Vision engine over it. No install, no network, no dependency added to this monorepo.
+**How the text was got out, since none of the usual routes worked.** babel.hathitrust.org sits behind a Cloudflare challenge no script can pass, so Shalom downloaded the volume as a PDF by hand. That PDF then turned out to have **no text layer at all** — 498 JBIG2 page images and 23 JPEG2000 plates, and not one content stream containing a word of the book. So it was OCR'd locally. **Twice, by two engines, and the two are kept apart** — see [Two witnesses, and what their agreement is worth](#two-witnesses-and-what-their-agreement-is-worth) below.
 
 ```
+# the primary — Tesseract, 300 DPI, single-column mode
+brew install tesseract
+scripts/xenso/ocr-tesseract.sh knowledge/iching/sources/.cache/mcclatchie-1876.pdf \
+    knowledge/iching/sources/.cache/mcclatchie-1876-tesseract.txt
+
+# the witness — Apple Vision, no install and no network
 swiftc -O scripts/xenso/ocr-pdf.swift -o /tmp/ocr-pdf -framework PDFKit -framework Vision -framework AppKit
 /tmp/ocr-pdf knowledge/iching/sources/.cache/mcclatchie-1876.pdf \
-    knowledge/iching/sources/.cache/mcclatchie-1876-ocr.txt --scale 3
+    knowledge/iching/sources/.cache/mcclatchie-1876-vision.txt --scale 3 --langs en-US,zh-Hant
+
 pnpm xenso:import-iching --only mcclatchie
 ```
 
-**The PDF and the OCR both live in `.cache/` and are gitignored.** 21 MB of page images is not what this corpus is for; the derived text and the four plates are.
+**The PDF and both OCR passes live in `.cache/` and are gitignored.** 21 MB of page images is not what this corpus is for; the derived text and the four plates are.
 
 **What the book turned out to contain**, which was more than expected:
 
@@ -187,11 +194,13 @@ pnpm xenso:import-iching --only mcclatchie
 
 **McClatchie translated the Wings as well as the hexagrams**, which neither Legge nor de Harlez does in the material vendored here. Those three files are the only English the project holds for texts it otherwise has only in Chinese.
 
-**How a section is found, and why order rather than number.** The printed hexagram numbers are the worst-scanned thing on the page — 7 reads "E.", 9 reads "De", 46 reads "1G.", 64 reads "GI." So the sixty-four sections are located in **page order**, which the scanner cannot damage, and the printed number is used to *check* that order rather than to set it. **57 of 64 numbers agree.** The four that disagree (46, 53, 62, 64) are named in the run output; three sections (37, 61, 63) lost their heading line outright and were found by the one thing every section does — its paragraph numbering restarting at 1.
+**How a section is found, and why order rather than number.** The printed hexagram numbers are the worst-scanned thing on the page — 7 reads "E.", 9 reads "De", 46 reads "1G.", 64 reads "GI." So the sixty-four sections are located in **page order**, which the scanner cannot damage, and the printed number is used to *check* that order rather than to set it. **57 of 64 numbers agree.** The seven that disagree are named in the run output. **All 64 headings are now found**, because a heading missed by one engine is usually held by the other: Apple Vision finds 61 and Tesseract 56, and between them they have every one — including the three (37, 61, 63) that the first pass could only recover by counting paragraph numbers. Reading a heading from whichever engine saw it supplies no words to the corpus; a heading is structure, and [`order-assigns-the-label-verifies`](../principles/order-assigns-the-label-verifies.md) still governs what is done with it.
 
 **How the parts of a section are found.** Not by the paragraph numbers, which are equally damaged, but by McClatchie's own labels: he names every line "First-Nine", "Second-Six", "Topmost-Nine", and introduces the two commentaries as "Wăn Wang says" (彖傳) and "Chow Kung says" (大象傳, and again as 小象 under each line). **The hyphen in the line labels is what makes them findable** — "the number Nine" is prose and unhyphenated; every real label is hyphenated.
 
-**What that yields, stated exactly.** 40 of 64 give a judgment and all six line paragraphs. The other 24 lost one label to the scanner, so that line's text runs on into the line before it — no text is lost, only a boundary, and every file carries `lines_found:` in its frontmatter. 彖傳 is split out in 54 of 64 and 大象傳 in 45; where the attribution is missing the commentary stays inside the judgment, and `sections:` in each file says which it has.
+**What that yields, stated exactly.** 51 of 64 give a judgment and all six line paragraphs. The other 13 lost one label to the scanner, so that line's text runs on into the line before it — no text is lost, only a boundary, and every file carries `lines_found:` in its frontmatter. 彖傳 is split out in 54 of 64 and 大象傳 in 57; where the attribution is missing the commentary stays inside the judgment, and `sections:` in each file says which it has.
+
+*Those figures are from the second pass, on 2026-09-12. The first pass, from a single engine, gave 40 of 64 complete and 45 大象傳, and found 61 of the 64 section headings rather than all 64. Nothing about the book changed; the instruments did.*
 
 **The inline figures.** He sets trigram figures *inside* his English — "Cheerfulness (☱) with submission (☷)" — and the scanner renders every one as a scrap of capitals: `(E)`, `(EE)`, `(ET)`, `(GE)`. **102 of them are marked `⟦trigram figure⟧` rather than left as debris or guessed at.** The hexagram's actual trigrams are in this project's own table and go in the frontmatter, beside the sentence rather than inside it.
 
@@ -200,6 +209,28 @@ pnpm xenso:import-iching --only mcclatchie
 *One such check has been made: scan page 131, printed page 97, hexagram 19 臨 — the judgment, the 彖, the 大象 and the first two lines agree with `zhouyi/19.md` character for character, including the 无 forms. An 1876 Shanghai printing confirming a 21st-century wiki transcription is worth the record.*
 
 **If the Chinese is ever wanted as a text**, the route is `brew install tesseract tesseract-lang` and the `chi_tra_vert` model, which is trained for vertical traditional Chinese. Deferred: the base text is already complete and verified, and 1876 type would need adjudicating against a source we trust more.
+
+#### Two witnesses, and what their agreement is worth
+
+The first pass used one engine and graded itself. **Apple Vision reported a mean confidence of 0.98 across the 298 body pages — median 1.00, nothing below 0.67 — on text where roughly one word in five was wrong.** An engine's account of its own accuracy is not evidence about the page, and nothing in the first import measured it against anything else.
+
+The second pass added Tesseract 5 (`brew install tesseract`, outside the pnpm workspace so it cannot regenerate the shared lockfile). Measured over all 462 English body pages, by the share of words no expanded dictionary recognises — the same count applied to both:
+
+| | unrecognised words |
+|---|---|
+| Apple Vision, as first vendored | **19.8%** |
+| Tesseract, 300 DPI, single-column | **10.5%** |
+| **read identically by both** | **3.9%** |
+
+**Tesseract is the primary because it measured better, not because it is better in principle.** Vision is kept because the third row is the useful one: 72.7% of the body is read the same way by two separately-trained engines, and inside that agreement the error rate falls to 3.9%, while the 27.3% they disagree about carries 73% of all the remaining damage. Corroboration does not repair the text; it says where the damage is.
+
+**Nothing votes.** The vendored English is Tesseract's reading, unaltered. Every disagreement is written to [`mcclatchie-1876/disputed.yaml`](mcclatchie-1876/disputed.yaml) — 5,039 word-level positions across the sixty-four, none resolved — with both readings and enough context to find the spot on the scan. Resolving one means opening the page, which is [`never-supply-what-the-source-withheld`](../principles/never-supply-what-the-source-withheld.md)'s *"reading for verification"*, and it is the only way a line here ever gets fixed.
+
+**Preferring the more plausible reading automatically was considered and rejected.** It is easy — where one engine reads a dictionary word and the other does not, take the word — and it would lower the measured error rate. It would also bias the text toward fluent English, which is the failure that matters here. Hexagram 4's Second-Nine read *"To marry now is **alas** lucky"* in the first pass: fluent, and wrong for *also*. It now reads *"is **alse** lucky"* — still wrong, and visibly so. **A source at this grade should announce its damage**, and an automatic fluency preference is a machine for hiding it.
+
+**And the resolution was measured too, because the obvious reasoning about it was wrong.** The page rasters are 600 DPI and the first pass rendered them at 216, which looks like a plain mistake. It is not: the source is bitonal JBIG2, and downsampling into a grey buffer anti-aliases the glyphs into something the engines are trained on, where rendering 1:1 preserves every hard edge and speckle of a 1973 photo-facsimile. On the same pages 600 DPI scored **16.6%** against 216 DPI's **13.7%**, and everything between 120 and 300 was noise. `ocr-pdf.swift` now derives the scale from the page's own embedded raster and says so, and `--dpi` overrides it — but the setting that was there was right.
+
+**A regression the second engine exposed.** `isChinesePage()` tests the running head, and the head OCRs badly. The regex wanted `[NM]` directly after `CHI`, so the common "CHINESP TEXT." never matched, and neither did a head the scanner broke across lines ("CHIN / Po. / TEXT."). **39 of the 147 Chinese pages in the body were being classified as English**, and their columnar gibberish merged into the facing hexagram's text. The test now takes two signals — the running head in *any* witness, or an English word count below 20 — because across the body an English page yields a median of 172 words and a Chinese page a median of 1, with nothing in between.
 
 ### Val d'Eremao 1896 — published in two places, and the complete one is not digitised
 

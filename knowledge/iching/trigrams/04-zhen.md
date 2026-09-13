@@ -4,17 +4,17 @@ chinese: "震"
 pinyin: "zhèn"
 lines: "100"
 image_chinese: "雷"
-render: null
-forbidden: []
+render: "thunder"
+forbidden: ["the arousing", "shock", "quake"]
 status: draft
-glossary_refs: []
+glossary_refs: ["震-zhen"]
 ---
 
 # 震 — the zhen trigram
 
 Lines `100`, bottom to top. The Shuogua associates it with 雷.
 
-*Undrafted.* The image is a textual fact; its English is not, and the two are
+**Rendered `thunder`** — the ruling and its argument are in [`../glossary/震-zhen.md`](../glossary/震-zhen.md). `status: draft` until Shalom locks it. The image is a textual fact; its English is not, and the two are
 easy to confuse here. 說卦 — now vendored at `sources/wings/shuogua.md`, where
 chapter 11 gives each trigram its full list of images — is the oldest reading of
 this trigram in existence and is still a reading. Rendering the trigram *as* its

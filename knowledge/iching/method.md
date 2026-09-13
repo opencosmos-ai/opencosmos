@@ -6,6 +6,33 @@ It is a local adaptation of the Tao Te Ching project's [`process/method.md`](htt
 
 ---
 
+## 0. The stance
+
+> ### Meet the image. Grasp the meaning. Forget the image.
+
+**王弼 (*Wáng Bì*, 226–249) wrote 得意忘象 — *grasp the meaning, forget the image* — and this
+project adds the beat his slogan leaves out.** You cannot forget what you never met. His own fuller
+passage has it (尋象以觀意, *seek the image in order to see the meaning*), but the four characters
+travel without it, and what travels is a discarding instruction — the one the 義理 tradition used to
+sweep the images out of this book altogether.
+
+**Meeting is the translator's work. Grasping and forgetting are the reader's.** A rendering that
+hands over a grasped meaning with the image thrown away has done the reader's work for them and
+discarded the evidence they needed to check it.
+
+**That is what every word on a `forbidden:` list has in common.** *The Gentle*, *the Receptive*,
+*the Abysmal*, *the Joyous*, *Heaven* — each is a translator who met the image, grasped something,
+forgot the image, and shipped the residue. 風自火出 (家人) is wind issuing from fire; it is not a
+gentleness issuing from fire. **So the rendering is the image**, which is §1's constraint stated as
+a reason, and the ruling that follows from it is in [`glossary/乾-qian.md`](glossary/乾-qian.md).
+
+*This is not a principle and is deliberately not in [`principles/`](principles/INDEX.md) — it has no
+trigger, or rather it fires on everything, which is that directory's own test for what does not
+belong there. It is the stance the principles serve. Its argument, and 王弼's, are in
+[`tao-te-ching-relation.md`](tao-te-ching-relation.md) § 2 and § 8.*
+
+---
+
 ## 1. What is being decided
 
 Not a chapter. Four things, in this order of scope:
@@ -25,14 +52,26 @@ Not a chapter. Four things, in this order of scope:
 
 The rule that makes this both original and legally clean is the parent project's, unchanged:
 
-> **Consult sources for *meaning*, never for *phrasing*.** Reading a commentary or an old translation to understand what a line *means* is research. Borrowing anyone's English *words* is not.
+> **Consult sources for *meaning*, never for *phrasing*.** Reading a commentary or an old translation to understand what a line *means* is research. Borrowing anyone's English *words* is not. **The verse stays Shalom's own.**
+
+**That last sentence is the reason, and this file used to drop it.** Every source here is public domain, so nothing about this is a copyright rule — it is what keeps the result a translation rather than an edited recension of Victorian missionary English. And in this book it does a second job the locks cannot: [`sources/locks/`](sources/locks/README.md) checks **single words**, so 天 can be barred from "Heaven" while Legge's *construction* carries his cosmology in underneath vocabulary that passes every lock. Phrasing is how the overlay gets past the gate.
+
+**This is a rule about derivation, not a blocklist of words.** It is the single easiest rule in this project to misread, and misreading it does quiet, systematic damage, so it is stated here at length.
+
+**No English word is unavailable because a previous translator used it.** Not *thunder*, not *marsh*, not *lake*, not *the judgment*. The question is never *who else said this* — it is only ever *what does the Chinese say*. A rendering is borrowed when the decision was outsourced: when the entry in `glossary/` reads "Legge has X" and stops. A rendering is **independent** when it was derived from the graph, the contexts and the commentaries, and it stays independent if a previous translator happens to have arrived at the same word.
+
+**And convergence is evidence, not contamination.** Where three translators working separately reach the same English, that is *support* for the reading — exactly what `method.md` §2 means by using corner 4 as a set. A rule that penalised agreement would push every rendering toward the second-best word, one entry at a time, with nothing in any single entry to show it. Across 64 names and 512 line texts that is a translation quietly worse than it should be, and no reader could ever find the cause. **Treat agreement as a reason for confidence.**
+
+**What is actually off-limits is a word that is wrong** — and the reason is always a property of the word, never of its author. "Heaven" for 天 is forbidden because it imports a deity the Chinese does not have, which is why it is locked and why the lock names the harm. It would be forbidden had no missionary ever written it. When ruling a word out, say what is wrong with *it*; if the only thing you can say is that someone else used it, it is not ruled out.
+
+The same holds for sources: **the admission rules in [`sources/PROVENANCE.md`](sources/PROVENANCE.md) govern which files may live in `sources/`, and nothing else.** Wilhelm–Baynes is not vendored because it is a modern translation in copyright. That is a fact about a book, and it places no word whatsoever out of reach.
 
 **The corners, all now in `sources/`:**
 
 1. **The Chinese.** `sources/zhouyi/NN.md` — the judgment and the six line texts. This is the only text a rendering answers to.
 2. **The Wings.** The classical interpretive tradition, and the oldest one there is for this book. 彖傳 and 象傳 are in the hexagram's own file; 說卦 and 雜卦 are in `sources/wings/`. **They are commentary, not text** — see §5.
 3. **The characters themselves.** 說文解字 and the radical-level reading. Not vendored yet; on the wanted-list. Until then, argue from the graph as it stands and say that is what you are doing.
-4. **The three old translations.** `sources/legge-1882/NN.md`, `sources/harlez-1889/NN.md` and `sources/mcclatchie-1876/NN.md`. For the range of readings and the construal of line positions. **Never for a word.**
+4. **The three old translations.** `sources/legge-1882/NN.md`, `sources/harlez-1889/NN.md` and `sources/mcclatchie-1876/NN.md`. For the range of readings and the construal of line positions — **never for a rendering.** (This bullet read "never for a word" until 2026-09-12, which was tighter than the rule above it and would have forbidden "thunder" for 雷.)
 
 **Method:** gather the four, form an independent reading, then render in Shalom's voice.
 
@@ -111,11 +150,13 @@ Already locked to **numinous potency, never "God" and never "the divine."** McCl
 
 Already locked in the glossary to *god — any god* — with "God", "the Lord", "Creator", "heaven" and "emperor" all forbidden. It appears here in the Shuogua's account of the trigram cycle, and it will be the first place a reader feels a creator arriving.
 
-**And there is a worked example of the failure sitting in `sources/`.** McClatchie's Book IV renders 帝出乎震 as *"The (Supreme) Emperor issues forth in the Chin Diagram"* and, one chapter later, the same character as *"God"* — **two of the five forbidden renderings, in one text, four pages apart.** Read [`sources/mcclatchie-1876/book-4-treatise-on-the-diagrams.md`](sources/mcclatchie-1876/book-4-treatise-on-the-diagrams.md) beside [`sources/wings/shuogua.md`](sources/wings/shuogua.md) before rendering 帝 anywhere: it is the cleanest demonstration in the repository of what the lock is for.
+**And there is a worked example of the failure sitting in `sources/`.** McClatchie's Book IV renders 帝出乎震 as *"The (Supreme) Emperor issues forth in the Chin Diagram"* — his Chapter V — and in Chapter VI the same character as *"God is the appellation of him who adorns the Myriad of things"* — **two of the five forbidden renderings, in one text, one chapter apart.** Read [`sources/mcclatchie-1876/book-4-treatise-on-the-diagrams.md`](sources/mcclatchie-1876/book-4-treatise-on-the-diagrams.md) beside [`sources/wings/shuogua.md`](sources/wings/shuogua.md) before rendering 帝 anywhere: it is the cleanest demonstration in the repository of what the lock is for.
 
 ---
 
 ## 5. The Wings are commentary
+
+**What the Ten Wings are, where they came from and which are vendored: [`sources/wings/README.md`](sources/wings/README.md).** Short version — ten scrolls but seven works, Warring States to early Han, traditionally credited to Confucius and not by him, and **three times the size of the text they comment on**.
 
 彖傳, 象傳, 文言 and 說卦 are the oldest interpretation of this text in existence, and they are still interpretation. [`commentary-is-not-a-rendering`](https://github.com/shalomormsby/taoteching) fires on exactly this: *a commentator's gloss is an argument for a rendering, never a rendering.*
 
@@ -141,12 +182,14 @@ Use them. Do not copy them.
 - [`witnesses-before-drafting`](https://github.com/shalomormsby/taoteching) — check the sources before drafting, not after. They are in the repository now; there is no excuse.
 - [`one-question-at-a-time`](https://github.com/shalomormsby/taoteching) — bring Shalom the deepest open question, with a recommendation. Not a menu.
 
-**And nine are this project's own** — see [`principles/INDEX.md`](principles/INDEX.md), which is generated and whose evidence links are build-verified. They are mostly about evidence rather than drafting, because here the evidence came first and arrived damaged: five sources were vendored before a single word was rendered. The ones that bear on the work ahead:
+**And thirteen are this project's own** — see [`principles/INDEX.md`](principles/INDEX.md), which is generated and whose evidence links are build-verified. They are mostly about evidence rather than drafting, because here the evidence came first and arrived damaged: five sources were vendored before a single word was rendered. The ones that bear on the work ahead:
 
 - [`frequency-sets-the-order`](principles/frequency-sets-the-order.md) — §3 and §7 of this file, stated as a rule. **Do not start at hexagram 1.**
 - [`a-source-shaped-like-your-answer`](principles/a-source-shaped-like-your-answer.md) — §5 of this file, stated as a rule. 雜卦's sixty-four one-line glosses are the exact shape of `render`, and that is the danger.
 - [`no-neutral-witness`](principles/no-neutral-witness.md) — why all three translations are vendored rather than the least contaminated one chosen.
 - [`never-supply-what-the-source-withheld`](principles/never-supply-what-the-source-withheld.md) — the line the AI collaborator does not cross, and the reason the Chinese pages of McClatchie are not transcribed.
+- [`a-closed-set-is-one-decision`](principles/a-closed-set-is-one-decision.md) — the eight trigrams, the verdict graphs and 君子/小人 are each **one** decision, not eight, seven and two.
+- [`the-8-trigrams-are-arranged-in-4-pairs`](principles/the-8-trigrams-are-arranged-in-4-pairs.md) — where to find the ruling the text already made. 說卦 ch 3 settled 巽; the same move is available wherever the Chinese lines its terms up.
 
 ---
 

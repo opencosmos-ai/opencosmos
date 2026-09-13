@@ -32,12 +32,17 @@ guard args.count >= 2 else {
 var exportList: [Int] = []
 var outDir = "."
 var scale: CGFloat = 4.0
+// Horizontal strips per page. The Messages API scales an image down to 1568px on
+// its long edge, so a whole page arrives with ~24px text — too small to read this
+// print. Two strips of a 600 DPI page arrive at ~44px, which is legible.
+var bands = 1
 var i = 2
 while i < args.count {
     switch args[i] {
     case "--export": exportList = args[i + 1].split(separator: ",").compactMap { Int($0) }; i += 2
     case "--dir":    outDir = args[i + 1]; i += 2
     case "--scale":  scale = CGFloat(Double(args[i + 1]) ?? 4.0); i += 2
+    case "--bands":  bands = max(1, Int(args[i + 1]) ?? 1); i += 2
     default: i += 1
     }
 }
@@ -92,11 +97,29 @@ if exportList.isEmpty {
         guard let page = doc.page(at: seq - 1) else { continue }
         autoreleasepool {
             guard let (image, _, w, h) = rasterise(page, scale: scale) else { return }
-            let rep = NSBitmapImageRep(cgImage: image)
-            let path = "\(outDir)/page-\(String(format: "%03d", seq)).png"
-            if let data = rep.representation(using: .png, properties: [:]) {
-                try? data.write(to: URL(fileURLWithPath: path))
-                print("\(path)\t\(w)x\(h)")
+            if bands <= 1 {
+                let rep = NSBitmapImageRep(cgImage: image)
+                let path = "\(outDir)/page-\(String(format: "%03d", seq)).png"
+                if let data = rep.representation(using: .png, properties: [:]) {
+                    try? data.write(to: URL(fileURLWithPath: path))
+                    print("\(path)\t\(w)x\(h)")
+                }
+                return
+            }
+            // Overlap by 3% so a line falling on a cut is whole in one of them.
+            let bandH = h / bands
+            let pad = Int(Double(h) * 0.03)
+            for b in 0..<bands {
+                let y0 = max(0, b * bandH - pad)
+                let y1 = min(h, (b + 1) * bandH + pad)
+                guard let crop = image.cropping(to: CGRect(x: 0, y: y0, width: w, height: y1 - y0))
+                else { continue }
+                let rep = NSBitmapImageRep(cgImage: crop)
+                let path = "\(outDir)/page-\(String(format: "%03d", seq))-\(b + 1).png"
+                if let data = rep.representation(using: .png, properties: [:]) {
+                    try? data.write(to: URL(fileURLWithPath: path))
+                    print("\(path)\t\(w)x\(y1 - y0)")
+                }
             }
         }
     }

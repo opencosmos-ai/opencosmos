@@ -94,14 +94,14 @@ export const HEXAGRAMS: readonly Hexagram[] = [
 ]
 
 export const TRIGRAMS: readonly Trigram[] = [
-  { id: "qian", chinese: "乾", pinyin: "qián", figure: "111", imageChinese: "天", render: null, status: "draft" },
-  { id: "dui", chinese: "兌", pinyin: "duì", figure: "110", imageChinese: "澤", render: null, status: "draft" },
-  { id: "li", chinese: "離", pinyin: "lí", figure: "101", imageChinese: "火", render: null, status: "draft" },
-  { id: "zhen", chinese: "震", pinyin: "zhèn", figure: "100", imageChinese: "雷", render: null, status: "draft" },
-  { id: "xun", chinese: "巽", pinyin: "xùn", figure: "011", imageChinese: "風", render: null, status: "draft" },
-  { id: "kan", chinese: "坎", pinyin: "kǎn", figure: "010", imageChinese: "水", render: null, status: "draft" },
-  { id: "gen", chinese: "艮", pinyin: "gèn", figure: "001", imageChinese: "山", render: null, status: "draft" },
-  { id: "kun", chinese: "坤", pinyin: "kūn", figure: "000", imageChinese: "地", render: null, status: "draft" },
+  { id: "qian", chinese: "乾", pinyin: "qián", figure: "111", imageChinese: "天", render: "sky", status: "draft" },
+  { id: "dui", chinese: "兌", pinyin: "duì", figure: "110", imageChinese: "澤", render: "lake", status: "draft" },
+  { id: "li", chinese: "離", pinyin: "lí", figure: "101", imageChinese: "火", render: "fire", status: "draft" },
+  { id: "zhen", chinese: "震", pinyin: "zhèn", figure: "100", imageChinese: "雷", render: "thunder", status: "draft" },
+  { id: "xun", chinese: "巽", pinyin: "xùn", figure: "011", imageChinese: "風", render: "wind", status: "draft" },
+  { id: "kan", chinese: "坎", pinyin: "kǎn", figure: "010", imageChinese: "水", render: "water", status: "draft" },
+  { id: "gen", chinese: "艮", pinyin: "gèn", figure: "001", imageChinese: "山", render: "mountain", status: "draft" },
+  { id: "kun", chinese: "坤", pinyin: "kūn", figure: "000", imageChinese: "地", render: "earth", status: "draft" },
 ]
 
 /** Figure string (bottom → top) → King Wen number. */

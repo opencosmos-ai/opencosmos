@@ -5,11 +5,11 @@ year: 1876
 section: "Book IV — A Treatise on the Diagrams"
 chinese: "說卦傳"
 scan_pages: [394-405]
-paragraphs: 10
+paragraphs: 12
 transcription: "machine OCR via Apple Vision, unproofread"
 rights: "public domain by age; first published 1876"
 standing: "reference, not a source of English — see ../../method.md"
-transcribed: 2026-09-11
+transcribed: 2026-09-12
 ---
 
 # Book IV — A Treatise on the Diagrams — 說卦傳
@@ -18,50 +18,58 @@ transcribed: 2026-09-11
 >
 > McClatchie translated the Wings as well as the sixty-four, which none of the other
 > public-domain sources here does in English. Read for construal, never for a word.
-BOOK IV. A TREATISE ON THE DIAGRANS.
+BOOK Iv.
 
 ## Chapter I
 
-In ancient times the Sages inventul the (Diagrams of thie) Will King to render secret assistance to the Gods,. aul established the divining straws. Thee joined is Heaven, Iwo (paired) is Earth, and! on these (3 anl 2) enumeration depends.' Observing the changes in the Yin and Yang (St Air) they established the Diagrams; pointing out the movements of the lad and the Suft they produced the strokes; harmoniously oleying virtue and coutrolling (others) with propricty, they carriod true principles to the utmost aul completed the nature (of each thing), in order fully to assimilate it to the Hçavenly Nature.
+In ancient times the Sages invented the (Diagrams of the) Yih King to render secret assistance to the Gods,_ and established the divining straws, Three joined is Heaven, Two (paired) is Earth, and‘ on these (3 and 2) enumeration depends.’ Observing the changes in the Yin and Yang (§¢ Air) they established the Diagrams; pointing out the movements of the Hard and the Soft they produced the strokes; harmoniously obeying virtue and controlling (others) with propricty, they carried true principles to the utmost and completed the nature (of each thing), in order fully to assimilate it to the Heavenly Nature.
 
 ## Chapter II
 
-In ancieut times the Sages iuveuted tho. (Diagrama of the) Yih King, orying the law of their Heavenly Nature, and thus they established the (Divino) Reason inherent in Heaven, designating it both Yin and Yang; they established the (Divine) Reason inherent in Earth, designating it Hard and Soft, and they established the (Divine) Reason inherent in Man, designating it Benevolence and Justice. They doubled these thice Powers and thus the Yih King by six strokes perfects each Dia-
+In ancient times the Sages invented the. (Diagrams. of the) Yih King, obeying the law of their Heavenly Nature, and thus they established the (Divine) Reason inherent in Heaven, designating it both Yin and Yang; ~ they established the (Divine) Reason inherent in Earth, designating it Hard and Soft, and they established the (Divine) Reason inherent ii Man, designating it Benevolence and Justice. They doubled these three Powers -and thus the Yih King by six strokes perfects each Dia-
 
-CONNENTARY BY CONFUCIUS. gram. They separated the Yin and the Yang, alternately using the soft and the flard, and hence, in the Yil King, six thrones complete the composition (of each Diagra).
+COMMENTARY BY CONFUCIUS. 363, | gram. They separated the Yin and the Yang, alter| nately using the Soft and the Hard, and hence, in the | Yih King, six thrones complete the composition (of each. Diagram). |
 
 ## Chapter III
 
-The thrones of Henreu and Earth being established, Mountains am Rivers are pervaded by the same Air; Thunder and Wind are mutually separated; Water and Fire ire not mutmally opposed to each other; nud the Eight Diagrams are mutually blenied (i. e. squarci, to make G4). Calenlating the past is compliance; knowing the future is prescience; and therefore the (Diagrams of the) Til King both predict and calculate.
+The thrones of Heaven and Earth being established, | Mountains and Rivers are pervaded by the same Air; Thunder and Wind are mutually separated; Water and Fire are not mutually opposed to each other; and the | Eight Diagrams are mutually blended (i. e. squared, to; make 64). Caleulating the past is compliance; knowing the fu; ture is prescience; and therefore the (Diagrams of. the). Yih King both predict and calculate. | e+ |.
 
 ## Chapter IV
 
-Thumler excites things; Wind scatters them; Rain moistens them; the Sun scorches them; the Kan Diagram impedes them; Tuy tojoices them; Klëen' rules them; aid 17wăn stores them up?
+| Thunder excites things; Wind scatters them; Rain moistens them; the Sun scorches them; the Kan Dia| gram impedes them; Tuy rejoices them; Khëen' rules | them; and Khwăn stores them up.?
 
-## Chapter T
+## Chapter V
 
-The (Supreme) Emperor issucs forth in the Chin Diagram; ' he arranges things in Senen; manifests them forth in Le; makes them serviceable in Khwăn; draws forth expressions of deliglit in Tuy; conteuds in Kheen; consoles tliem in Lan; and completes the catalogue (and recommences) in the Kan Diagram. The Vyriad of things (idso) issue forth in the Chin Diagram which is ou the fast; they are arranged in 1. lenien no L if, the Emperor of Godo aul Men.
+The (Supreme) Emperor issues forth in the Chin Diagram;* he arranges things in Seven; manifests them forth | in Le; makes them serviceable in Khwăn; draws forth | expressions of delight in Tuy; contends in Kheen;. con| soles them in- Kan; and completes the catalogue (and recommences) in the Kan Diagram, | The Myriad of things (also) issue forth in the Chin | Diagram which is on the East; they are arranged in 1. Heaven or 上帝, the Emperor of Gods and Men. 2. That is, at the end of each Kalpa, to save them from destruction.
 
-COMMENTARY BY CONFUCIUS. Scuen, which is on the South-cast. manifested forth; it is place at the South. facing the South listened to (the petitions of) their subjects; looking towards the light lights they ruled (the workl), and thus secured all the beuefts of this Diagram. The Khudn Diagram is the Eorth, by which the Myriad of things are all nourished, and hence it is sid that they are made serviceable in Khwan. Tuy is the middle of Autumn, when the Nyriad of things rejoict, and bence it is suid that expressions of deliglit are called forth in Tuy. (The Myriad of things) contend in Kheen which is the Diagram placed at the North-west. This refers to the Lin and the dang placed singly (not bleuded). Iren is water, and is the Diagram placed at the exact North; this is the cousoling Diagram to which the Myriad of thic are Din grad is heed a it or lost, die an. Myriad of things complete their termination, nod where they recommence; and hence it is snid that the catalogue is complete (and recommences) in the Kan Dingram.'
+a LS COMMENTARY BY CONFUCIUS. 364. Seuen, which is on the South-east. The term “ arranged ” refers to the purity and order of the Myriad of things. Le is brightness, and in it the Myriad of things are | manifested forth; it is placed at the South. The Sages facing the South listened to (the petitions of) their subjects; looking towards the bright lights they ruled (the world), and thus secured all the benefits of this Diagram. The Khwăn Diagram is the Earth, by which the Myriad of things are all nourished, and hence it is said that they are made serviceable in Khwăn. Tuy ‘is the middle of Autumn, when the Myriad of things rejoice, and hence it is said that expressions of delight are called forth in Tuy. (The Myriad of things) contend in Kheen which is the Diagram placed at the North-west. ‘This refers to the Yin and the Yang placed singly (not blended). Kan is water, and is the Diagram placed at the exact North; this is the cousoling Diagram to which the Myriad of things revert, and are hence (said to be) cousoled in Kan. The Adan. Diagram is placed at the North-east, where the Myriad of things complete their termination, and where they recommence; and hence it is said that the catalogue is complete (and recommences) in. the Agn Diagram.?
 
 ## Chapter VI
 
-God' is the appellation of him who adorns the Myriad of things. Nothing is so rapid as Thunder for exciting the Myriad of things; nothing is so swift as Wind for twisting then alout; nothing is so drying ns Fire for scorching them up; nothing is so gratifying as Dew for rejoicing then; nothing is so humid as Water for mois-
+God? is the appellation of him who adorns the Myriad of things, Nothing is so rapid as Thunder for exciting the Myriad of things; nothing is so swift as Wind for twisting them about; nothing is so drying as Fire for scorching them up; nothing is so gratifying as Dew for rejoicing them; nothing is so humid as Water for mois1, Com. "The Myriad of things follow the (Supreme) Emperor in coming out and returning in."
 
-COMMESTARY BY CONFUCIUS. tening them; nothing is so perfect'as the Kăn Diagram in causiug them to terminate and recommence. Henee Water and Fire overtaking cach other by turns; Thunder• and Wind not opposing ench other; Mountains and Rivers being pervaded by tle same Air, lo (Gorl) can produce Changes and Transmutations, rod thus complete
+tening them; nothing is so perfect'as the Kăn Diagram in causing them to terminate and recommence. Hence Water and Fire overtaking each other by turns; Thunder: | and Wind not opposing each. other; Mountains and. Rivers being pervaded by the same Air, he (God) can produce Changes and Transmutations, and thus complete
 
 ## Chapter VII
 
-(As to nature and disposition) Rëen is strong; Khän is submissive; Chin is Motion, Seuen is entering, Kan is falling down, Le is brightness; Kün is stoppoge; and Tuy is consolation. CHAPIHI VIII. Theeu is the stallion; Klurăn is the cow; Clun is the Dragon; Scuen is the hen; Kan is the hog; Lie is the. (hen) plensaut; Kan is the Dog; and Tuy is the (she) goat.'
+(As to nature and disposition) Khëen is strong; Khwăn is submissive; Chin is Motion, Seuen is entering, Kan is falling down, Le is brightness; Kan is stoppage; and Tuy is consolation. CHAPTH\R Vviitr. Khéen is the stallion; Khwăn is the cow; Chin is the Dragon; Seuen is the hen; Kan is the hog;; Le is the. (hen) pheasant; Kan is the ‘Dog: and Tuy is the (she) goat.?
 
 ## Chapter IX
 
-Thëen is the head; Kurăn is the bowels (including the womb); Chin is the feet; Scuen is the thighs; Kan is the cars; Le is thie eyes; hün is the hands; and Tuy is CHAPTERX. Khën is Heaven, nud leuco he is called Father; Khuăn is Eartl, and hence she is called Mother; Chin
+Khéen is the head; Khwăn is the bowels (including the womb); Chin is the feet; Seven is the thighs; Kan is the ears; Le is the eyes; Kăn is the hands; and Tuy is
 
-CONMENTARY BY CONFUCIUS. is the first male, and hence he is called the ellest son; Seuen is the first female and henco she is called the eldest daughter; Kan is the sccond male, nod hence he is called the sccond son; Le is the second female, and hence she is called the second daugliter; Kan is the third male, and henco he is called the youngest son; Tuy is the third female, and hence she is called the youngest daughter.'
+## Chapter XX
+
+Khéen is Heaven, and hence he is called Father; Khwan is Earth, and hence she is called Mother; Chin - 1, The Eight Diagrams, or portions of the universe, regarded as the Bestinl Ogdoad which genernte the lower animals.
+
+## Note G
+
+2. Tho Universe regarded as a gigantic Man of whom the Ogdoad are the several parts and membe% ute, A. —— et
+
+COMMENTARY BY CONFUCIUS. " 368, is the first male, and hence he is called the eldest son, Seuen is the first female and hence she is called the eldest daughter; Kan is the sccond male, and hence he is called the second son; Le is the second female, and hence she is called the second daughter; Kăn is the third male, and hence he is called the youngest son; Tuy is the third female, and hence she is called the youngest daughter."
 
 ## Chapter XI
 
-Mičen is Heaven, is Spherical, is Prince, is Father, is a Gem, is Gold, is Cold, is Ico, is deep Reil, is a gentle Ilorse, an old Horse, a lean Horsc, a iefractory Horse, and is the Fruit of trees. Khodn is Eartl, is Mother, is Clot),' is a Caldron, is Parsimonious, is a Moull, is a Heifer, is a great Receptacle, is Variegated, is a Multitude, is a Power (on which all things depeud), and when inherent in the Eartn she is black. Chin is Thunder, a dragon, dark Azure and Yellow (the colours of Heaven and Eartli), is Expansion, tho great Clay (from which all things are made), is the Eldest Son, is Decision and Swiftuess, is the young Azure Bamboo, is Reeds, is a gentle neigher when he beconics a Ilorse, is a white legged Horsc, is Firm-footed, is the mille of the Forehead, when be lecomes Grain is reprocluca (i. e. comes out of the husk), his extreme degree of Motion is firm, and ho is fresh luxuriant vegetation.
+Khëen is Heaven, is Spherical, is Prince, is Father, is a _ | Gem, is Gold, is Cold, is Ice, is deep Red, is a gentle IIorse, an old Horse, a lean Horse, a refractory Horse, | and is the Fruit of trees, Khwăn is Earth, is Mother, is Cloth,? is a Caldron, is Parsimonious, is a Mould, is a Heifer, is a great Receptacle, is Variegated, is a Multitude, is a Power (on which all things depend), and when inherent in the Earth she {]is black. Chin is Thunder, a dragon, dark Azure and Yellow (the colours of Heaven and Earth), is Expansion, tho great Clay (from which all things are made), is the Eldest Son, is Decision and Swiftness, is the’ young Azure Bamboo, is Reeds, is a gentle neigher when he becomes a Horse, is a white legged Horse, is Firm-footed, is the middle of the Forehead, when he becomes Grain is reproduced (i. e. comes out of the husk), his extreme degree of Motion is firm, and he is fresh luxuriant vegetation. 1. The Ogdoad personified and regarded as a family of eight, the great Ancestors of the | Note. YSebtblndeis of ancient Tenfonis ni tahoe i daad folded ep lke a 2m "a Cony Aryan Mth, eo. 385, sod te *
 
-CUNMENTARY BY CONFUCIUS. Seren is Wood; is Wind; the Dldest Daughter; a straight Cord; an Artificer; is White (purity); is Long; High; Adraneing and Retiring; Pruitless; Perfume; when in man, is deficiency of Hair; is a brond Forehcad; the white of the Eye; nearness to Profit, and a threcfold apron; and her extreme is the swift Diagram. Kan is Water; Rivers; hidden streams; a crooked Axle; a bowrel wheel; in man, is increasc. of sorrow; is uncasiness of Mind; is pain in the Iar; is the Blood Diagram;' is Vermillion; iu the horse is the beautiful spine; is thie quick Mind; the downward Head;? the slight Hoof; the casy Saunterer; iu a corriage is great Error; is the Pervader;' is the Moon;" is shallow Water; and in wond, is the firm Heart. Lc is Fire; the Sun; Lightuing; the Secoud Doughter; Armour nul Helmet; n Lance; in mau, is the great Burrel; is the dry Diagram; is the Peo;" the Crab; the pearly Suail; the pearl Oyster; the Tortoise;" nud in wood, this is Rottenness in the centre. Kăn is Mountains; n narrow Footpath; a small Rock; the Imperial Gate;' all kinds of Fruit; a Eunuch;" a Pointer (with the finger); a Dog; n Rat; belongs to the Black Bill sprcies (of birs);" aud in wood, is the Limit of nuch strengtli. Tuy is Moisture; the youngest Daugliter; a Surceress; the 'longue; the Destroyer; is Moisture which supports; inherent in the Earth this is Salt; is n Concubine; and is a Gont. la Aravers to vnter in tle Eartl.
+COMMENTARY BY CONFUCIUS. Seuen is Wood; is Wind; 5 the Eldest Daughter; a straight Cord; an Artificer;; is White (purity); is Long; High; Advancing and Retiring; Fruitless; Perfume; when in man, is deficiency of Hair is a broad Forehead; the white of the Eye; nearness to Profit, and a threefold apron; and her extreme is the swift Diagram. Kan is Water; Rivers; hidden streams; a crooked Axle; a bowed wheel; in man, is increase: of sorrow; is uneasiness of Mind; is pain in the Ear; is the Blood Diagram;" is Vermillion; in the horse is the beautiful spine; is the quick Mind; the downward Head;? the slight Hoof; the easy Saunterer;; in a carriage is great Error; is the Pervader;* is the Moon;* is shallow Water; : and i in wood, is the firm JIeart. Le is Fire; the Sun; Lightning; the Second Daughter; Armour and Helmet; a Lance; in man, is the great Bowel; is the dry Diagram; is the Pĕŏ;* the Crab; the pearly Snail; the pearl Oyster;; the Tortoise;* and in wood, this is Rottenness i in the centre. Ki tin j is Mountains; a narrow Footpath; a small Rock; the Imperial Gate;” all kinds of Fruit; a Eunuch;° a Pointer (with the finger); a Dog; a Rat; belongs to the Black Bill species (of birds);° aud in wood, is the Limit of much strength. Tuy is Moisture; the youngest Daughter; a Sorceress;: the Tongue; the Destroyer; is Moisture which supports; inherent in the Earth this is Salt; is a Concubine; and. is a Goat. 1. Answers to water In tlie Earth.; 2. Water flows downwards, hence when a maw holds his head down he is under the sue fluence of this Diagram. B Flows through hollow caverns. - ‘The Moon bs the subtile vapour of water, & A Tortoise with three feet, which is said to hear with its eves. 6. Beranse all these have a hard shell outside, as the ethereal Fire is supposed to have. Ky Which stope passengers as a Mountain doses. - Prevents persons from entering the door of the Harem, Q. ‘These are suppceed to obstruct men,

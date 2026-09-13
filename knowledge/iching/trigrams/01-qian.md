@@ -4,17 +4,17 @@ chinese: "乾"
 pinyin: "qián"
 lines: "111"
 image_chinese: "天"
-render: null
-forbidden: []
+render: "sky"
+forbidden: ["heaven", "the heavens", "Heaven", "the creative", "the Almighty"]
 status: draft
-glossary_refs: []
+glossary_refs: ["乾-qian"]
 ---
 
 # 乾 — the qian trigram
 
 Lines `111`, bottom to top. The Shuogua associates it with 天.
 
-*Undrafted.* The image is a textual fact; its English is not, and the two are
+**Rendered `sky`** — the ruling and its argument are in [`../glossary/乾-qian.md`](../glossary/乾-qian.md). `status: draft` until Shalom locks it. The image is a textual fact; its English is not, and the two are
 easy to confuse here. 說卦 — now vendored at `sources/wings/shuogua.md`, where
 chapter 11 gives each trigram its full list of images — is the oldest reading of
 this trigram in existence and is still a reading. Rendering the trigram *as* its

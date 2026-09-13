@@ -14,6 +14,8 @@
         "xenso:build-iching": "tsx scripts/xenso/build-iching.ts",
         "xenso:principles": "tsx scripts/xenso/build-iching-principles.ts",
         "xenso:check-iching": "tsx scripts/xenso/iching-check.ts",
+        "xenso:ocr-consensus": "tsx scripts/xenso/ocr-consensus.ts",
+        "xenso:ocr-adjudicate": "tsx scripts/xenso/ocr-vision-adjudicate.ts",
         "graph": "tsx scripts/knowledge/generate-wiki-graph.ts",
         "graph:constellation": "tsx scripts/knowledge/generate-constellation-graph.ts",
         "embed": "tsx scripts/knowledge/embed-knowledge.ts",

@@ -135,7 +135,9 @@ Thomas McClatchie's *A translation of the Confucian 易經*, Shanghai 1876, all 
 
 **Four plates**, in [`sources/mcclatchie-1876/figures/`](sources/mcclatchie-1876/figures/) with a manifest in `plates.yaml`: the 先天 Fu Xi and 後天 King Wen arrangements of the eight trigrams with their compass points and family relations, the five colours, and — directly on the open question — a plate laying out 元亨利貞 as four phases in nature rather than an oracle's verdict.
 
-**The grade is the lowest here, and it is marked.** A scan of a photo-reproduction, OCR'd locally; the printed numbers are so damaged that sections are located by page order and the numbers used only to check it. 40 of 64 give all six line paragraphs cleanly; the rest lost a label and run one line into the next. Every file says which. And the Chinese half of this bilingual edition is **not transcribed** — see [`sources/PROVENANCE.md`](sources/PROVENANCE.md) for why that is a rule and not a shortfall.
+**The grade is the lowest here, and it is marked.** A scan of a photo-reproduction, OCR'd locally; the printed numbers are so damaged that sections are located by page order and the numbers used only to check it. 51 of 64 give all six line paragraphs cleanly; the rest lost a label and run one line into the next. Every file says which. And the Chinese half of this bilingual edition is **not transcribed** — see [`sources/PROVENANCE.md`](sources/PROVENANCE.md) for why that is a rule and not a shortfall.
+
+**It is read twice, by two engines, and the disagreements are kept.** The English is Tesseract's reading; an independent Apple Vision pass corroborates it word by word. Where both engines read a word the same way — 79.8% of the sixty-four — the error rate is 3.9%; where they differ, 28%. Those 5,039 positions are listed in [`sources/mcclatchie-1876/disputed.yaml`](sources/mcclatchie-1876/disputed.yaml), **none of them resolved**, because choosing between two readings needs the scan open. Every hexagram file carries its own `ocr_disputed_words:` count. This is the only source here with a measured error rate rather than an asserted grade, and it is the worst-scanned one — which is the right way round.
 
 ### The locks
 
@@ -165,3 +167,5 @@ Thomas McClatchie's *A translation of the Confucian 易經*, Shanghai 1876, all 
 **Legge's footnotes** — his commentary, as opposed to his translation — are on the wanted-list rather than in the repository. They are where most of his construal actually lives, and most of his overlay too.
 
 **Any modern translation, of anything, for any reason.** Wilhelm–Baynes included.
+
+**This is a rule about files, and it reaches no further.** It says which editions may be vendored, on rights and provenance. It places **no English word out of reach** — not *lake*, not *the judgment*, not anything a modern translator happens to have used. A word is ruled out only when something is wrong with the word, and the reason is always a property of the word rather than of its author. See [`principles/convergence-is-evidence.md`](principles/convergence-is-evidence.md), which exists because this exact conflation was made on 2026-09-12.
