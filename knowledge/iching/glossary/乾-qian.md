@@ -17,12 +17,16 @@ evidence:
 
 # 乾 — `sky`
 
-**The rendering is the image, not the action.** 說卦 gives every trigram two glosses: an action
-in chapter 7 (乾，…也) and an image in chapter 11 (乾為天). The 大象傳 bound into
+## The rendering is the image, not the action
+
+**說卦 gives every trigram two glosses, and they are two parallel eight-slot arrangements** — an
+action in chapter 7 (乾，…也) and an image in chapter 11 (乾為天). The 大象傳 bound into
 every hexagram operates on the **images** — across the 64 they name 天 18 times, 地 17, 雷 15,
 山 15, 澤 15, 水 11, 風 10, 火 10, against 健 once, 順 twice, 入 twice, 麗 once, and 動 陷 止 說
 not at all. Rendering by image is not promoting one Wing's gloss over another; it is the reading
-the vendored text runs on. See [`../WORKLIST.md`](../WORKLIST.md) § A1.
+the vendored text runs on. **Choosing the image run rules on all eight at once** — it is what
+forbids *the Gentle*, *the Receptive*, *the Abysmal* and *the Joyous* without arguing any of them
+singly. See [[the-8-trigrams-are-arranged-in-4-pairs]] and [`../WORKLIST.md`](../WORKLIST.md) § A1.
 
 **乾 is the one trigram whose English was already decided elsewhere.** Its 說卦 image is 天,
 and 天 is locked by the parent project's glossary to *sky* as a tier and *nature / the natural*

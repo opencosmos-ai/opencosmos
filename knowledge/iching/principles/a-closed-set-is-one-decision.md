@@ -26,7 +26,7 @@ supersedes: []
 
 **Incoherence across a set is invisible from inside any member.** Nothing in 巽's own file shows that *wood* sits at a different level of abstraction from *sky*, *thunder* and *lake* — you have to lay the eight out together to see it. There is no check that catches this and no reviewer of a single entry who could. It is the same shape of failure as [[convergence-is-evidence]]: cheap per instance, compounding, and untraceable afterwards.
 
-**And the source often organises the set itself, which is stronger evidence than its lists.** 說卦 names the eight as a system three times — 天地定位，山澤通氣，雷風相薄，水火不相射 (ch 3), 雷以動之，風以散之 (ch 4), 橈萬物者，莫疾乎風 (ch 8) — and uses 風 in every one. 木 appears only in the ch 11 attribute list, one of eleven items beside "a straight cord" and "scent". **When a text both systematises and enumerates, the systematising passage says what a term *is*; the list says what it can also suggest.**
+**And the source often organises the set itself — which is the other half of this rule, and has its own entry.** 說卦 names the eight as a system three times, and uses 風 rather than 木 in every one. That evidence is about the **Chinese**: the text grouped its terms before you arrived. This rule is about the **English**: the renderings must cohere because the set is what the reader meets. The two met on 巽 and agreed. See [[the-8-trigrams-are-arranged-in-4-pairs]] for the arrangement argument and the passages, which are not restated here.
 
 ---
 
@@ -50,5 +50,5 @@ supersedes: []
 
 1. **Lay the set out together before ruling on any member**, and again after the last one.
 2. **Name the constraint the set imposes** in each member's entry, so a later reader knows the decision was not local.
-3. **Look for the source's own systematising passages**, and weigh them above its enumerations.
+3. **Look for the source's own systematising passages**, and weigh them above its enumerations — [[the-8-trigrams-are-arranged-in-4-pairs]].
 4. **Re-open the whole set if one member moves.** A member changed in isolation is a set never re-checked.

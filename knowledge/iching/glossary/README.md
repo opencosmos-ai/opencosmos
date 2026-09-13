@@ -35,7 +35,11 @@ changing the rendering or by changing the lock *in the other repository*, never 
    divergence is the live question and [`divergence-stays-open`](../method.md#6-the-principles)
    governs it.
 4. **The ruling, and what it forbids.** Name the words this rendering rules out, so the
-   next reader does not have to re-derive them.
+   next reader does not have to re-derive them. **A `forbidden:` entry almost always names a
+   translator who forgot the image on the reader's behalf** — *the Gentle*, *the Receptive*,
+   *the Abysmal*, *the Joyous*, *Heaven*, each a grasped meaning shipped with the evidence
+   discarded. That is [`method.md`](../method.md) §0, and it is the reason behind the shorter
+   objection these entries usually give (*"the action rather than the image"*).
 5. **The seam, named.** Where English cannot carry the Chinese, say so here rather than
    letting the rendering pretend otherwise.
 

@@ -119,3 +119,14 @@ principles:
     evidence:
       - "../sources/PROVENANCE.md#the-other-translations--what-is-reachable-and-what-is-not"
       - "../sources/PROVENANCE.md#wilhelm-1924--the-text-is-free-the-available-transcription-is-not"
+  - id: the-8-trigrams-are-arranged-in-4-pairs
+    title: "A text that arranges its own terms has already ruled on them, and the arrangement outranks the lists"
+    status: active
+    since: Fri Sep 11 2026 17:00:00 GMT-0700 (Pacific Daylight Time)
+    trigger: "a term has two defensible senses and you are counting instances to choose between them, while the same text also sets that term in a pair, a sequence, or a run of parallel slots"
+    applies: [drafting, glossary, sources]
+    check: none
+    evidence:
+      - "../glossary/巽-xun.md#the-ruling--wind-shaloms-call-2026-09-12"
+      - "../glossary/兌-dui.md#the-ruling--lake-shaloms-call-2026-09-12"
+      - "../glossary/乾-qian.md#the-rendering-is-the-image-not-the-action"

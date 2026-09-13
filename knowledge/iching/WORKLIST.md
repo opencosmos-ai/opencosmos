@@ -9,7 +9,8 @@ is how a debt list goes stale.*
 The **rendering** goes in `hexagrams/NN.md` / `trigrams/*.md` as `render:`. **Evidence** is
 [`sources/`](sources/PROVENANCE.md), vendored and never hand-edited. **What is owed** is here.
 **What happened** is [`CHANGELOG.md`](CHANGELOG.md). **Rules learned** are
-[`principles/`](principles/INDEX.md). Nothing belongs in two of those.
+[`principles/`](principles/INDEX.md). **Research that is not yet a ruling** is a dated brief —
+so far one, [`tao-te-ching-relation.md`](tao-te-ching-relation.md). Nothing belongs in two of those.
 
 **Last updated:** 2026-09-12
 
@@ -17,16 +18,17 @@ The **rendering** goes in `hexagrams/NN.md` / `trigrams/*.md` as `render:`. **Ev
 
 ## Where the project actually stands
 
-**Five sources vendored, ten principles written, and not one English word drafted.**
-72 renderings, all `render: null`, all `status: draft`. Zero glossary entries. The parent
-Tao Te Ching project has 49 glossary entries and 81 drafted chapters.
+**Five sources vendored, thirteen principles written, and the first eight English words drafted.**
+The eight trigrams carry a `render:` and eight glossary entries argue them. The 64 hexagrams are
+still `render: null`, all `status: draft`. The parent Tao Te Ching project has 49 glossary entries
+and 81 drafted chapters.
 
-The principles split **9 sources · 6 tooling · 4 drafting**, and
+The principles split **11 sources · 7 drafting · 6 process · 5 tooling · 1 glossary**, and
 [`principles/README.md`](principles/README.md) already names that ratio as the thing to
 watch: while it does not shift toward `drafting`, this project is building instruments
-rather than translating. Three sessions have gone into the evidence layer. It was worth
-doing — the Chinese-page bug alone was corrupting 39 pages of vendored text — but the
-next thing should be a rendering, not another instrument.
+rather than translating. It has begun to shift — the three newest entries are all about
+getting from a character to an English word — and the next thing should be the next
+rendering, not another instrument.
 
 **The order of work is set by [`method.md`](method.md) §7**, and it is set by frequency,
 not by position: the eight trigrams, then the verdict vocabulary as one decision, then
@@ -45,16 +47,19 @@ not by position: the eight trigrams, then the verdict vocabulary as one decision
 | A2 | ✅ | ~~**巽 is two images**~~ — **`wind`**; the five 木 hexagrams carry wood in `image:` | `trigrams/05-xun.md` | 1 |
 | A3 | ✅ | ~~**澤 — what kind of water**~~ — **`lake`**, Shalom 2026-09-12 | `trigrams/02-dui.md` | 1 |
 | A4 | ⬜ | **The verdict vocabulary, decided as one set** — 吉 凶 咎 悔 吝 厲 无咎. 386 occurrences, 9.3% of the text; decide them individually and they will overlap | `glossary/` | ~7 |
-| A5 | ⬜ | **君子 (20×) and 小人 (10×)** — not in the parent glossary, so written from scratch. Register *and* gender; `universalize-and-name-the-seam` applies | `glossary/` | 2 |
+| A5 | ⬜ | **君子 (20×) and 小人 (10×)** — not in the parent glossary, so written from scratch. Register *and* gender; `universalize-and-name-the-seam` applies. **Rule it here and promote it to the parent's lock table** — 君子 is 20× here against 3× in the Laozi, and 君子終日 is the one four-character string the two books share | `glossary/` | 2 |
 | A6 | ⬜ | **貞 (111×) · 亨 (48×) · 孚 (42×)** — the divinatory/ethical fork, the deepest open question in the project. Read all three translators before touching any of them | `glossary/` | 3 |
 | A7 | ⬜ | **The 64 hexagram names** | `hexagrams/` | 64 |
 | A8 | ⬜ | **The judgments and line texts** — 64 × 8 | `hexagrams/` | 512 |
 | A9 | ⬜ | **Hexagram-name concordance against the locks**, before any name is drafted | — | 1 |
+| A10 | 🔴 | **ADR 0016 — the Wings are the lens, and it is declared** — `Proposed`. Fixes whether this translates the Bronze Age core text or the book the Wings made of it; the trigram renderings already assume an answer. Accepting it adds a stated lens to `README.md` | [`0016`](../../docs/decisions/0016-the-i-ching-is-read-through-the-wings-and-the-lens-is-declared.md) | 1 |
 | | | **B · Evidence — what the sources still owe** | | |
 | B1 | ⬜ | **1,947 OCR disputes still unsettled** in McClatchie — both engines disagree and the scan could not resolve it | `sources/mcclatchie-1876/disputed.yaml` | 1947 |
 | B2 | ⬜ | **說文解字 not vendored** — corner 3 of the four. Until it is, argue from the graph and say that is what you are doing | `sources/` | 1 |
 | B3 | ⏸ | **The Chinese half of McClatchie is not transcribed** — a rule, not a shortfall. Route named: `brew install tesseract-lang`, `chi_tra_vert` | `sources/` | 1 |
 | B4 | ⬜ | **Legge's footnotes not vendored** | `sources/legge-1882/` | 1 |
+| B6 | ⬜ | **王弼's 周易略例 not vendored** — [`tao-te-ching-relation.md`](tao-te-ching-relation.md) §2 and §8 quote 得意忘象 **from memory**. Vendor it before the phrase binds any decision | `sources/` | 1 |
+| B7 | ⬜ | **The two-corpus measurements have no script** — computed once by hand; until they are `pnpm xenso:`-something they are a claim, not a grade | `scripts/xenso/` | 1 |
 | B5 | ⬜ | **`prescrves-the «`-class errors** — multi-token blocks straddling a line break are left alone by design; a proofreading pass would need the scan | `disputed.yaml` | — |
 | | | **C · Tooling** | | |
 | C1 | ⬜ | **No glossary index generator** — the parent has one; `glossary/` here has none | `scripts/xenso/` | 1 |

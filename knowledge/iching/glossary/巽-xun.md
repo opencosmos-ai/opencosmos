@@ -38,9 +38,11 @@ text does not support.** 鼎 (50) is the sharpest case: its whole 大象 is 木�
 **First, 說卦 uses 風 every time it names the eight as a system.** Chapter 3 arranges them in four
 pairs — 天地定位，山澤通氣，**雷風**相薄，水火不相射, *"sky and earth set the positions; mountain
 and lake exchange breath; **thunder and wind** rouse each other; water and fire do not quench each
-other."* Chapter 4: 雷以動之，**風**以散之. Chapter 8: 橈萬物者，莫疾乎**風**. **木 appears in none
+other."* Chapter 4: 雷以動之，**風**以散之. Chapter 6, twice — 橈萬物者，莫疾乎**風**, and then the
+four pairs made again in different words: 故水火相逮，**雷風**不相悖，山澤通氣. **木 appears in none
 of them** — it is one of eleven items in the ch 11 attribute list, beside "a straight cord", "an
-artificer" and "scent". Wind is the structural member of the set; wood is an attribute.
+artificer" and "scent". Wind is the structural member of the set; wood is an attribute, and a
+grouping the text repeats outranks a list it states once — see [[the-8-trigrams-are-arranged-in-4-pairs]].
 
 **Second, the eighth word is constrained by the other seven.** sky · earth · thunder · water ·
 fire · mountain · lake are all things you can point at in a landscape. *Wood* is a material, and

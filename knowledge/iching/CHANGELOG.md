@@ -41,6 +41,80 @@ This is a **chronological spine that points into them**, never a second copy.
 
 ---
 
+## 2026-09-12 — The first English, and the rule that got it there
+
+**Eight words after three sessions of instruments.** The eight trigrams now carry a `render:` —
+**sky · earth · thunder · wind · water · fire · mountain · lake** — and eight `glossary/` entries
+argue them. It is the project's first English, and it was decided **as one decision rather than
+as eight**, which turned out to be the finding worth keeping.
+
+- **`glossary/` exists, on the Tao Te Ching model.** Eight entries, the parent's frontmatter, and
+  the same `status: locked` discipline. Each names what the rendering **loses** as well as what it
+  carries: *sky* is thinner than 乾's 健 (vigour), *lake* drops 澤's other half — 恩澤, beneficence
+  — and both seams are recorded rather than argued away.
+- **The rendering is the image, not the action, and that ruled on all eight at once.** 說卦 gives
+  every trigram an action (ch 7: 乾，健也) and an image (ch 11: 乾為天). The 大象傳 bound into every
+  hexagram runs on the **images** — across the 64 they name 天 18 times, 地 17, 雷 15, 山 15, 澤 15,
+  水 11, 風 10, 火 10, against 健 once, 順 twice, 入 twice, 麗 once, and 動 陷 止 說 not at all. That
+  count forbids *the Gentle*, *the Receptive*, *the Abysmal* and *the Joyous* in a single stroke.
+- **巽 → `wind`, and the five 木 hexagrams keep their wood.** The dilemma was posed wrongly: it
+  assumed `render:` had to carry the image for every hexagram the trigram appears in. `image:` in
+  each hexagram file is a **separate rendering of a separate sentence**, so 鼎's 木上有火 is a
+  cauldron on a **wood** fire and 渙's 風行水上 is wind over water. Queued in `WORKLIST.md` as part
+  of A8 for 28, 46, 48, 50 and 53.
+- **澤 → `lake`, after the first ruling was made for the wrong reason.** It had been pushed toward
+  *marsh* on the ground that *lake* is Wilhelm's — which fused the admission rule about **files**
+  with a rule about **words**, and no word is out of reach because a previous translator used it.
+  Re-argued on the fifteen images: 47 困 澤无水 shows 澤 is the hollow rather than the water, and
+  *lake* survives thirteen of the fifteen. → [`convergence-is-evidence`](principles/convergence-is-evidence.md), and `method.md` §2 was
+  rewritten around **derivation** the same day.
+- **Two new principles, both `active`, and both about drafting** — the first entries here that
+  are. [`a-closed-set-is-one-decision`](principles/a-closed-set-is-one-decision.md): where a term
+  belongs to a fixed set the reader meets as a system, its English is constrained by the other
+  members, and **the set's coherence is evidence**. And
+  [`the-8-trigrams-are-arranged-in-4-pairs`](principles/the-8-trigrams-are-arranged-in-4-pairs.md):
+  **a text that arranges its own terms has already ruled on them.** 說卦 ch 3 —
+  天地定位，山澤通氣，雷風相薄，水火不相射 — sets the eight as four pairs, every slot holding
+  something you can point at in a landscape, and 木 appears in no arrangement 說卦 makes. A list is
+  a catchment; an arrangement is a claim with a shape.
+- **Shalom found the pattern before the text confirmed it.** The four-pairs passage was not what
+  produced the ruling — it validated one already made from the seven renderings in hand. That
+  order is why the second principle argues the **general** case and does not simply restate 巽.
+- **A citation error the new entry surfaced:** 橈萬物者，莫疾乎風 is 說卦 **ch 6**, not ch 8, in two
+  files that cited it. Ch 6 also makes the four-pair grouping a **second time** —
+  故水火相逮，雷風不相悖，山澤通氣 — which is stronger evidence for *wind* than had been recorded.
+- **The `applies:` balance has started to move.** 13 principles, split 11 sources · 7 drafting ·
+  6 process · 5 tooling · 1 glossary. `principles/README.md` names that ratio as the diagnostic:
+  while it does not shift toward `drafting`, this project is building instruments rather than
+  translating. The three newest entries are all drafting.
+- **And a research brief on the sibling project — [`tao-te-ching-relation.md`](tao-te-ching-relation.md).**
+  The two corpora were measured against each other for the first time: the Laozi shares **34.6%** of
+  its graph inventory with the Wings and **24.5%** with the Zhouyi core, and 道 appears 70 times in
+  the Laozi, **4** in the core, 104 in the Wings. 天地, 萬物, 常, 善, 器, 仁 and 極 occur in the core
+  **not once**. 陰 appears once in the entire core text and 陽 not at all. **The bridge between the
+  two books runs through the Wings**, which is where 說卦 ch 3 lives — so the four-pairs ruling
+  landed on the one layer where they genuinely touch. The brief is half prior art (王弼 wrote the
+  standard commentary on *both*, and the vendored Laozi is his recension) and half a cautionary
+  list of six ways to overfit the resemblance, the governing one being
+  [`a-source-shaped-like-your-answer`](principles/a-source-shaped-like-your-answer.md).
+- **Both projects had already written "four pairs," independently.** The Tao Te Ching project says
+  it at its chapter 23, glossing 河上公's 同聲相應，雲從龍，風從虎，水流濕，火就燥 — which is the
+  文言傳 of hexagram 1, vendored here at `sources/zhouyi/01.md`. Neither cited the other.
+- **A stance, at the head of `method.md` as § 0 — *"Meet the image. Grasp the meaning. Forget the
+  image."*** 王弼's 得意忘象 with the beat his slogan drops, because you cannot forget what you never
+  met. **Meeting is the translator's work; grasping and forgetting are the reader's** — and every
+  word on a `forbidden:` list is a translator who did all three on the reader's behalf and shipped
+  the residue. Deliberately **not** a principle: it has no trigger, or rather fires on everything,
+  which is `principles/README.md`'s own test for what does not belong there.
+- **[ADR 0016](../../docs/decisions/0016-the-i-ching-is-read-through-the-wings-and-the-lens-is-declared.md),
+  `Proposed` — the Wings are the lens, and the lens gets declared.** The trigram renderings already
+  assumed an answer to a question nobody had asked: is this the Western Zhou divination text, or the
+  book the Wings made of it? They are measurably different books. Reading the Changes through Daoist
+  metaphysics is an **overlay** — a canonical one, and still the same category as Legge's Confucian
+  frame. `WORKLIST.md` **A10**, blocked on Shalom.
+- **Still nothing drafted below the trigrams.** 64 hexagram renderings, all `render: null`. The
+  order is set by `method.md` §7 and the next unit is the verdict vocabulary, decided as one set.
+
 ## 2026-09-12 — McClatchie read a second time, and the instruments get measured
 
 Shalom opened `sources/mcclatchie-1876/04.md`, saw `**Sixtli-Nine`, and asked how bad it was. It was bad: roughly **one word in five** across the English body. The fix is not a better setting, it is **a second engine and a refusal to blend the two.**

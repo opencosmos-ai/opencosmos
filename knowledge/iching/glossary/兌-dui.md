@@ -62,7 +62,10 @@ something sits inside (49 澤中有火) or that can be empty (47), and the 大�
 
 **`lake` is the stronger reading on the evidence** —
 it survives thirteen of the fifteen cleanly, it pairs with 山 in the way 咸 and 損 need, and its
-one real strain (60) is a strain in the Chinese too. *Marsh* is the better fit for 47 and the
+one real strain (60) is a strain in the Chinese too. **說卦 says the pairing itself**, twice:
+山澤通氣 (ch 3, again in ch 6) — *"mountain and lake exchange breath"* — and a term that exchanges
+breath with a height is the hollow facing it, which is what 47 困 澤无水 needs and what *moisture*
+cannot be. See [[the-8-trigrams-are-arranged-in-4-pairs]]. *Marsh* is the better fit for 47 and the
 worse fit for the trigram's own sense: 說卦 ch 7 glosses 兌 **說** (= 悅), **delight**, and ch 11
 gives 少女 and 口舌 — the youngest daughter, the mouth. 兌 is the pleasant trigram, and *marsh*
 is a faintly unpleasant English word.

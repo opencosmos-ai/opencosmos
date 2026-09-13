@@ -6,6 +6,33 @@ It is a local adaptation of the Tao Te Ching project's [`process/method.md`](htt
 
 ---
 
+## 0. The stance
+
+> ### Meet the image. Grasp the meaning. Forget the image.
+
+**王弼 (*Wáng Bì*, 226–249) wrote 得意忘象 — *grasp the meaning, forget the image* — and this
+project adds the beat his slogan leaves out.** You cannot forget what you never met. His own fuller
+passage has it (尋象以觀意, *seek the image in order to see the meaning*), but the four characters
+travel without it, and what travels is a discarding instruction — the one the 義理 tradition used to
+sweep the images out of this book altogether.
+
+**Meeting is the translator's work. Grasping and forgetting are the reader's.** A rendering that
+hands over a grasped meaning with the image thrown away has done the reader's work for them and
+discarded the evidence they needed to check it.
+
+**That is what every word on a `forbidden:` list has in common.** *The Gentle*, *the Receptive*,
+*the Abysmal*, *the Joyous*, *Heaven* — each is a translator who met the image, grasped something,
+forgot the image, and shipped the residue. 風自火出 (家人) is wind issuing from fire; it is not a
+gentleness issuing from fire. **So the rendering is the image**, which is §1's constraint stated as
+a reason, and the ruling that follows from it is in [`glossary/乾-qian.md`](glossary/乾-qian.md).
+
+*This is not a principle and is deliberately not in [`principles/`](principles/INDEX.md) — it has no
+trigger, or rather it fires on everything, which is that directory's own test for what does not
+belong there. It is the stance the principles serve. Its argument, and 王弼's, are in
+[`tao-te-ching-relation.md`](tao-te-ching-relation.md) § 2 and § 8.*
+
+---
+
 ## 1. What is being decided
 
 Not a chapter. Four things, in this order of scope:
@@ -129,6 +156,8 @@ Already locked in the glossary to *god — any god* — with "God", "the Lord", 
 
 ## 5. The Wings are commentary
 
+**What the Ten Wings are, where they came from and which are vendored: [`sources/wings/README.md`](sources/wings/README.md).** Short version — ten scrolls but seven works, Warring States to early Han, traditionally credited to Confucius and not by him, and **three times the size of the text they comment on**.
+
 彖傳, 象傳, 文言 and 說卦 are the oldest interpretation of this text in existence, and they are still interpretation. [`commentary-is-not-a-rendering`](https://github.com/shalomormsby/taoteching) fires on exactly this: *a commentator's gloss is an argument for a rendering, never a rendering.*
 
 The trap is specific and this project will walk into it if it is not named. **說卦 says 乾為天 — "qian is sky".** That is a Warring States gloss, not a definition, and rendering the trigram *as* its Shuogua image would silently promote one Wing's reading into the name a player sees. **雜卦 is the same trap in more tempting form**: sixty-four one-line glosses, exactly the length of a `render`, and it would be very easy to translate that file and call the job done.
@@ -153,12 +182,14 @@ Use them. Do not copy them.
 - [`witnesses-before-drafting`](https://github.com/shalomormsby/taoteching) — check the sources before drafting, not after. They are in the repository now; there is no excuse.
 - [`one-question-at-a-time`](https://github.com/shalomormsby/taoteching) — bring Shalom the deepest open question, with a recommendation. Not a menu.
 
-**And nine are this project's own** — see [`principles/INDEX.md`](principles/INDEX.md), which is generated and whose evidence links are build-verified. They are mostly about evidence rather than drafting, because here the evidence came first and arrived damaged: five sources were vendored before a single word was rendered. The ones that bear on the work ahead:
+**And thirteen are this project's own** — see [`principles/INDEX.md`](principles/INDEX.md), which is generated and whose evidence links are build-verified. They are mostly about evidence rather than drafting, because here the evidence came first and arrived damaged: five sources were vendored before a single word was rendered. The ones that bear on the work ahead:
 
 - [`frequency-sets-the-order`](principles/frequency-sets-the-order.md) — §3 and §7 of this file, stated as a rule. **Do not start at hexagram 1.**
 - [`a-source-shaped-like-your-answer`](principles/a-source-shaped-like-your-answer.md) — §5 of this file, stated as a rule. 雜卦's sixty-four one-line glosses are the exact shape of `render`, and that is the danger.
 - [`no-neutral-witness`](principles/no-neutral-witness.md) — why all three translations are vendored rather than the least contaminated one chosen.
 - [`never-supply-what-the-source-withheld`](principles/never-supply-what-the-source-withheld.md) — the line the AI collaborator does not cross, and the reason the Chinese pages of McClatchie are not transcribed.
+- [`a-closed-set-is-one-decision`](principles/a-closed-set-is-one-decision.md) — the eight trigrams, the verdict graphs and 君子/小人 are each **one** decision, not eight, seven and two.
+- [`the-8-trigrams-are-arranged-in-4-pairs`](principles/the-8-trigrams-are-arranged-in-4-pairs.md) — where to find the ruling the text already made. 說卦 ch 3 settled 巽; the same move is available wherever the Chinese lines its terms up.
 
 ---
 
