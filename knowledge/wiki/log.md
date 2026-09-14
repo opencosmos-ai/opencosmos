@@ -63,3 +63,4 @@
 2026-09-14  UPDATED   wiki/concepts/the-self.md  (added an eighth model: Patanjali's purusha, the unchanging witness; the only strictly dualist position)
 2026-09-14  UPDATED   wiki/entities/bhagavad-gita.md  (no longer the corpus's sole Vedic voice; added the internal contradiction and the link to patanjali.md)
 2026-09-14  UPDATED   wiki/index.md  (added Patanjali; refreshed the-self and nonviolence summaries)
+2026-09-14  UPDATED   wiki/entities/patanjali.md  (dating resolved: c. 400 CE, not BCE; the BCE figure came from the 10th-c. Bhoja conflation with Patanjali the grammarian)

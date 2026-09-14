@@ -5,7 +5,7 @@ domain: vedic
 confidence: medium
 status: active
 synthesizes:
-  - sources/vedic-the-yoga-system-of-pata-jali-the-yoga-s-tras.md
+  - sources/vedic-the-yoga-system-of-patanjali-the-yoga-sutras.md
   - sources/vedic-the-yoga-sutras-of-patanjali-an-interpretation.md
 last_reviewed: 2026-09-14
 tags: [patanjali, yoga-sutras, ahimsa, yama, niyama, samadhi, samkhya, purusha, prakriti, guna, meditation, eight-limbs, raja-yoga, vedic]
@@ -26,6 +26,8 @@ contradictions:
 Patañjali is the compiler of the *Yoga Sutras*, 195 aphorisms in four books that systematise classical yoga. The text is terse to the point of opacity — Johnston notes it runs to "less than ten pages of large type in the original" — and has always been read through commentary. It defines yoga in its second line and spends the rest of the work unpacking that definition: **"Yoga is the restriction of the fluctuations of mind-stuff"** (Woods I.2). What it offers the corpus is a technical psychology of attention and a complete practical ethics, both older than and independent of the devotional framework the *Bhagavad-Gita* supplies.
 
 The corpus holds it **twice, deliberately** — see [ADR 0017](../../../docs/decisions/0017-a-translation-and-its-interpretation-are-two-documents.md). James Haughton Woods's 1914 Harvard Oriental Series rendering is the literal translation; Charles Johnston's 1912 *"The Book of the Spiritual Man"* is an interpretation that reads the sutras through Christian and Theosophical categories. Neither is the default; the gap between them is itself informative.
+
+**Dating: c. 400 CE, not BCE.** The corpus recorded both dates before 2026-09-14, and the BCE figure was an artifact. It comes from identifying this Patañjali with Patañjali the grammarian, author of the *Mahābhāṣya* (c. 150 BCE) — an identification that appears in no Sanskrit text before **Bhojadeva's *Rājamārtaṇḍa* in the 10th century**, and that modern scholarship rejects on grounds of style and content. Philipp Maas's work on the manuscripts dates the *Pātañjalayogaśāstra* to roughly 400 CE. So the text is roughly contemporary with Augustine, not with the Buddha.
 
 ## Key Claims
 
@@ -55,4 +57,4 @@ The corpus holds it **twice, deliberately** — see [ADR 0017](../../../docs/dec
 
 - Is Johnston's overlay merely distorting, or does it also carry information — about how Indian philosophy was received in the English-speaking world around 1900 — that a literal translation cannot?
 - The Yoga Sutras have always been read through Vyāsa's *Yoga-Bhāshya*. The corpus holds neither that commentary nor Vachaspati Miśra's gloss, though both sit in the Woods volume. Does the tradition's primary commentary belong in the corpus?
-- Patañjali's dating is unsettled — the curation log records the two entries with different origin dates (~400 BCE and ~400 CE), which is a real scholarly dispute reproduced by accident rather than by judgement. Worth resolving.
+- Maas's argument that the sūtras and the *Yogabhāṣya* are one work by one author would mean the corpus's "translation vs. commentary" split — Woods's own framing, and the basis on which only the sūtra section was curated — reproduces a division the text may not originally have had. Does that change what should be curated?

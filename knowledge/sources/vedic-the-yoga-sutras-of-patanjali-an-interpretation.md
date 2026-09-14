@@ -23,12 +23,12 @@ summary: >-
 curated_at: '2026-09-14'
 curator: shalom
 source: public-domain
-author: Patanjali (interpreted by Charles Johnston)
-origin_date: ~400 BCE
+author: Patañjali (interpreted by Charles Johnston)
+origin_date: ~400 CE
 era: ancient
 tradition: raja yoga
 related_docs:
-  - sources/vedic-the-yoga-system-of-pata-jali-the-yoga-s-tras.md
+  - sources/vedic-the-yoga-system-of-patanjali-the-yoga-sutras.md
   - sources/vedic-the-bhagavad-gita-song-celestial.md
   - sources/literature-the-forerunner.md
   - sources/literature-the-madman.md

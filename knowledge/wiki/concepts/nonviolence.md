@@ -10,7 +10,7 @@ synthesizes:
   - sources/philosophy-walden.md
   - sources/buddhism-the-dhammapada.md
   - sources/vedic-the-bhagavad-gita-song-celestial.md
-  - sources/vedic-the-yoga-system-of-pata-jali-the-yoga-s-tras.md
+  - sources/vedic-the-yoga-system-of-patanjali-the-yoga-sutras.md
   - sources/vedic-the-yoga-sutras-of-patanjali-an-interpretation.md
 last_reviewed: 2026-09-14
 tags: [nonviolence, ahimsa, tolstoy, thoreau, buddhism, bhagavad-gita, patanjali, yoga-sutras, yama, conscience, pacifism, george-fox, quakers, resistance]

@@ -629,7 +629,7 @@ A living record of what was added to the knowledge corpus, when, and why it matt
 
 ### The Yoga-System of Patañjali: The Yoga-Sūtras
 - **Role:** source | **Domain:** vedic | **Format:** scripture
-- **Path:** `knowledge/sources/vedic-the-yoga-system-of-pata-jali-the-yoga-s-tras.md`
+- **Path:** `knowledge/sources/vedic-the-yoga-system-of-patanjali-the-yoga-sutras.md`
 - **Curator:** shalom | **Tags:** yoga-sutras, patanjali, concentration, mind-stuff, meditation, hindu-philosophy, samadhi
 - **Author:** Patañjali (translated by James Haughton Woods)
 - **Origin:** ~400 CE (ancient)
@@ -642,10 +642,10 @@ A living record of what was added to the knowledge corpus, when, and why it matt
 - **Role:** source | **Domain:** vedic | **Format:** scripture
 - **Path:** `knowledge/sources/vedic-the-yoga-sutras-of-patanjali-an-interpretation.md`
 - **Curator:** shalom | **Tags:** yoga, patanjali, spiritual-consciousness, psychic-nature, union-with-divine, mysticism
-- **Author:** Patanjali (interpreted by Charles Johnston)
-- **Origin:** ~400 BCE (ancient)
+- **Author:** Patañjali (interpreted by Charles Johnston)
+- **Origin:** ~400 CE (ancient)
 - **Tradition:** raja yoga
-- **Related:** sources/vedic-the-yoga-system-of-pata-jali-the-yoga-s-tras.md, sources/vedic-the-bhagavad-gita-song-celestial.md, sources/literature-the-forerunner.md, sources/literature-the-madman.md, sources/philosophy-george-fox-an-autobiography.md
+- **Related:** sources/vedic-the-yoga-system-of-patanjali-the-yoga-sutras.md, sources/vedic-the-bhagavad-gita-song-celestial.md, sources/literature-the-forerunner.md, sources/literature-the-madman.md, sources/philosophy-george-fox-an-autobiography.md
 - **Gaps served:** Provides a foundational classical source text on yogic philosophy and contemplative practice, bridging Eastern spiritual psychology with comparative mysticism.
 - **Graph impact:** Connects to Stoic, Sufi, and other contemplative traditions through shared themes of self-mastery, ego transcendence, and union with the divine, enabling cross-tradition comparative study.
 

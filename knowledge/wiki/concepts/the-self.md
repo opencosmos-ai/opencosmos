@@ -16,7 +16,7 @@ synthesizes:
   - sources/philosophy-the-joyful-wisdom-la-gaya-scienza.md
   - sources/vedic-the-bhagavad-gita-song-celestial.md
   - sources/philosophy-nature.md
-  - sources/vedic-the-yoga-system-of-pata-jali-the-yoga-s-tras.md
+  - sources/vedic-the-yoga-system-of-patanjali-the-yoga-sutras.md
 last_reviewed: 2026-09-14
 tags: [self, identity, purusha, patanjali, anatman, soul, atman, consciousness, non-self, plato, buddhism, whitman, hesse, nietzsche, spinoza, emerson, individuation, conatus]
 open_questions:

@@ -67,6 +67,11 @@ export type Frontmatter = {
 
 export function slugify(text: string): string {
   return text
+    // Fold diacritics to their base letters first: corpus paths are permanent
+    // identifiers (ADR 0002), and stripping non-ASCII outright turned
+    // "Patanjali: The Yoga-Sutras" into "pata-jali-the-yoga-s-tras".
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
