@@ -6,8 +6,8 @@ confidence: medium
 status: active
 synthesizes:
   - sources/vedic-the-bhagavad-gita-song-celestial.md
-last_reviewed: 2026-04-11
-tags: [bhagavad-gita, dharma, karma, yoga, atman, brahman, krishna, arjuna, hinduism, vedanta, duty, nonviolence, action]
+last_reviewed: 2026-09-14
+tags: [bhagavad-gita, patanjali, dharma, karma, yoga, atman, brahman, krishna, arjuna, hinduism, vedanta, duty, nonviolence, action]
 open_questions:
   - How does the Gita's doctrine of atman (eternal soul) relate to the Buddhist anatman (no-self)? Are these mutually exclusive, or addressing different questions?
   - Is Krishna's argument for violent action (duty to fight) compatible with the Gita's broader ethics of nonviolence (ahimsa), or is this a genuine internal contradiction?
@@ -35,13 +35,15 @@ The *Bhagavad-Gita* ("Song of God" or "Song Celestial" in the Edwin Arnold trans
 
 - [[concepts/dharma.md]] — The Gita is the primary text for the concept of dharma as both cosmic order and personal duty
 - [[concepts/civic-duty.md]] — Arjuna's dilemma is one of the great civic-duty thought experiments: does the duty to fight one's kinsmen in a just war override personal grief and familial loyalty? Compare Socrates' civic obligation argument
-- [[concepts/nonviolence.md]] — The Gita is the sharpest counter-position to the nonviolence tradition: the duty to fight can override ahimsa; Thoreau and Tolstoy would disagree fundamentally
+- [[concepts/nonviolence.md]] — the duty to fight can override ahimsa; Thoreau and Tolstoy would disagree fundamentally. Note the correction of 2026-09-14: the Gita is **one of two Vedic positions**, not the tradition's counter-position to nonviolence
+- [[entities/patanjali.md]] — the other Vedic voice, and the one that rules against this text: Yoga Sutras II.31 refuses to qualify ahimsa "by species or place or time or exigency," which is precisely how Krishna exempts Arjuna
 - [[concepts/the-self.md]] — The Gita's atman (eternal, indestructible self) is in direct tension with Buddhist anatman (no permanent self); both traditions claim Indian philosophical lineage
 - [[concepts/impermanence.md]] — The Gita acknowledges the impermanence of the body while asserting the permanence of the atman; a different resolution of the impermanence problem than either Buddhism or Taoism
 - [[entities/thoreau-henry-david.md]] — Thoreau quotes the Bhagavad-Gita admiringly in *Walden* but never engages the political claim; the tension between his pacifism and the Gita's warrior ethics is an unresolved connection in the corpus
 
 ## Contradictions
 
+- **The Gita's exemption is refused inside its own tradition.** Patañjali's *Yoga Sutras* II.31 make the abstentions binding "unqualified by species or place or time or exigency" — the four grounds Krishna's argument to Arjuna rests on. This is not a modern or Western objection; it is a classical Vedic one.
 - The Gita simultaneously teaches non-harm (*ahimsa*) as a virtue and commands Arjuna to kill thousands. Krishna's resolution — that the atman cannot be killed, so killing is not really killing — is philosophically sophisticated but has also historically served to justify violence.
 - Arjuna's grief at the prospect of killing his teachers is depicted as weakness and delusion by Krishna. But this grief looks like moral seriousness — the same moral seriousness that Thoreau would call conscience. The text that is most revered in Hindu ethics begins by pathologizing the ethical instinct.
 
