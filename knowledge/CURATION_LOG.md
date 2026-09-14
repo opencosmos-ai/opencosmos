@@ -625,3 +625,29 @@ A living record of what was added to the knowledge corpus, when, and why it matt
 
 ---
 
+## 2026-09-14
+
+### The Yoga-System of Patañjali: The Yoga-Sūtras
+- **Role:** source | **Domain:** vedic | **Format:** scripture
+- **Path:** `knowledge/sources/vedic-the-yoga-system-of-pata-jali-the-yoga-s-tras.md`
+- **Curator:** shalom | **Tags:** yoga-sutras, patanjali, concentration, mind-stuff, meditation, hindu-philosophy, samadhi
+- **Author:** Patañjali (translated by James Haughton Woods)
+- **Origin:** ~400 CE (ancient)
+- **Tradition:** yoga (samkhya-yoga)
+- **Related:** sources/philosophy-apology.md, sources/philosophy-gorgias.md, sources/philosophy-meno.md, sources/philosophy-phaedo.md, sources/philosophy-phaedrus.md
+- **Gaps served:** Provides the primary scriptural source for classical yoga philosophy and psychology of mind, distinct from later commentarial or popularized interpretations.
+- **Graph impact:** Anchors discussions of contemplative practice, mind-body relation, and Indian philosophy, enabling cross-references to Buddhist meditation theory, Samkhya metaphysics, and modern psychology of attention.
+
+### The Yoga Sutras of Patanjali: An Interpretation
+- **Role:** source | **Domain:** vedic | **Format:** scripture
+- **Path:** `knowledge/sources/vedic-the-yoga-sutras-of-patanjali-an-interpretation.md`
+- **Curator:** shalom | **Tags:** yoga, patanjali, spiritual-consciousness, psychic-nature, union-with-divine, mysticism
+- **Author:** Patanjali (interpreted by Charles Johnston)
+- **Origin:** ~400 BCE (ancient)
+- **Tradition:** raja yoga
+- **Related:** sources/vedic-the-yoga-system-of-pata-jali-the-yoga-s-tras.md, sources/vedic-the-bhagavad-gita-song-celestial.md, sources/literature-the-forerunner.md, sources/literature-the-madman.md, sources/philosophy-george-fox-an-autobiography.md
+- **Gaps served:** Provides a foundational classical source text on yogic philosophy and contemplative practice, bridging Eastern spiritual psychology with comparative mysticism.
+- **Graph impact:** Connects to Stoic, Sufi, and other contemplative traditions through shared themes of self-mastery, ego transcendence, and union with the divine, enabling cross-tradition comparative study.
+
+---
+
