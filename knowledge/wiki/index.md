@@ -26,6 +26,7 @@
 | [entities/omar-khayyam.md](entities/omar-khayyam) | Persian polymath and poet (1048–1131); Rubáiyát; agnostic carpe diem, failure of religious epistemology, the present as the only certain good |
 | [entities/shakespeare-william.md](entities/shakespeare-william) | English playwright (1564–1616); works in the corpus split into 43 individual documents; Hamlet, Lear, The Tempest, Sonnets — dramatizes self, mortality, power, and justice without resolving them |
 | [entities/bhagavad-gita.md](entities/bhagavad-gita) | Hindu scripture (traditional); dharma, atman, karma yoga, bhakti yoga; Arjuna's dilemma as the paradigm case of civic duty and nonviolence in tension |
+| [entities/patanjali.md](entities/patanjali) | Compiler of the Yoga Sutras; yoga as restriction of the fluctuations of mind-stuff, the eight limbs, purusha as unchanging witness; holds the Vedic tradition's exceptionless ahimsa against the Gita |
 | [entities/heian-court-literature.md](entities/heian-court-literature) | Classical Japanese women's writing (10th-11th century); Izumi Shikibu, Lady Sarashina; aesthetic sensitivity ("mono no aware") as a path to spiritual and philosophical insight |
 | [entities/truth-sojourner.md](entities/truth-sojourner) | American abolitionist and activist (c. 1797–1883); Narrative; embodied justice, spiritual integrity under oppression, intersectionality of race and gender |
 | [entities/epictetus.md](entities/epictetus) | Greek Stoic philosopher (c. 50–135 CE); Enchiridion; dichotomy of control, sovereign will, and the discipline of assent |
@@ -39,12 +40,12 @@
 |---------|---------|
 | [concepts/impermanence.md](concepts/impermanence) | Cross-tradition synthesis: Buddhist anicca, Taoist flux, Whitman's cycles, Nietzsche's eternal recurrence — what changes, what persists, and why it matters |
 | [concepts/the-good.md](concepts/the-good) | Plato's agathon as the Form beyond all forms — traced through Republic, Gorgias, and Symposium, with connections to Taoist virtue (te) |
-| [concepts/the-self.md](concepts/the-self) | Seven models of personal identity: Buddhist non-self, Platonic soul, Whitmanian multitudes, Hesse's journeying self, Spinoza's conatus, Nietzsche's performing self, Bhagavad-Gita's atman |
+| [concepts/the-self.md](concepts/the-self) | Eight models of personal identity: Buddhist non-self, Platonic soul, Whitmanian multitudes, Hesse's journeying self, Spinoza's conatus, Nietzsche's performing self, the Gita's atman, and Patañjali's purusha as unchanging witness |
 | [concepts/logos-and-tao.md](concepts/logos-and-tao) | Speculative: Heraclitean logos and Lao Tzu's Tao as parallel concepts — the hidden ordering principle that precedes naming |
 | [concepts/civic-duty.md](concepts/civic-duty) | Four traditions on civic obligation: Socrates (tacit consent), Thoreau (conscience sovereign), Tolstoy (state as organized violence), Bhagavad-Gita (svadharma as cosmic duty) |
 | [concepts/civil-disobedience.md](concepts/civil-disobedience) | Principled refusal of unjust law: Thoreau's targeted noncooperation, Tolstoy's absolute nonresistance — the intellectual lineage to Gandhi and King; companion page to civic-duty |
 | [concepts/transcendentalism.md](concepts/transcendentalism) | American Transcendentalism (Emerson + Thoreau + Whitman): Over-Soul, nature as spiritual text, self-reliance — connections to Platonism, Taoism, and Vedanta |
-| [concepts/nonviolence.md](concepts/nonviolence) | Cross-tradition synthesis: Buddhist ahimsa, Thoreau's noncooperation, Tolstoy's absolute nonresistance, Quaker peace testimony — counter-position: Bhagavad-Gita's dharmic warrior ethics |
+| [concepts/nonviolence.md](concepts/nonviolence) | Cross-tradition synthesis: Buddhist ahimsa, Thoreau's noncooperation, Tolstoy's absolute nonresistance, Quaker peace testimony — and the corpus's sharpest disagreement, which is internal to the Vedic tradition: Patañjali's exceptionless ahimsa against the Gita's dharmic warrior ethics |
 | [concepts/dharma.md](concepts/dharma) | Hindu dharma (cosmic duty, svadharma) vs. Buddhist dhamma (the teaching, the path) — same etymological root, different frameworks; primary source: Bhagavad-Gita |
 | [concepts/inner-light.md](concepts/inner-light) | George Fox's "that of God in every man" — cross-tradition parallels to Emerson's Over-Soul, Buddhist Buddha-nature, Spinoza's amor intellectualis Dei |
 

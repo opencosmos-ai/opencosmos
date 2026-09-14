@@ -6,7 +6,7 @@ confidence: medium
 status: active
 synthesizes:
   - sources/buddhism-the-dhammapada.md
-  - sources/buddhism-heart-sutra.md
+  - scriptures/buddhism-heart-sutra.md
   - sources/philosophy-phaedo.md
   - sources/philosophy-the-republic.md
   - sources/literature-leaves-of-grass.md
@@ -16,8 +16,9 @@ synthesizes:
   - sources/philosophy-the-joyful-wisdom-la-gaya-scienza.md
   - sources/vedic-the-bhagavad-gita-song-celestial.md
   - sources/philosophy-nature.md
-last_reviewed: 2026-04-11
-tags: [self, identity, anatman, soul, atman, consciousness, non-self, plato, buddhism, whitman, hesse, nietzsche, spinoza, emerson, individuation, conatus]
+  - sources/vedic-the-yoga-system-of-pata-jali-the-yoga-s-tras.md
+last_reviewed: 2026-09-14
+tags: [self, identity, purusha, patanjali, anatman, soul, atman, consciousness, non-self, plato, buddhism, whitman, hesse, nietzsche, spinoza, emerson, individuation, conatus]
 open_questions:
   - Is there a synthesis between Buddhist non-self and Platonic immortal soul, or are these genuinely incompatible metaphysical commitments?
   - Does Whitman's "I contain multitudes" resolve the debate by offering a self that is real but unbounded — or does it sidestep the question entirely?
@@ -34,7 +35,7 @@ contradictions:
 
 ## Summary
 
-Seven distinct models of selfhood now appear in the corpus, and they are in genuine tension across multiple axes. Buddhism teaches non-self (*anatman*): there is no permanent, unchanging self — only a stream of interdependent mental and physical processes. Plato teaches the immortal soul: the true self is rational, pre-exists the body, knows the Forms, and survives death. Whitman offers a third position that refuses the binary: the self is both radically individual and cosmically universal, mortal in body and infinite in reach. These are not merely different answers to the same question — they encode different metaphysical frameworks, different conceptions of what suffering is, and different paths toward liberation or flourishing.
+Eight distinct models of selfhood now appear in the corpus, and they are in genuine tension across multiple axes. Buddhism teaches non-self (*anatman*): there is no permanent, unchanging self — only a stream of interdependent mental and physical processes. Plato teaches the immortal soul: the true self is rational, pre-exists the body, knows the Forms, and survives death. Whitman offers a third position that refuses the binary: the self is both radically individual and cosmically universal, mortal in body and infinite in reach. These are not merely different answers to the same question — they encode different metaphysical frameworks, different conceptions of what suffering is, and different paths toward liberation or flourishing.
 
 ## Key Claims
 
@@ -47,6 +48,7 @@ Seven distinct models of selfhood now appear in the corpus, and they are in genu
 - **Spinoza's conatus:** "Each thing, as far as it can by its own power, strives to persevere in its being." The self is defined not by a fixed substance but by its essential drive to persist and act from its own nature. Freedom consists in acting from the conatus through reason rather than being driven by external passions. A fifth model: the self as striving.
 - **Nietzsche's performing self:** "There is no being behind doing, effecting, becoming; the doer is merely a fiction added to the deed." The unified, permanent "I" is a grammatical convention, not a metaphysical fact. This converges with Buddhist anatman — but Nietzsche's self-overcoming (*Überwindung*) presupposes an agent that strives, creating an internal tension.
 - **The Bhagavad-Gita's atman:** The eternal, indestructible individual soul. "The soul is never born nor dies at any time... It is not slain when the body is slain." The self is more permanent than Plato's soul — it does not merely survive death but is eternally unborn, existing before and beyond any particular life. In direct metaphysical opposition to Buddhist anatman.
+- **Patañjali's purusha — the witness:** The Seer is consciousness that does not itself change: "Yoga is the restriction of the fluctuations of mind-stuff… Then the Seer abides in himself" (Woods I.2–3). Everything the other models call "self" — thought, feeling, memory, the feeling-of-personality — is *prakriti*, nature, and belongs on the other side of the line. Liberation is not the self's fulfilment, dissolution or expansion but its **disentangling** (IV.34, "Isolation"). An eighth model, and the only strictly dualist one: neither the Gita's atman-identical-with-Brahman nor Buddhist anatman.
 - **Emerson's participatory self:** The individual mind participates in one universal Over-Soul. The self is neither permanent and isolated (Plato) nor dissolved (Buddhism) nor multitudinous (Whitman) nor striving (Spinoza) nor fictional (Nietzsche) — but *participatory*: a temporary, local expression of the universal Mind, continuous with all other expressions.
 
 ## Connections
