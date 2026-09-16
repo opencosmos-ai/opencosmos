@@ -17,7 +17,6 @@
 | OpenCosmos Studio (component docs) | Vercel | `opencosmos-ui/apps/web` | Free / Pro |
 | Knowledge base (docs site) | Vercel (opencosmos.ai) | `opencosmos/apps/web` | Free |
 | Knowledge base (vector store) | Upstash Vector | Cloud-primary RAG — embedding storage + similarity search | Free (10K vectors, 10K queries/day) |
-| Knowledge base (local mirror) | Open WebUI on Dell | Offline RAG access, development, seeding | Self-hosted |
 | LLM inference (primary) | Claude API (BYOK) | Constitutional AI via `@opencosmos/ai` | User-funded |
 | LLM inference (dev/local) | Dell XPS 8950 (RTX 3090) | Apertus 8B/70B via Ollama — development + experimentation | Self-hosted |
 | Monorepo | Turborepo + pnpm | Build orchestration | — |
@@ -64,9 +63,7 @@ knowledge/ (git, source of truth — this repo)
        │                            ↑
        │                 RAG API (apps/web/app/api/knowledge/)
        │
-       ├──→ Vercel build ──→ opencosmos.ai/library (apps/web)
-       │
-       └──→ pnpm knowledge:sync-dell (on-demand) ──→ Open WebUI on Dell
+       └──→ Vercel build ──→ opencosmos.ai/library (apps/web)
 ```
 
 Both the RAG API and the knowledge docs site live in this repo's `apps/web`, deployed to opencosmos.ai.
@@ -188,8 +185,6 @@ A living record of what was added, when, why it matters, and what it connects. A
 - Document storage (git handles that)
 - User data or accounts (not needed yet)
 - Full-text search (the docs site handles human browsing)
-
-**Dell sync (separate command):** Open WebUI's built-in RAG on the Dell Sovereign Node. Decoupled from the publish flow — sync on-demand with `pnpm knowledge:sync-dell` when the Dell is powered on and reachable via Tailscale. Used for offline access, development, and validating retrieval patterns.
 
 ### RAG API Endpoint
 
