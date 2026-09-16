@@ -4,7 +4,7 @@
 
 ## Why Cosmo
 
-[Cosmo](https://github.com/shalomormsby/opencosmos) is the AI companion at the heart of OpenCosmos. Its identity is a **constitutional layer** — a system prompt, an ethics, a wisdom-language framework, and a "Triad" of inner voices — versioned in a public repo and deliberately model-independent. It already encodes, almost exactly, what a developmental companion needs:
+[Cosmo](https://github.com/opencosmos-ai/opencosmos) is the AI companion at the heart of OpenCosmos. Its identity is a **constitutional layer** — a system prompt, an ethics, a wisdom-language framework, and a "Triad" of inner voices — versioned in a public repo and deliberately model-independent. It already encodes, almost exactly, what a developmental companion needs:
 
 | What the Companion path needs | What Cosmo already provides |
 |---|---|

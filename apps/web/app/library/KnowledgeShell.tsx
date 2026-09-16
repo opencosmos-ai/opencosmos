@@ -332,7 +332,7 @@ export function KnowledgeShell({ children }: { children: React.ReactNode }) {
   const headerActions = (
     <Button variant="outline" size="sm" asChild className="gap-2">
       <a
-        href="https://github.com/shalomormsby/opencosmos"
+        href="https://github.com/opencosmos-ai/opencosmos"
         target="_blank"
         rel="noopener noreferrer"
       >

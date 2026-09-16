@@ -63,7 +63,7 @@ Interactive documentation: [opencosmos.ai](https://opencosmos.ai/)
 
 ```bash
 # Clone and install
-git clone https://github.com/shalomormsby/opencosmos.git
+git clone https://github.com/opencosmos-ai/opencosmos.git
 cd opencosmos
 pnpm install
 

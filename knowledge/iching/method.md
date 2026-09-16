@@ -2,7 +2,7 @@
 
 *[`README.md`](README.md) says what is here. [`sources/PROVENANCE.md`](sources/PROVENANCE.md) says what may be here and on what authority. This file says **how to turn the one into the other**.*
 
-It is a local adaptation of the Tao Te Ching project's [`process/method.md`](https://github.com/shalomormsby/taoteching), and it inherits that project's [principles](https://github.com/shalomormsby/taoteching) wholesale — twenty-seven of them, each firing on a stated trigger. **Where this file and those principles disagree, the principles win and this file is the bug.**
+It is a local adaptation of the Tao Te Ching project's [`process/method.md`](https://github.com/opencosmos-ai/taoteching), and it inherits that project's [principles](https://github.com/opencosmos-ai/taoteching) wholesale — twenty-seven of them, each firing on a stated trigger. **Where this file and those principles disagree, the principles win and this file is the bug.**
 
 ---
 
@@ -102,7 +102,7 @@ The same holds for sources: **the admission rules in [`sources/PROVENANCE.md`](s
 | 利涉大川 | 10 |
 | 元亨利貞 | 6 |
 
-**This changes the order of work, and it is the single most important practical fact in this file.** [`repeat-yourself`](https://github.com/shalomormsby/taoteching) holds that where the Chinese repeats itself, the English must repeat itself. In the Tao Te Ching that governs a few dozen lines. Here it governs the spine of the book: **a rendering of 无咎 settled at hexagram 60 has to hold at the other ninety-one occurrences, or be retrofitted to all of them.**
+**This changes the order of work, and it is the single most important practical fact in this file.** [`repeat-yourself`](https://github.com/opencosmos-ai/taoteching) holds that where the Chinese repeats itself, the English must repeat itself. In the Tao Te Ching that governs a few dozen lines. Here it governs the spine of the book: **a rendering of 无咎 settled at hexagram 60 has to hold at the other ninety-one occurrences, or be retrofitted to all of them.**
 
 So: **decide the formulae before the particulars.** A verdict word chosen late is not one decision made late, it is ninety-two decisions unmade.
 
@@ -110,7 +110,7 @@ So: **decide the formulae before the particulars.** A verdict word chosen late i
 
 ## 4. The overlay, in this book
 
-The parent project's [overlay audit](https://github.com/shalomormsby/taoteching) applies in full, and its Tier 1 rulings are already locked and already measured against this text — see `sources/locks/README.md`. 天 occurs 122 times here and is locked away from "Heaven". 王 occurs 45 times and is locked away from "king".
+The parent project's [overlay audit](https://github.com/opencosmos-ai/taoteching) applies in full, and its Tier 1 rulings are already locked and already measured against this text — see `sources/locks/README.md`. 天 occurs 122 times here and is locked away from "Heaven". 王 occurs 45 times and is locked away from "king".
 
 What follows is the **I Ching's own watchlist**: places where this book, and not the Tao Te Ching, is where the overlay enters. **None of these is a ruling.** They are open questions with the evidence named, and each one is a glossary entry waiting to be written.
 
@@ -126,17 +126,17 @@ Three of the commonest words in the book have an older, concrete, divinatory sen
 
 **孚 (42×)** — Legge: *"sincerity."* The graph shows a hand over a child, and is shared with 俘, *captive*. The received reading is inward — good faith, trustworthiness. The older reading is concrete and much harsher.
 
-**[`divergence-stays-open`](https://github.com/shalomormsby/taoteching) governs all three: where the commentators diverge, the English must not settle it.** That does not mean refusing to choose a word. It means the notes carry the fork, and the chosen word does not pretend the other reading was never there.
+**[`divergence-stays-open`](https://github.com/opencosmos-ai/taoteching) governs all three: where the commentators diverge, the English must not settle it.** That does not mean refusing to choose a word. It means the notes carry the fork, and the chosen word does not pretend the other reading was never there.
 
 ### 君子 (20×) and 小人 (10×)
 
 Legge: *"the superior man"* and *"the small man."* Wilhelm–Baynes keeps both. **McClatchie: "the Model Man"**, seventy-two times. This pair is **not in the Tao Te Ching glossary at all**, so nothing is locked and an entry has to be written from scratch — but it no longer has to be written against a single inherited rendering, which is what McClatchie was worth importing for.
 
-Two problems at once. **Register**: "the superior man" is Victorian Confucianism, and it moralises a term whose sense in the line texts is often closer to *the one in a position of responsibility* — the person the oracle is addressed to. **Gender**: 子 is a son. [`universalize-and-name-the-seam`](https://github.com/shalomormsby/taoteching) is explicit — render toward the universal, honouring the philosophy, and name the seam in the notes rather than erasing it.
+Two problems at once. **Register**: "the superior man" is Victorian Confucianism, and it moralises a term whose sense in the line texts is often closer to *the one in a position of responsibility* — the person the oracle is addressed to. **Gender**: 子 is a son. [`universalize-and-name-the-seam`](https://github.com/opencosmos-ai/taoteching) is explicit — render toward the universal, honouring the philosophy, and name the seam in the notes rather than erasing it.
 
 ### The verdict graphs (386×)
 
-**吉 / 凶** — Legge: *"good fortune"* and *"evil."* 凶 is an outcome, not a moral judgment, and "evil" is [`no-verdict-the-chinese-lacks`](https://github.com/shalomormsby/taoteching) in a single word.
+**吉 / 凶** — Legge: *"good fortune"* and *"evil."* 凶 is an outcome, not a moral judgment, and "evil" is [`no-verdict-the-chinese-lacks`](https://github.com/opencosmos-ai/taoteching) in a single word.
 
 **咎** — Legge: *"error," "mistake."* Blame, fault, the thing you would be held to account for. 无咎 at ninety-two occurrences is the most-repeated phrase in the book.
 
@@ -158,7 +158,7 @@ Already locked in the glossary to *god — any god* — with "God", "the Lord", 
 
 **What the Ten Wings are, where they came from and which are vendored: [`sources/wings/README.md`](sources/wings/README.md).** Short version — ten scrolls but seven works, Warring States to early Han, traditionally credited to Confucius and not by him, and **three times the size of the text they comment on**.
 
-彖傳, 象傳, 文言 and 說卦 are the oldest interpretation of this text in existence, and they are still interpretation. [`commentary-is-not-a-rendering`](https://github.com/shalomormsby/taoteching) fires on exactly this: *a commentator's gloss is an argument for a rendering, never a rendering.*
+彖傳, 象傳, 文言 and 說卦 are the oldest interpretation of this text in existence, and they are still interpretation. [`commentary-is-not-a-rendering`](https://github.com/opencosmos-ai/taoteching) fires on exactly this: *a commentator's gloss is an argument for a rendering, never a rendering.*
 
 The trap is specific and this project will walk into it if it is not named. **說卦 says 乾為天 — "qian is sky".** That is a Warring States gloss, not a definition, and rendering the trigram *as* its Shuogua image would silently promote one Wing's reading into the name a player sees. **雜卦 is the same trap in more tempting form**: sixty-four one-line glosses, exactly the length of a `render`, and it would be very easy to translate that file and call the job done.
 
@@ -172,15 +172,15 @@ Use them. Do not copy them.
 
 **The Tao Te Ching project's twenty-seven apply here in full.** They are not restated in this repository — [`principles/README.md`](principles/README.md) explains why not, and the rule against copying them is itself one of the local ones. These are the inherited ones this book will trip hardest:
 
-- [`repeat-yourself`](https://github.com/shalomormsby/taoteching) — §3. The governing constraint.
-- [`already-spoken-for`](https://github.com/shalomormsby/taoteching) — **sharpened almost to breaking point here.** Sixty-four hexagrams need sixty-four *distinct* single-word renders, plus eight for the trigrams. The English words for difficulty, obstruction, hardship, adversity and danger will run out before the hexagrams do — 3, 29, 39, 47 and 12 all compete for them. This needs a register kept across all seventy-two, not decided one file at a time.
-- [`commentary-is-not-a-rendering`](https://github.com/shalomormsby/taoteching) — §5.
-- [`divergence-stays-open`](https://github.com/shalomormsby/taoteching) — §4.
-- [`no-verdict-the-chinese-lacks`](https://github.com/shalomormsby/taoteching) — the verdict graphs, and 小人.
-- [`universalize-and-name-the-seam`](https://github.com/shalomormsby/taoteching) — 君子, and the wife/concubine/expedition material in the line texts, which is more socially specific than anything in the Tao Te Ching.
-- [`renders-no-character`](https://github.com/shalomormsby/taoteching) — the guard that makes Legge safe to read. Every English word answers to a character in `sources/zhouyi/`.
-- [`witnesses-before-drafting`](https://github.com/shalomormsby/taoteching) — check the sources before drafting, not after. They are in the repository now; there is no excuse.
-- [`one-question-at-a-time`](https://github.com/shalomormsby/taoteching) — bring Shalom the deepest open question, with a recommendation. Not a menu.
+- [`repeat-yourself`](https://github.com/opencosmos-ai/taoteching) — §3. The governing constraint.
+- [`already-spoken-for`](https://github.com/opencosmos-ai/taoteching) — **sharpened almost to breaking point here.** Sixty-four hexagrams need sixty-four *distinct* single-word renders, plus eight for the trigrams. The English words for difficulty, obstruction, hardship, adversity and danger will run out before the hexagrams do — 3, 29, 39, 47 and 12 all compete for them. This needs a register kept across all seventy-two, not decided one file at a time.
+- [`commentary-is-not-a-rendering`](https://github.com/opencosmos-ai/taoteching) — §5.
+- [`divergence-stays-open`](https://github.com/opencosmos-ai/taoteching) — §4.
+- [`no-verdict-the-chinese-lacks`](https://github.com/opencosmos-ai/taoteching) — the verdict graphs, and 小人.
+- [`universalize-and-name-the-seam`](https://github.com/opencosmos-ai/taoteching) — 君子, and the wife/concubine/expedition material in the line texts, which is more socially specific than anything in the Tao Te Ching.
+- [`renders-no-character`](https://github.com/opencosmos-ai/taoteching) — the guard that makes Legge safe to read. Every English word answers to a character in `sources/zhouyi/`.
+- [`witnesses-before-drafting`](https://github.com/opencosmos-ai/taoteching) — check the sources before drafting, not after. They are in the repository now; there is no excuse.
+- [`one-question-at-a-time`](https://github.com/opencosmos-ai/taoteching) — bring Shalom the deepest open question, with a recommendation. Not a menu.
 
 **And thirteen are this project's own** — see [`principles/INDEX.md`](principles/INDEX.md), which is generated and whose evidence links are build-verified. They are mostly about evidence rather than drafting, because here the evidence came first and arrived damaged: five sources were vendored before a single word was rendered. The ones that bear on the work ahead:
 

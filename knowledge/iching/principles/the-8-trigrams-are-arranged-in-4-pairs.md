@@ -110,7 +110,7 @@ obligation is to find the arrangement that governs **the sentence you are render
 
 **An arrangement in the Wings is still commentary.** 說卦 is Warring States, centuries later than
 the judgments it organises, and
-[`commentary-is-not-a-rendering`](https://github.com/shalomormsby/taoteching) holds against it
+[`commentary-is-not-a-rendering`](https://github.com/opencosmos-ai/taoteching) holds against it
 exactly as it holds against a gloss: its pairings are an argument for a reading, never a rendering.
 They are the best argument available **about the trigrams**, because the trigrams have no other
 text; they are not evidence about 貞 (*zhēn*), 亨 (*hēng*) or 孚 (*fú*) in the line texts, where
@@ -125,7 +125,7 @@ again.
 
 **And an arrangement is a reason to look again, not a licence to smooth.** Where the Chinese
 genuinely puts a member out of step with its neighbours,
-[`divergence-stays-open`](https://github.com/shalomormsby/taoteching) and
+[`divergence-stays-open`](https://github.com/opencosmos-ai/taoteching) and
 [[never-supply-what-the-source-withheld]] still govern: record the strain rather than choosing the
 English that tidies it. 60 節 澤上有水 (*"water above the lake"*) reads oddly in English because it
 reads oddly in Chinese, and that oddity is kept.
