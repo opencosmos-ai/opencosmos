@@ -3,6 +3,7 @@ name: git-sync
 description: Sync a git working copy with its GitHub remote — fetch, detect whether the current branch's PR has already merged, rebuild the branch from the latest default branch when it has, and prune stale local branches and remote-tracking refs. Use at the start of work in any repo, after opening a PR that might merge quickly, or when a git command errors on a ref that "should" exist (unknown revision, couldn't find remote ref, branch not found).
 argument-hint: "[--prune-only]"
 user-invocable: true
+disable-model-invocation: true
 ---
 
 # /git-sync — Cross-Device Git Lifecycle Skill
