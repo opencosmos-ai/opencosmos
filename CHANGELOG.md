@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-16
 
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
@@ -34,6 +34,17 @@ All notable changes to this project will be documented in this file.
 **The test for whether something belongs here rather than in a sub-project's changelog: would someone not working on that sub-project need to know?** If yes, a sentence here with a link. If no, it stays there.
 
 ---
+
+## 2026-09-16 — Fix: the Library's document outline comes back, and the Dell sync is retired (a two-utility cascade collision · 9 files of dead capability removed)
+
+Two pieces of pre-flight work ahead of moving the commons to its own GitHub organisation. Both are the kind of thing that is cheap now and expensive to discover mid-migration, which is why they are logged before the move rather than inside it.
+
+- **The document outline had been invisible, and the cause was not in the component.** The right-rail outline on every Library document — and the "Star on GitHub" label in two headers — rendered as `display: none` at every viewport width. The markup was correct and the outline was fully populated with all 82 entries on the Tao Te Ching page. [`@opencosmos/ui@1.10.0`](https://github.com/shalomormsby/opencosmos-ui) ships `dist/styles.css` as a **full precompiled Tailwind build that re-declares base utilities**, and [`globals.css`](apps/web/app/globals.css) imports it *after* `@import "tailwindcss"` — so the library's `.hidden` and `.grid-cols-1` land later in the bundle at equal specificity, in the same `@layer utilities`, and win.
+- **Two utilities were hit, and fixing one was worse than fixing neither.** `.hidden` (byte 75,741) beat `.lg:block` (63,382); `.grid-cols-1` (83,224) beat `.lg:grid-cols-[1fr_224px]` (63,770). With only the first repaired the outline *did* render — full-width, **36,245 px down the page**, because the grid had never created the column it lives in. The lesson is the reusable part: **a cascade collision must be verified by rendering, never by confirming the rule exists.** The stylesheet said the fix was applied, the computed `display` said `block`, and the page was still wrong. Computed geometry and a screenshot settle it in seconds.
+- **The repair is localized, and deliberately not the intuitive one.** An important modifier at each of the three call sites ([`TableOfContents.tsx`](apps/web/app/library/(library)/[...slug]/TableOfContents.tsx), [`page.tsx`](apps/web/app/library/(library)/[...slug]/page.tsx), [`KnowledgeShell.tsx`](apps/web/app/library/KnowledgeShell.tsx), [`InceptionShell.tsx`](apps/web/app/inception/InceptionShell.tsx)) — **not** a reordering of the global imports, which puts `styles.css` ahead of the utilities and breaks the sidebar and buttons. A comment at the call site records why the `!` is load-bearing so it is not tidied away. The real fix is upstream and is filed as [opencosmos-ui#56](https://github.com/shalomormsby/opencosmos-ui/issues/56): until `styles.css` stops emitting base utilities into consumers, every future `hidden md:flex` in any consuming app breaks the same silent way.
+- **The Dell sync is gone — implementation, script entry, guide, and every passage documenting it as live.** Open WebUI on the Dell Sovereign Node is no longer part of the pipeline. It also turns out to have carried a latent bug for its whole life: `collectMarkdownFiles()` asked for a `reference/` directory when the corpus directory is `references/`, so that entry never matched anything — and nothing noticed, because a silent zero is indistinguishable from a clean run. Nine files touched across `scripts/`, `docs/architecture.md`, and four `knowledge/guides/` documents.
+- **Three categories of Dell reference were deliberately left.** The decision-log rows in [`docs/architecture.md`](docs/architecture.md) (2026-03-13, 2026-03-22), because that log is an **append-only record of what was decided** and editing it would falsify history rather than update it. References to the Dell XPS 8950 as a dev box, because that is a claim about current hardware and not dead code. And the Home Assistant power automation in [`docs/projects/`](docs/projects/sustainable-power-system-design.md), which is the physical node.
+- **Verified.** `pnpm knowledge:health` green — all inline links resolve, broken references back to their pre-existing baseline of 12 (the removal briefly took it to 13 and the check caught it). Outline confirmed in Chromium at 1512 px (two columns, sticky at x=1264, 82 entries) and at 800 px (`display: none`, correctly hidden).
 
 ## 2026-09-11 — Feature: the I Ching substrate gets its evidence layer, and the changelogs become a system (5 public-domain sources · 361 files · a principles layer · one rule across four repos)
 
