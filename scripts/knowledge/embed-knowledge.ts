@@ -45,6 +45,10 @@ const KNOWLEDGE_DIR = resolve(ROOT_DIR, 'knowledge')
 // role:'kaizen' so rag.ts frames it as the learning log — never as corpus to cite.
 const KAIZEN_DIR = resolve(ROOT_DIR, 'packages', 'ai', 'kaizen')
 
+// Which chunk-ID prefixes this repository is responsible for. The stale-ID
+// sync deletes only within these; anything else belongs to another writer.
+const OWNED_PREFIXES = ['knowledge/', 'packages/ai/kaizen/'] as const
+
 function loadEnv(envPath: string) {
   if (!existsSync(envPath)) return
   for (const line of readFileSync(envPath, 'utf-8').split('\n')) {
@@ -71,6 +75,7 @@ type ChunkMetadata = {
   author?: string
   tradition?: string
   wiki_path?: string       // set for wiki pages only
+  content_hash?: string    // sha256 of `data`, 16 hex — lets a run skip unchanged chunks
 
   // Quote-specific (set only when chunk_type === 'quote')
   chunk_type?: 'quote'
@@ -482,15 +487,28 @@ const RANGE_PAGE_SIZE = 1000
 const DELETE_BATCH_SIZE = 1000
 
 // List every ID currently in the index, paginating through `range()`.
-async function listAllIds(index: Index): Promise<string[]> {
-  const ids: string[] = []
+/**
+ * One range scan, used for two things: deciding what to upsert (by comparing
+ * content hashes) and what to delete (by id). Reads are far cheaper than
+ * writes on Upstash, and a full re-upsert of the corpus is ~4,600 writes
+ * against a 10,000/day ceiling — so scanning first is what makes a no-op run
+ * cost nothing instead of half the daily budget.
+ *
+ * Vectors written before content hashes existed have no hash and so read as
+ * changed. That costs one full re-upsert, once.
+ */
+async function listExisting(index: Index): Promise<Map<string, string | undefined>> {
+  const seen = new Map<string, string | undefined>()
   let cursor: string = ''
   do {
-    const page = await index.range({ cursor, limit: RANGE_PAGE_SIZE })
-    for (const v of page.vectors) ids.push(v.id as string)
+    const page = await index.range({ cursor, limit: RANGE_PAGE_SIZE, includeMetadata: true })
+    for (const v of page.vectors) {
+      const md = v.metadata as ChunkMetadata | undefined
+      seen.set(v.id as string, md?.content_hash)
+    }
     cursor = page.nextCursor ?? ''
   } while (cursor)
-  return ids
+  return seen
 }
 
 async function main() {
@@ -558,15 +576,27 @@ async function main() {
     seenIds.add(chunk.id)
   }
 
-  console.log(`\nBuilt ${allChunks.length} chunks total. Upserting to Upstash Vector...`)
+  for (const c of allChunks) {
+    c.metadata.content_hash = createHash('sha256').update(c.data).digest('hex').slice(0, 16)
+  }
+
+  console.log(`\nBuilt ${allChunks.length} chunks total. Reading index to find what changed...`)
+  const existing = await listExisting(index)
+  const toUpsert = shouldReset
+    ? allChunks
+    : allChunks.filter(c => existing.get(c.id) !== c.metadata.content_hash)
+  const unchanged = allChunks.length - toUpsert.length
+  console.log(`   ${unchanged} unchanged, ${toUpsert.length} new or changed.`)
+
+  if (toUpsert.length === 0) console.log('   Nothing to upsert.')
 
   let upserted = 0
-  for (let i = 0; i < allChunks.length; i += BATCH_SIZE) {
-    const batch = allChunks.slice(i, i + BATCH_SIZE)
+  for (let i = 0; i < toUpsert.length; i += BATCH_SIZE) {
+    const batch = toUpsert.slice(i, i + BATCH_SIZE)
     try {
       await index.upsert(batch)
       upserted += batch.length
-      process.stdout.write(`  ${upserted}/${allChunks.length}\r`)
+      process.stdout.write(`  ${upserted}/${toUpsert.length}\r`)
     } catch (err) {
       console.error(`\n❌ Batch upsert failed at index ${i}:`, err)
       // Log the first few IDs in the batch to help debug
@@ -582,12 +612,22 @@ async function main() {
   // Skipped on --reset (the index is already empty) and --no-sync (escape hatch).
   if (shouldSync && !shouldReset) {
     console.log('\nReconciling index with corpus (sync)...')
-    const existingIds = await listAllIds(index)
+    // Only reconcile IDs this repository owns. The index is shared — the
+    // corpus is also written from opencosmos-ai/knowledge — and deleting every
+    // ID this run did not produce would wipe whatever the other writer owns.
+    // This matters most at the Phase 4 cutover: once knowledge/ is removed from
+    // this repository, an unguarded run here would produce only kaizen chunks
+    // and delete all ~4,600 corpus vectors, taking Cosmo's retrieval dark.
+    const existingIds = [...existing.keys()].filter(id =>
+      OWNED_PREFIXES.some(prefix => id.startsWith(prefix)),
+    )
+    const foreign = existing.size - existingIds.length
+    if (foreign > 0) console.log(`   ${foreign} vector(s) owned by another writer — left untouched.`)
     const stale = existingIds.filter(id => !seenIds.has(id))
     if (stale.length === 0) {
-      console.log(`   Index is in sync (${existingIds.length} vectors, 0 stale).`)
+      console.log(`   Index is in sync (${existingIds.length} owned vectors, 0 stale).`)
     } else {
-      console.log(`   Deleting ${stale.length} stale vector(s) (of ${existingIds.length} total)...`)
+      console.log(`   Deleting ${stale.length} stale vector(s) (of ${existingIds.length} owned)...`)
       for (let i = 0; i < stale.length; i += DELETE_BATCH_SIZE) {
         const batch = stale.slice(i, i + DELETE_BATCH_SIZE)
         await index.delete(batch)
@@ -596,7 +636,7 @@ async function main() {
     }
   }
 
-  console.log(`\n✅ Done — ${allChunks.length} chunks live in Upstash Vector`)
+  console.log(`\n✅ Done — ${allChunks.length} chunks live in Upstash Vector (${toUpsert.length} written this run)`)
 }
 
 main().catch(err => {
