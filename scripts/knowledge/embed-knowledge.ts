@@ -47,7 +47,15 @@ const KAIZEN_DIR = resolve(ROOT_DIR, 'packages', 'ai', 'kaizen')
 
 // Which chunk-ID prefixes this repository is responsible for. The stale-ID
 // sync deletes only within these; anything else belongs to another writer.
-const OWNED_PREFIXES = ['knowledge/', 'packages/ai/kaizen/'] as const
+// This repository owns ONLY Cosmo's kaizen vectors. The corpus is written by
+// opencosmos-ai/knowledge, which owns the `knowledge/` prefix.
+//
+// Narrowed ahead of removing knowledge/ from this repository, because the guard
+// would otherwise turn against the very thing it was added to protect: with
+// 'knowledge/' still claimed here, the first run after that deletion would
+// produce no corpus chunks, find ~4,600 knowledge/ vectors it believed it owned
+// and no longer generated, and delete every one — silently, exit code 0.
+const OWNED_PREFIXES = ['packages/ai/kaizen/'] as const
 
 function loadEnv(envPath: string) {
   if (!existsSync(envPath)) return
@@ -533,8 +541,11 @@ async function main() {
     console.log('   Index reset complete.\n')
   }
 
-  const files = walkMd(KNOWLEDGE_DIR)
-  const quoteFiles = walkQuotes()
+  // The corpus moved to opencosmos-ai/knowledge, which embeds it. These walks
+  // stay only so this file keeps working while knowledge/ is still present; once
+  // it is removed they yield nothing rather than throwing.
+  const files = existsSync(KNOWLEDGE_DIR) ? walkMd(KNOWLEDGE_DIR) : []
+  const quoteFiles = existsSync(resolve(KNOWLEDGE_DIR, 'quotes')) ? walkQuotes() : []
   const kaizenFiles = existsSync(KAIZEN_DIR) ? walkMd(KAIZEN_DIR) : []
   console.log(
     `Found ${files.length} markdown files + ${quoteFiles.length} quote yaml files in knowledge/` +
