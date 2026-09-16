@@ -9,7 +9,7 @@ complexity: foundational
 summary: >
   The master reference for all OpenCosmos knowledge base tools. Maps the full
   operational pipeline from staging raw text through formatting, publishing,
-  health monitoring, and Dell sync. Start here to understand which tool to use
+  and health monitoring. Start here to understand which tool to use
   and when.
 curated_at: 2026-03-22
 curator: shalom
@@ -19,7 +19,6 @@ related_docs:
   - guides/opencosmos-knowledge-publish-workflow.md
   - guides/opencosmos-knowledge-formatting-guide.md
   - guides/opencosmos-knowledge-health-report.md
-  - guides/opencosmos-knowledge-dell-sync.md
 ---
 
 # Knowledge Tooling Overview
@@ -37,7 +36,6 @@ A document flows through four stages:
       │
 3. Publish      pnpm knowledge:publish — generate metadata, file, commit
       │
-4. Sync         pnpm knowledge:sync-dell — mirror to Dell (on-demand)
 ```
 
 Each stage has its own tool. You can enter the pipeline at any stage — if your text is already well-formatted, skip straight to publish.
@@ -50,7 +48,6 @@ Each stage has its own tool. You can enter the pipeline at any stage — if your
 | Clean up formatting before publishing | `/groom` (Claude Code skill) |
 | Publish a document to the corpus | `pnpm knowledge:publish` |
 | See what the corpus looks like | `pnpm knowledge:health` |
-| Sync to the Dell for local AI access | `pnpm knowledge:sync-dell` |
 | Check what texts to import next | `pnpm knowledge:health` (import priority section) |
 
 ## The Tools
@@ -103,19 +100,6 @@ pnpm knowledge:health
 
 See the full guide: [Reading the Corpus Health Report](opencosmos-knowledge-health-report)
 
-### `pnpm knowledge:sync-dell` — Dell Sovereign Node Sync
-
-Uploads all knowledge documents to the Dell's Open WebUI RAG mirror for local AI inference. Decoupled from the publication flow — run it whenever the Dell is powered on and you want to catch up.
-
-**When to use it:** After publishing new documents to the corpus, or whenever you power on the Dell and want the latest knowledge available locally.
-
-```bash
-pnpm knowledge:sync-dell             # Sync everything
-pnpm knowledge:sync-dell --dry-run   # Preview what would be synced
-```
-
-See the full guide: [Syncing Knowledge to the Dell Sovereign Node](opencosmos-knowledge-dell-sync)
-
 ## Supporting Artifacts
 
 ### `knowledge/CURATION_LOG.md`
@@ -135,6 +119,5 @@ The staging area for raw text. This directory is gitignored — files here are w
 | Variable | Required for | Purpose |
 |----------|-------------|---------|
 | `ANTHROPIC_API_KEY` | `knowledge:publish` | Claude API for frontmatter generation |
-| `OPEN_WEBUI_API_KEY` | `knowledge:sync-dell` | Dell Open WebUI API access |
 
 Both are set in the `.env` file at the repository root.

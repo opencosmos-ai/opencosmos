@@ -62,20 +62,6 @@ pnpm knowledge:health
 
 ---
 
-### `pnpm knowledge:sync-dell`
-
-Syncs the knowledge corpus to the local Open WebUI instance on the Dell Sovereign Node (RTX 3090) via Tailscale. Used for offline RAG access and retrieval testing.
-
-```bash
-pnpm knowledge:sync-dell
-```
-
-Decoupled from the publish workflow — run on-demand when the Dell is powered on and reachable. Idempotent.
-
-**Source:** `scripts/sync-dell.ts`
-
----
-
 ## Development Scripts
 
 ### `scripts/test-cosmo-voice.ts`
@@ -98,7 +84,6 @@ Shared modules imported by the knowledge scripts. Not intended to be run directl
 | `frontmatter.ts` | Claude API frontmatter generation, interactive review UI, cross-reference scoring |
 | `git.ts` | Safe git operations (never pushes to main, never uses destructive ops) |
 | `groom.py` | Markdown formatting and cleanup for staged documents |
-| `dell-sync.ts` | Open WebUI sync logic, extracted for reuse |
 
 ---
 

@@ -288,7 +288,7 @@ export function InceptionShell({ children }: { children: React.ReactNode }) {
     <Button variant="outline" size="sm" asChild className="gap-2">
       <a href="https://github.com/shalomormsby/opencosmos" target="_blank" rel="noopener noreferrer">
         <GitHubIcon className="w-4 h-4" />
-        <span className="hidden sm:inline">Star on GitHub</span>
+        <span className="hidden sm:inline!">Star on GitHub</span>
       </a>
     </Button>
   )

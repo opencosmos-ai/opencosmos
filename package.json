@@ -7,7 +7,6 @@
         "build": "turbo run build --filter=!@opencosmos/stocks",
         "lint": "turbo run lint",
         "knowledge:publish": "tsx scripts/publish-knowledge.ts",
-        "knowledge:sync-dell": "tsx scripts/sync-dell.ts",
         "knowledge:health": "tsx scripts/knowledge-health.ts",
         "xenso:import-iching": "tsx scripts/xenso/import-iching-sources.ts",
         "xenso:seed-iching": "tsx scripts/xenso/seed-iching.ts",

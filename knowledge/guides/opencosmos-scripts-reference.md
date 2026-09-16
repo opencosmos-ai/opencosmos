@@ -62,7 +62,6 @@ npm install -g pnpm
 ```bash
 pnpm knowledge:health
 pnpm knowledge:publish
-pnpm knowledge:sync-dell
 ```
 
 **Direct execution** — for scripts without a named shorthand:
@@ -83,14 +82,12 @@ opencosmos/
 └── scripts/
     ├── knowledge-health.ts        # pnpm knowledge:health
     ├── publish-knowledge.ts       # pnpm knowledge:publish
-    ├── sync-dell.ts               # pnpm knowledge:sync-dell
     ├── test-cosmo-voice.ts        # pnpm tsx scripts/test-cosmo-voice.ts
     ├── check-byok-flags.ts        # pnpm tsx scripts/check-byok-flags.ts
     └── knowledge/                 # shared implementation modules (not directly runnable)
         ├── shared.ts              # constants, types, corpus scanner
         ├── frontmatter.ts         # Claude API frontmatter generation
         ├── git.ts                 # safe git operations
-        └── dell-sync.ts           # Open WebUI upload logic
 ```
 
 The files in `scripts/knowledge/` are library modules used internally by the scripts above. They are not directly runnable.
@@ -188,25 +185,6 @@ pnpm knowledge:publish ~/drafts/*.md --accept --pr       # batch import with aut
 
 ---
 
-### `pnpm knowledge:sync-dell` — Dell Sovereign Node Sync
-
-Uploads all knowledge corpus documents to Open WebUI on the Dell Sovereign Node (the local hardware RAG mirror). Run this when the Dell is powered on and you want to bring the local embedding index up to date with the current corpus state.
-
-**Usage:**
-
-```bash
-pnpm knowledge:sync-dell          # upload all documents
-pnpm knowledge:sync-dell --dry-run  # preview what would be uploaded
-```
-
-**What it syncs:** All `.md` files in `sources/`, `commentary/`, `reference/`, `guides/`, and `collections/`. Does not sync `wiki/`, `incoming/`, or `specifications/`.
-
-**Requires:** `OPEN_WEBUI_URL` and `OPEN_WEBUI_API_KEY` in `.env`. The Dell must be powered on and reachable on the local network.
-
-**Source:** `scripts/sync-dell.ts`
-
----
-
 ### `pnpm tsx scripts/test-cosmo-voice.ts` — Cosmo Voice Test
 
 Sends a question to Claude using `COSMO_SYSTEM_PROMPT.md` as the system prompt. Use this to feel Cosmo's voice in response to a specific prompt — to evaluate tone, test a system prompt edit, or sanity-check a response before shipping.
@@ -255,8 +233,6 @@ Most scripts read from a `.env` file at the repo root. Create one if it doesn't 
 
 ```
 ANTHROPIC_API_KEY=sk-ant-...
-OPEN_WEBUI_URL=http://192.168.x.x:3000
-OPEN_WEBUI_API_KEY=...
 ```
 
 `check-byok-flags.ts` reads from `apps/web/.env.local` instead (injected via the `dotenv` prefix).
@@ -271,6 +247,5 @@ OPEN_WEBUI_API_KEY=...
 | Publish documents from `incoming/` | `pnpm knowledge:publish --accept` |
 | Publish a specific file | `pnpm knowledge:publish path/to/file.md` |
 | Preview a publish without writing | `pnpm knowledge:publish --dry-run` |
-| Sync documents to Dell | `pnpm knowledge:sync-dell` |
 | Test Cosmo's voice | `pnpm tsx scripts/test-cosmo-voice.ts "question"` |
 | Debug BYOK flags in Redis | `dotenv -e apps/web/.env.local -- pnpm tsx scripts/check-byok-flags.ts` |

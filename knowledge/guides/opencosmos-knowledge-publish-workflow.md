@@ -18,7 +18,6 @@ related_docs:
   - guides/opencosmos-knowledge-tooling-overview.md
   - guides/opencosmos-knowledge-formatting-guide.md
   - guides/opencosmos-knowledge-health-report.md
-  - guides/opencosmos-knowledge-dell-sync.md
 ---
 
 # Publishing to the Knowledge Base
@@ -213,28 +212,11 @@ pnpm knowledge:health
 
 Shows: document count, domain/role coverage, foundation collection progress, cross-reference integrity, island detection, and import priority suggestions (top texts to add next based on collection placeholders and domain gaps).
 
-## Dell Sync (Separate Command)
-
-The Dell Sovereign Node sync is decoupled from the publication flow. When you want to sync knowledge documents to Open WebUI on the Dell:
-
-```bash
-pnpm knowledge:sync-dell
-```
-
-This uploads all knowledge documents to the Dell's Open WebUI RAG mirror. Run it whenever the Dell is powered on and you want to catch up.
-
-```bash
-pnpm knowledge:sync-dell --dry-run   # Preview what would be synced
-```
-
-Requires: Dell on and reachable via Tailscale, `OPEN_WEBUI_API_KEY` in `.env`.
-
 ## Environment Variables
 
 | Variable | Required | Purpose |
 |----------|----------|---------|
 | `ANTHROPIC_API_KEY` | Recommended | Enables Claude API for frontmatter generation |
-| `OPEN_WEBUI_API_KEY` | No | Enables Dell sync (`pnpm knowledge:sync-dell`) |
 
 ## Choosing the Right Role
 

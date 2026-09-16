@@ -337,7 +337,7 @@ export function KnowledgeShell({ children }: { children: React.ReactNode }) {
         rel="noopener noreferrer"
       >
         <GitHubIcon className="w-4 h-4" />
-        <span className="hidden sm:inline">Star on GitHub</span>
+        <span className="hidden sm:inline!">Star on GitHub</span>
       </a>
     </Button>
   )
