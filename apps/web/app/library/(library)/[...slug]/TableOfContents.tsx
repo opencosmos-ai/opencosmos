@@ -160,9 +160,15 @@ export default function TableOfContents({ toc, docTitle, docPath }: Props) {
   if (toc.length === 0) return null
 
   return (
+    // `lg:block!` is load-bearing. @opencosmos/ui's styles.css is a precompiled
+    // Tailwind build that re-declares base utilities including `.hidden`, and
+    // globals.css imports it after `@import "tailwindcss"`. Equal specificity,
+    // same layer, later wins — so a plain `lg:block` never un-hides this and the
+    // outline vanishes at every width. The important modifier is the localized
+    // fix; re-ordering the global imports instead breaks the sidebar and buttons.
     <aside
       aria-label="Document outline"
-      className="hidden lg:block sticky top-28 self-start max-h-[calc(100vh-8rem)] overflow-y-auto"
+      className="hidden lg:block! sticky top-28 self-start max-h-[calc(100vh-8rem)] overflow-y-auto"
     >
       <p className="text-xs uppercase tracking-widest text-foreground/30 mb-3 font-medium px-2">
         On this page
