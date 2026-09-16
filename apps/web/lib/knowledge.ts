@@ -3,7 +3,9 @@ import path from 'path'
 import matter from 'gray-matter'
 import { docHrefFromSlug } from './corpus-href'
 
-const KNOWLEDGE_DIR = path.join(process.cwd(), '../../knowledge')
+// Fetched by scripts/fetch-content.mjs before every build and dev run —
+// a symlink to a local checkout, or a shallow clone of opencosmos-ai/knowledge.
+const KNOWLEDGE_DIR = path.join(process.cwd(), '.content/knowledge')
 
 const BROWSABLE_DIRS = ['sources', 'guides', 'collections', 'references', 'scriptures'] as const
 

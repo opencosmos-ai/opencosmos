@@ -18,7 +18,7 @@ import { quoteHrefFromParts } from './corpus-href'
  * this app needs no dependency it doesn't already declare.
  */
 
-const QUOTES_DIR = path.join(process.cwd(), '../../knowledge/quotes')
+const QUOTES_DIR = path.join(process.cwd(), '.content/knowledge/quotes')
 
 /**
  * gray-matter bundles js-yaml and exposes it as `engines.yaml`, but its type

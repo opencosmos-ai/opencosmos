@@ -48,3 +48,6 @@ knowledge/quotes/_source/validation-batches/*.input.json
 
 # Vendored source material — the fetched wikitext and OCR the importer ran from.
 knowledge/iching/sources/.cache/
+
+# Corpus fetched from opencosmos-ai/knowledge at build time
+apps/web/.content/

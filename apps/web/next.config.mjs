@@ -54,7 +54,7 @@ const nextConfig = {
       'utf-8'
     ),
     COSMO_WIKI_INDEX: readFileSync(
-      join(__dirname, '../../knowledge/wiki/index.md'),
+      join(__dirname, '.content/knowledge/wiki/index.md'),
       'utf-8'
     ),
     // Cosmo's curated Operating Lessons digest — distilled from kaizen/feedback

@@ -4,10 +4,11 @@
   "private": true,
   "packageManager": "pnpm@10.26.1",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/fetch-content.mjs && next dev",
+    "build": "node scripts/fetch-content.mjs && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "content": "node scripts/fetch-content.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
