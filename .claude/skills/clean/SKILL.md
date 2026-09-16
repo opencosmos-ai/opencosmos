@@ -34,15 +34,19 @@ This updates the default branch's ref and removes remote-tracking refs (`origin/
 
 For each local branch other than the default:
 
-1. **Merged check:**
+1. **Quick merged check:**
    ```bash
    git log origin/<default-branch>..<branch>
    ```
-   Empty output = every commit on this branch is already reachable from the default branch = **fully merged**. Safe to delete.
+   **Empty output is trustworthy on its own** — every commit on the branch is provably reachable from the default branch, so it's merged. Go straight to Step 3 for these; no need to also query GitHub.
 
-2. **If not fully merged, check for an open PR** (via a GitHub tool if this session has one). An open PR on an unmerged branch is expected, healthy state — not a problem. Leave it, and note it in the final report as "in progress."
+   **Non-empty output is not proof the branch is unmerged.** A squash or rebase merge never makes the original commits literal ancestors of the default branch even once the content has landed, so this alone can't distinguish a genuinely unmerged branch from one merged that way — treat it as inconclusive and continue to 2.2, not as a verdict.
 
-3. **If not fully merged AND no open PR exists** — this is unreconciled work, possibly from another session or an abandoned start. **Flag it, do not delete it.** Capture enough for the user to decide: branch name, commit count ahead of the default branch, the last commit's subject line and date, and whether it has ever been pushed (has an upstream).
+2. **For anything not confirmed merged in 2.1, check its PR directly** (via a GitHub tool, if this session has one) — authoritative regardless of merge strategy, and re-fetch (Step 1) first if any real time has passed since your last fetch, since a PR can land in that gap in a fast-merge repo. A PR that shows **open** is expected, healthy state — leave the branch and note it as "in progress." A PR that shows **merged** confirms 2.1's non-empty output was a false negative (squash/rebase, most likely) — safe to delete.
+
+3. **No GitHub tool available, and 2.1 was non-empty** — there's no way to fully disambiguate "unmerged" from "merged by squash or rebase." Don't guess either way: report the branch as unconfirmed, with its commit log, and let the user decide.
+
+4. **No open PR and not confirmed merged** — this is unreconciled work, possibly from another session or an abandoned start. **Flag it, do not delete it.** Capture enough for the user to decide: branch name, commit count ahead of the default branch, the last commit's subject line and date, and whether it has ever been pushed (has an upstream).
 
 **`--dry-run`**: print the full plan (what would be deleted, what would be flagged) and stop before Step 3.
 
@@ -52,7 +56,7 @@ For each local branch other than the default:
 git branch -D <branch>
 ```
 
-Only for branches that passed the merged check in Step 2.1. Never delete a branch that didn't pass that check, regardless of how old, how obviously-abandoned-looking, or how confident a guess would be — a guess is not a merge check.
+Only for branches confirmed merged in Step 2.1 or 2.2. Never delete a branch that didn't clear one of those, regardless of how old, how obviously-abandoned-looking, or how confident a guess would be — a guess is not a merge check.
 
 ## Step 4: Sync the local default branch
 
@@ -68,16 +72,18 @@ Fast-forward only. If this fails, the local default branch has commits `origin` 
 State plainly, in this order:
 
 1. **Deleted** — every branch removed in Step 3, by name.
-2. **Flagged, not deleted** — every branch from Step 2.3, with its detail (commits ahead, last commit, pushed or not). If this list is non-empty, say clearly that these need a human decision, not that cleanup is incomplete.
+2. **Flagged, not deleted** — every branch from Step 2.4, with its detail (commits ahead, last commit, pushed or not). If this list is non-empty, say clearly that these need a human decision, not that cleanup is incomplete.
 3. **In progress** — every branch from Step 2.2 with an open PR (informational, not a problem).
-4. **Confirm end state:** `git status` (expect clean) and that the local default branch is at the same commit as `origin/<default-branch>`.
+4. **Unconfirmed** — every branch from Step 2.3 (no GitHub tool, ancestry inconclusive). Say plainly that merge status couldn't be determined and why, distinct from "flagged" (which means confirmed unmerged, or no way to know).
+5. **Confirm end state:** `git status` (expect clean) and that the local default branch is at the same commit as `origin/<default-branch>`.
 
-Every local branch must appear in exactly one of these three categories, or be the default branch itself — nothing silently unaccounted for.
+Every local branch must appear in exactly one of these four categories, or be the default branch itself — nothing silently unaccounted for.
 
 ## What this skill must never do
 
 - **Never delete a branch whose commits aren't all reachable from the fetched default branch** — no exceptions for "looks old" or "probably abandoned." Flag instead.
+- **Never treat non-empty `git log origin/<default>..<branch>` as proof of "unmerged."** Without a GitHub tool to confirm, it's ambiguous under squash/rebase merges — report it as unconfirmed, don't delete it, and don't confidently call it abandoned work either.
 - **Never discard uncommitted changes**, on any branch, under any flag.
 - **Never force-push or delete a branch on `origin`** — this skill's writes are local only (`git branch -D`, local checkout/merge).
 - **Never `reset --hard` the default branch to force a sync** — a failed fast-forward is a signal to stop and report, not a problem to paper over.
-- **Never drop a flagged branch from the final report** — every non-default, non-deleted branch must be named explicitly as either "in progress" or "flagged."
+- **Never drop a branch from the final report** — every non-default, non-deleted branch must be named explicitly as "in progress," "flagged," or "unconfirmed."
