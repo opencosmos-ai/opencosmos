@@ -22,11 +22,11 @@ supersedes: []
 
 ## Why this holds
 
-**The parent project's [`repeat-yourself`](https://github.com/shalomormsby/taoteching) makes consistency an obligation; frequency makes it an ordering.** If the same Chinese must be rendered the same way everywhere, then a formula settled late is not one decision made late — it is every previous occurrence owing a retrofit. In a book where one phrase appears ninety-two times, that difference is the whole shape of the work.
+**The parent project's [`repeat-yourself`](https://github.com/opencosmos-ai/taoteching) makes consistency an obligation; frequency makes it an ordering.** If the same Chinese must be rendered the same way everywhere, then a formula settled late is not one decision made late — it is every previous occurrence owing a retrofit. In a book where one phrase appears ninety-two times, that difference is the whole shape of the work.
 
 **And this book is far more formulaic than the one this project's method was written for.** The judgments and line texts together are **4,163 characters drawn from only 794 distinct graphs**. Six verdict graphs — 吉 (*jí*), 凶 (*xiōng*), 咎 (*jiù*), 悔 (*huǐ*), 吝 (*lìn*), 厲 (*lì*) — account for **386 of them, 9.3% of the text.** 无咎 (*wú jiù*) alone appears 92 times, 貞 (*zhēn*) 111 times, 利 (*lì*) 119.
 
-**Starting at hexagram 1 would settle a dozen of those in passing, invisibly.** Whoever drafts the first hexagram will render 元亨利貞 (*yuán hēng lì zhēn*) because it is in front of them — and will thereby have decided the four commonest words in the book, in the one context where they happen to sit together, without ever having looked at the other 300-odd occurrences. That is the parent's [`distribution-locates`](https://github.com/shalomormsby/taoteching) failure at the scale of a whole book: a reason to look, taken as a reason to conclude.
+**Starting at hexagram 1 would settle a dozen of those in passing, invisibly.** Whoever drafts the first hexagram will render 元亨利貞 (*yuán hēng lì zhēn*) because it is in front of them — and will thereby have decided the four commonest words in the book, in the one context where they happen to sit together, without ever having looked at the other 300-odd occurrences. That is the parent's [`distribution-locates`](https://github.com/opencosmos-ai/taoteching) failure at the scale of a whole book: a reason to look, taken as a reason to conclude.
 
 **The same argument runs down as well as up.** The eight trigrams are the atoms every hexagram name sits on. Deciding them first is the same move at a smaller scale, and it has the same justification: eight decisions that constrain sixty-four are worth making before the sixty-four.
 

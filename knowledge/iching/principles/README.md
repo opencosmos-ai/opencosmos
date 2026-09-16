@@ -2,7 +2,7 @@
 
 *[`../README.md`](../README.md) says **what is here**. [`../method.md`](../method.md) says **how a rendering gets made**. [`../sources/PROVENANCE.md`](../sources/PROVENANCE.md) says **what may be vendored and on what authority**. This directory says **what we learned** — the transferable rules discovered while making particular decisions, which then govern every decision after.*
 
-**The form is the Tao Te Ching project's, copied deliberately.** Its [`process/principles/`](https://github.com/shalomormsby/taoteching) was argued out over months, and there is no reason for a neighbouring project to re-derive a good design badly. Read that directory's README for the reasoning behind the frontmatter, the `trigger:` field and the evidence threshold; this file says only what differs here.
+**The form is the Tao Te Ching project's, copied deliberately.** Its [`process/principles/`](https://github.com/opencosmos-ai/taoteching) was argued out over months, and there is no reason for a neighbouring project to re-derive a good design badly. Read that directory's README for the reasoning behind the frontmatter, the `trigger:` field and the evidence threshold; this file says only what differs here.
 
 **`INDEX.md` and `principles.yaml` are generated — never hand-edit them.**
 
@@ -10,7 +10,7 @@
 
 ## The first rule of this directory: do not restate the twenty-seven
 
-This project **inherits the Tao Te Ching project's principles wholesale**, and `../method.md` § 6 names the ones that fire hardest on this book. [`repeat-yourself`](https://github.com/shalomormsby/taoteching), [`already-spoken-for`](https://github.com/shalomormsby/taoteching), [`commentary-is-not-a-rendering`](https://github.com/shalomormsby/taoteching), [`renders-no-character`](https://github.com/shalomormsby/taoteching) and the rest apply here in full force and **are not repeated here**.
+This project **inherits the Tao Te Ching project's principles wholesale**, and `../method.md` § 6 names the ones that fire hardest on this book. [`repeat-yourself`](https://github.com/opencosmos-ai/taoteching), [`already-spoken-for`](https://github.com/opencosmos-ai/taoteching), [`commentary-is-not-a-rendering`](https://github.com/opencosmos-ai/taoteching), [`renders-no-character`](https://github.com/opencosmos-ai/taoteching) and the rest apply here in full force and **are not repeated here**.
 
 Copying them across would rebuild exactly the failure the parent's README warns about: two copies of a rule, one of which goes stale. **An entry belongs here only if the twenty-seven do not already contain it.**
 

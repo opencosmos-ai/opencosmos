@@ -60,7 +60,7 @@ pnpm xenso:principles             # principles/INDEX.md, and verify every eviden
 
 **Facts** — seeded, and settled: the King Wen number, the character, the pinyin, the six-line figure, the trigram decomposition, and the Shuogua image in Chinese (乾為天, 坤為地, and so on). Since the import, also: the judgment, the six line texts, and the per-hexagram Wings, in Chinese, in `sources/`.
 
-**Decisions** — every English word. `render` is the single term a player sees, and it is a translation call made one at a time, in the form the [Tao Te Ching glossary](https://github.com/shalomormsby/taoteching) uses. All sixty-four are `status: draft` with `render: null` until then, and the interface shows `節 · hexagram 60` rather than inventing a name to fill the gap. **An invented name would be exactly the borrowed metaphor Xensō's design forbids, and it would arrive wearing authority.**
+**Decisions** — every English word. `render` is the single term a player sees, and it is a translation call made one at a time, in the form the [Tao Te Ching glossary](https://github.com/opencosmos-ai/taoteching) uses. All sixty-four are `status: draft` with `render: null` until then, and the interface shows `節 · hexagram 60` rather than inventing a name to fill the gap. **An invented name would be exactly the borrowed metaphor Xensō's design forbids, and it would arrive wearing authority.**
 
 The slots for `judgment`, `image`, and `line_texts` in each hexagram file are the *English* ones, and they are still null. The Chinese they will render now sits in `sources/zhouyi/`, so filling them is translation work rather than data entry.
 
@@ -84,7 +84,7 @@ Five are distributed one hexagram at a time and live in `sources/zhouyi/`; five 
 
 James Legge's *The Yî King* (Sacred Books of the East, vol. XVI, Clarendon Press, 1882), all 64. **It is here to be used, and it is not a source of English.**
 
-This file used to argue the opposite — that importing Legge would install the missionary lexicon that the taoteching [overlay audit](https://github.com/shalomormsby/taoteching) exists to strip. The concern is real and the conclusion was wrong, for two reasons.
+This file used to argue the opposite — that importing Legge would install the missionary lexicon that the taoteching [overlay audit](https://github.com/opencosmos-ai/taoteching) exists to strip. The concern is real and the conclusion was wrong, for two reasons.
 
 **First, it was stricter than the parent project's own rule, without saying so.** `process/method.md` §3 over there settles this: *"Consult sources for meaning, never for phrasing. Reading a commentary or an old translation to understand what a line means is research. Borrowing anyone's English words is not."* Pre-1931 translations are explicitly in scope, and Legge is named in the list. He was never excluded there. He was excluded here by a rule this directory invented for itself.
 
@@ -96,9 +96,9 @@ Which is the point, and it is a sharper one than the old stance allowed: **every
 
 **What he is worth having.** He read the whole text with the Kangxi-era commentarial apparatus at hand and forty years of classical Chinese behind him, and his account of the line positions, the correlates, the centrality of lines 2 and 5, and the trigram logic is still the standard scholarly construal in English. Where his English is strange it is usually because the Chinese is, and that is information.
 
-And he marks his own uncertainty, which is the habit this project calls [`divergence-stays-open`](https://github.com/shalomormsby/taoteching). On hexagram 50's first line — 得妾以其子, the concubine whose position is improved by her son — he sets out the commentators' reading and then adds: *"The above is what is found in the best commentaries on the paragraph. I give it, but am myself dissatisfied with it."* A translator who will write that sentence in 1882 is a translator worth reading in 2026.
+And he marks his own uncertainty, which is the habit this project calls [`divergence-stays-open`](https://github.com/opencosmos-ai/taoteching). On hexagram 50's first line — 得妾以其子, the concubine whose position is improved by her son — he sets out the commentators' reading and then adds: *"The above is what is found in the best commentaries on the paragraph. I give it, but am myself dissatisfied with it."* A translator who will write that sentence in 1882 is a translator worth reading in 2026.
 
-**The discipline, in one line: read Legge for construal, never for English.** Every English word in a rendering answers to a character in the Chinese file beside it — that is [`renders-no-character`](https://github.com/shalomormsby/taoteching), and it is what makes consulting him safe.
+**The discipline, in one line: read Legge for construal, never for English.** Every English word in a rendering answers to a character in the Chinese file beside it — that is [`renders-no-character`](https://github.com/opencosmos-ai/taoteching), and it is what makes consulting him safe.
 
 ### de Harlez 1889 — the second witness, and the one that disagrees
 

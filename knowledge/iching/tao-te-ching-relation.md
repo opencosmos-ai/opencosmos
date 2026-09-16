@@ -7,7 +7,7 @@ bears on belong in [`glossary/`](glossary/README.md); the rules it produced belo
 
 **Standing: measured where it says measured, remembered where it says remembered — and the two are
 marked apart throughout.** Every **count** was computed from files vendored in this repository and
-in [shalomormsby/taoteching](https://github.com/shalomormsby/taoteching), and can be recomputed:
+in [shalomormsby/taoteching](https://github.com/opencosmos-ai/taoteching), and can be recomputed:
 the corpus tables in § 3, the contacts in § 4, and the edition counts in § 2 (97 divergent lemmas,
 175 collation notes) are all of that kind. The **biography, dating and scholarly history** in § 2,
 and 王弼's own words in § 8, are **not vendored** and are stated from memory; each such passage says
@@ -322,7 +322,7 @@ thousand years and calls it translation.
 
 **2 · Harmonising an image where the books conflict.** A translator who wants the two to agree
 will soften 坎 toward the Laozi's water, or read 謙 back into chapters that never use the word.
-[`divergence-stays-open`](https://github.com/shalomormsby/taoteching) forbids it: where they
+[`divergence-stays-open`](https://github.com/opencosmos-ai/taoteching) forbids it: where they
 differ, **the English must not settle it**, and the difference is more informative than the
 agreement.
 
@@ -365,7 +365,7 @@ Before any Laozi reading enters an I Ching rendering:
 1. **Does the character occur in the layer being rendered?** The tables in § 3 answer it. Core,
    Wings, or neither.
 2. **Does the English answer to *that* character, or to the Laozi's?** That is
-   [`renders-no-character`](https://github.com/shalomormsby/taoteching).
+   [`renders-no-character`](https://github.com/opencosmos-ai/taoteching).
 
 **Fail either and it is an overlay.** Which does not mean discard it — it means it goes in the
 notes as commentary, never into `render:`.

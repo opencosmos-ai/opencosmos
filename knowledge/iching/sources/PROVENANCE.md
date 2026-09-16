@@ -2,7 +2,7 @@
 
 *This directory holds the primary material a rendering answers to. Every file in it must be **provably free**: the `knowledge/` corpus is intended for the public domain, this repository ships under MIT, and Xensō is a product. Nothing here may carry a restriction that any of those three cannot honour.*
 
-**These rules are inherited from the Tao Te Ching project's [`sources/PROVENANCE.md`](https://github.com/shalomormsby/taoteching), deliberately and almost verbatim.** That file was argued out over months, has been wrong once and says so in public, and there is no reason for a neighbouring project to re-derive it badly. Where the two differ, the difference is noted below and the reason given.
+**These rules are inherited from the Tao Te Ching project's [`sources/PROVENANCE.md`](https://github.com/opencosmos-ai/taoteching), deliberately and almost verbatim.** That file was argued out over months, has been wrong once and says so in public, and there is no reason for a neighbouring project to re-derive it badly. Where the two differ, the difference is noted below and the reason given.
 
 ---
 
@@ -107,7 +107,7 @@ The received chapter divisions are preserved as headings, because they are how a
 
 That is the other side of the fork this project's deepest open question sits on — 貞, 亨, 孚 — argued in 1889, decades before the modernist school made the same case. Where Legge renders 元亨利貞 as "what is great and originating, penetrating, advantageous, correct and firm", de Harlez has *"l'origine, le progrès, l'affermissement et l'achèvement des êtres."* Two complete readings of the same four characters, neither of them ours.
 
-**And being in French is a feature, not a tax.** [`renders-no-character`](https://github.com/shalomormsby/taoteching) makes consulting Legge safe; a source in another language is safe structurally, because it has no English phrase to leak.
+**And being in French is a feature, not a tax.** [`renders-no-character`](https://github.com/opencosmos-ai/taoteching) makes consulting Legge safe; a source in another language is safe structurally, because it has no English phrase to leak.
 
 **The standing caution, which is real.** His subtitle is *texte primitif rétabli* — **the primitive text restored.** He reorders, emends, and marks passages as interpolations. **He is a reading, never a witness.** `zhouyi/` is the witness. Every file says so in its `standing:` field.
 
@@ -119,9 +119,9 @@ Two checks, both printed on every run. The 64 `Koua` headings must be found in d
 
 ### `locks/`
 
-`terms.yaml` is copied verbatim from [shalomormsby/taoteching](https://github.com/shalomormsby/taoteching) `glossary/terms.yaml`, which is itself generated from that project's glossary entries. `README.md` beside it is generated here, and reports each locked term's occurrence count in the Zhouyi base text.
+`terms.yaml` is copied verbatim from [shalomormsby/taoteching](https://github.com/opencosmos-ai/taoteching) `glossary/terms.yaml`, which is itself generated from that project's glossary entries. `README.md` beside it is generated here, and reports each locked term's occurrence count in the Zhouyi base text.
 
-**Both are generated. Neither is ever hand-edited** — that is [`edited-or-generated`](https://github.com/shalomormsby/taoteching). A rendering that conflicts with a lock is fixed by changing the rendering, or by changing the lock *in the other repository* and re-importing. It is never fixed here.
+**Both are generated. Neither is ever hand-edited** — that is [`edited-or-generated`](https://github.com/opencosmos-ai/taoteching). A rendering that conflicts with a lock is fixed by changing the rendering, or by changing the lock *in the other repository* and re-importing. It is never fixed here.
 
 ---
 

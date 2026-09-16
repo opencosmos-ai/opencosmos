@@ -22,7 +22,7 @@ supersedes: []
 
 ## Why this holds
 
-**The parent's [`commentary-is-not-a-rendering`](https://github.com/shalomormsby/taoteching) holds that a commentator's gloss is an argument for a rendering, never a rendering. That rule is easy to keep when the commentary is a paragraph and the rendering is a word.** It becomes hard exactly when the shapes match — because then there is nothing to do, no step where the judgement would have to be exercised, and the borrowing does not feel like borrowing. It feels like reading the answer off.
+**The parent's [`commentary-is-not-a-rendering`](https://github.com/opencosmos-ai/taoteching) holds that a commentator's gloss is an argument for a rendering, never a rendering. That rule is easy to keep when the commentary is a paragraph and the rendering is a word.** It becomes hard exactly when the shapes match — because then there is nothing to do, no step where the judgement would have to be exercised, and the borrowing does not feel like borrowing. It feels like reading the answer off.
 
 **Format similarity is the weakest possible evidence of semantic fit, and the most persuasive.** 雜卦 (*Zágùa*) gives sixty-four one-line glosses. `render` needs sixty-four single terms. The two are the same shape and are not the same thing: one is a Han-era mnemonic pairing hexagrams by contrast, the other is the word a player sees on a card. Nothing but the format connects them.
 

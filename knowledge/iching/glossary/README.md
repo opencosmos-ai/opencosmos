@@ -18,7 +18,7 @@ compiles it into the app, and it has to be one word in one field. The entry here
 **reasoning**, which is longer than any field and is the thing a later reader needs when
 the word looks arbitrary. Each trigram or hexagram file points back with `glossary_refs:`.
 
-This mirrors the parent [Tao Te Ching](https://github.com/shalomormsby/taoteching) project,
+This mirrors the parent [Tao Te Ching](https://github.com/opencosmos-ai/taoteching) project,
 whose `glossary/` holds 49 entries and is the unit of work there. **Its 47 locked terms
 bind here unchanged** — see [`sources/locks/`](../sources/locks/README.md). A rendering
 that reaches for a forbidden word is a defect, not a preference, and it is fixed by
