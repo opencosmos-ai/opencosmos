@@ -1,62 +1,56 @@
 {
-    "name": "opencosmos",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "dev": "turbo run dev --concurrency 20 --filter=!@opencosmos/stocks",
-        "build": "turbo run build --filter=!@opencosmos/stocks",
-        "lint": "turbo run lint",
-        "knowledge:publish": "tsx scripts/publish-knowledge.ts",
-        "knowledge:health": "tsx scripts/knowledge-health.ts",
-        "xenso:import-iching": "tsx scripts/xenso/import-iching-sources.ts",
-        "xenso:seed-iching": "tsx scripts/xenso/seed-iching.ts",
-        "xenso:build-iching": "tsx scripts/xenso/build-iching.ts",
-        "xenso:principles": "tsx scripts/xenso/build-iching-principles.ts",
-        "xenso:check-iching": "tsx scripts/xenso/iching-check.ts",
-        "xenso:ocr-consensus": "tsx scripts/xenso/ocr-consensus.ts",
-        "xenso:ocr-adjudicate": "tsx scripts/xenso/ocr-vision-adjudicate.ts",
-        "graph": "tsx scripts/knowledge/generate-wiki-graph.ts",
-        "graph:constellation": "tsx scripts/knowledge/generate-constellation-graph.ts",
-        "embed": "tsx scripts/knowledge/embed-knowledge.ts",
-        "quotes:migrate-from-source": "tsx scripts/normalize-quotes/01-jsonl-to-yaml.ts",
-        "quotes:add": "tsx scripts/normalize-quotes/08-add-quote.ts",
-        "adr:index": "tsx scripts/adr-index.ts",
-        "quotes:lint": "tsx scripts/normalize-quotes/lint.ts",
-        "quotes:checkpoint": "tsx scripts/normalize-quotes/02b-checkpoint.ts",
-        "quotes:validate": "tsx --env-file=.env scripts/normalize-quotes/02-validate-provenance.ts",
-        "quotes:validate:pilot": "tsx --env-file=.env scripts/normalize-quotes/02-validate-provenance.ts --pilot",
-        "quotes:validate:resume": "tsx --env-file=.env scripts/normalize-quotes/02-validate-provenance.ts --resume",
-        "quotes:merge": "tsx --env-file=.env scripts/normalize-quotes/03-merge-validation.ts",
-        "quotes:review-export": "tsx scripts/normalize-quotes/04-export-review-csv.ts",
-        "quotes:review-apply": "tsx scripts/normalize-quotes/05-apply-review.ts",
-        "quotes:link-works": "tsx scripts/normalize-quotes/09-resolve-source-works.ts",
-        "quotes:export-csv": "tsx scripts/normalize-quotes/06-export-pending-csv.ts",
-        "quotes:promote": "tsx scripts/normalize-quotes/07-promote-verified.ts"
+  "name": "opencosmos",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev --concurrency 20 --filter=!@opencosmos/stocks",
+    "build": "turbo run build --filter=!@opencosmos/stocks",
+    "lint": "turbo run lint",
+    "knowledge:publish": "tsx scripts/publish-knowledge.ts",
+    "knowledge:health": "tsx scripts/knowledge-health.ts",
+    "xenso:check-iching": "tsx scripts/xenso/iching-check.ts",
+    "graph": "tsx scripts/knowledge/generate-wiki-graph.ts",
+    "graph:constellation": "tsx scripts/knowledge/generate-constellation-graph.ts",
+    "embed": "tsx scripts/knowledge/embed-knowledge.ts",
+    "quotes:migrate-from-source": "tsx scripts/normalize-quotes/01-jsonl-to-yaml.ts",
+    "quotes:add": "tsx scripts/normalize-quotes/08-add-quote.ts",
+    "adr:index": "tsx scripts/adr-index.ts",
+    "quotes:lint": "tsx scripts/normalize-quotes/lint.ts",
+    "quotes:checkpoint": "tsx scripts/normalize-quotes/02b-checkpoint.ts",
+    "quotes:validate": "tsx --env-file=.env scripts/normalize-quotes/02-validate-provenance.ts",
+    "quotes:validate:pilot": "tsx --env-file=.env scripts/normalize-quotes/02-validate-provenance.ts --pilot",
+    "quotes:validate:resume": "tsx --env-file=.env scripts/normalize-quotes/02-validate-provenance.ts --resume",
+    "quotes:merge": "tsx --env-file=.env scripts/normalize-quotes/03-merge-validation.ts",
+    "quotes:review-export": "tsx scripts/normalize-quotes/04-export-review-csv.ts",
+    "quotes:review-apply": "tsx scripts/normalize-quotes/05-apply-review.ts",
+    "quotes:link-works": "tsx scripts/normalize-quotes/09-resolve-source-works.ts",
+    "quotes:export-csv": "tsx scripts/normalize-quotes/06-export-pending-csv.ts",
+    "quotes:promote": "tsx scripts/normalize-quotes/07-promote-verified.ts"
+  },
+  "devDependencies": {
+    "@inquirer/prompts": "^8.3.0",
+    "@types/js-yaml": "^4.0.9",
+    "graphology": "^0.26.0",
+    "graphology-layout-forceatlas2": "^0.10.1",
+    "js-yaml": "^4.1.1",
+    "tsx": "^4.21.0",
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@10.26.1",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "^19",
+      "@types/react-dom": "^19",
+      "react": "^19.2.1",
+      "react-dom": "^19.2.1"
     },
-    "devDependencies": {
-        "@inquirer/prompts": "^8.3.0",
-        "@types/js-yaml": "^4.0.9",
-        "graphology": "^0.26.0",
-        "graphology-layout-forceatlas2": "^0.10.1",
-        "js-yaml": "^4.1.1",
-        "tsx": "^4.21.0",
-        "turbo": "latest"
-    },
-    "packageManager": "pnpm@10.26.1",
-    "pnpm": {
-        "overrides": {
-            "@types/react": "^19",
-            "@types/react-dom": "^19",
-            "react": "^19.2.1",
-            "react-dom": "^19.2.1"
-        },
-        "onlyBuiltDependencies": [
-            "esbuild",
-            "sharp",
-            "unrs-resolver"
-        ]
-    },
-    "dependencies": {
-        "@anthropic-ai/sdk": "^0.68.0"
-    }
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0"
+  }
 }
