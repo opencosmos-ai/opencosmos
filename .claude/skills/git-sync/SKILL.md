@@ -44,7 +44,13 @@ Fetch the default branch on its own, not bundled with other refspecs in one comm
 
 ## Step 3: Check whether the current branch's PR already merged
 
-If a GitHub tool is available in this session (an MCP GitHub server, `gh` CLI, etc.), check the PR for the current branch directly — merged state, not just open/closed. If no such tool is available, infer it: `git log --oneline origin/<default>..<current-branch>` returns nothing (or only commits also reachable from the default branch) is a strong signal the branch's content already landed.
+**Prefer a GitHub tool over `git log` whenever one is available** (an MCP GitHub server, `gh` CLI, etc.) — query the branch's PR directly for its merged state. This is the authoritative check regardless of how the repo merges (merge commit, squash, or rebase), and it isn't fooled by a merge strategy that never makes the original branch commits literal ancestors of the default branch.
+
+**Re-run Step 2's fetch immediately before this check if any real time has passed since you last fetched** — in a fast-merge repo, a PR can land in the gap between an earlier fetch and now, and checking against a stale `origin/<default>` produces a false "not merged" for a branch that in fact just landed. (This isn't hypothetical: it happened mid-session once already — a PR merged in the seconds between a fetch and the API check that followed it.)
+
+**Only fall back to `git log --oneline origin/<default>..<current-branch>` when no GitHub tool is available**, and read its output asymmetrically:
+- **Empty** is trustworthy: every commit on the branch is provably reachable from the default branch, so it's merged.
+- **Non-empty is not proof the branch is unmerged.** A squash or rebase merge never makes the original commits literal ancestors of the default branch, even once the content has fully landed — this output alone can't tell a genuinely unmerged branch apart from one merged that way. Treat it as inconclusive, say so plainly, and don't rebuild the branch (Step 4) on the strength of this signal alone unless you also know the repo only ever uses ordinary merge commits.
 
 ## Step 4: Rebuild or continue
 
