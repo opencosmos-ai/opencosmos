@@ -521,8 +521,22 @@ async function listExisting(index: Index): Promise<Map<string, string | undefine
 
 async function main() {
   const args = new Set(process.argv.slice(2))
+
+  // Refuse what we do not understand. This script writes to a shared index, and
+  // an unrecognised flag used to be ignored in silence — so `--dry-run`, which
+  // this copy never implemented, read as a full live run. A typo in a flag on a
+  // writer is not a thing to shrug at.
+  const KNOWN_FLAGS = new Set(['--reset', '--no-sync', '--dry-run'])
+  const unknown = [...args].filter(a => !KNOWN_FLAGS.has(a))
+  if (unknown.length) {
+    console.error(`❌ Unrecognised flag(s): ${unknown.join(', ')}`)
+    console.error(`   Known flags: ${[...KNOWN_FLAGS].join(', ')}`)
+    process.exit(1)
+  }
+
   const shouldReset = args.has('--reset')
   const shouldSync = !args.has('--no-sync')
+  const dryRun = args.has('--dry-run')
 
   const vectorUrl = process.env.UPSTASH_VECTOR_REST_URL
   const vectorToken = process.env.UPSTASH_VECTOR_REST_TOKEN
@@ -534,6 +548,21 @@ async function main() {
   }
 
   const index = new Index({ url: vectorUrl, token: vectorToken })
+
+  if (dryRun) {
+    const kaizen = existsSync(KAIZEN_DIR) ? walkMd(KAIZEN_DIR) : []
+    const chunks = kaizen.flatMap(f => buildKaizenChunks(f))
+    console.log(`DRY RUN — ${chunks.length} chunks from ${kaizen.length} kaizen file(s)`)
+    for (const c of chunks) console.log('  ' + c.id)
+    const foreign = chunks.filter(c => !OWNED_PREFIXES.some(pre => c.id.startsWith(pre)))
+    console.log(
+      foreign.length
+        ? `❌ ${foreign.length} ID(s) fall outside ${OWNED_PREFIXES.join(', ')}`
+        : `✅ all ${chunks.length} IDs sit under ${OWNED_PREFIXES.join(', ')}`,
+    )
+    console.log('No writes performed.')
+    return
+  }
 
   if (shouldReset) {
     console.log('⚠️  --reset: wiping all vectors from the Upstash index...')
