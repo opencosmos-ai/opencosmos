@@ -1,3 +1,13 @@
+// ─── Why this file is still here ────────────────────────────────────────────
+//
+// The quote pipeline moved to opencosmos-ai/knowledge with the corpus. This one
+// module stayed because embed-knowledge.ts imports parseYamlFile,
+// COLLECTIVE_BUCKETS and EMBEDDABLE_STATUSES from it. That import now feeds a
+// dead branch — with knowledge/ gone the embedder finds no quote files and only
+// writes Cosmo's kaizen vectors — but it is evaluated at module load, so the
+// file has to resolve. It retires in Phase 5, when kaizen moves to
+// opencosmos-ai/cosmo and this repository stops embedding altogether.
+//
 /**
  * Shared types, constants, and helpers for the quote pipeline.
  *

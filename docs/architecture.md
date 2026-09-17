@@ -41,6 +41,20 @@
 
 ## Knowledge Base Architecture
 
+> **Relocated — September 2026.** The corpus and its toolchain now live in
+> [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge). This
+> repository no longer contains `knowledge/`, `scripts/knowledge/` (beyond the
+> kaizen embedder), `scripts/normalize-quotes/`, `publish-knowledge.ts` or
+> `knowledge-health.ts`. The app reads the corpus through a build-time content
+> fetch into `apps/web/.content/knowledge`, and the corpus repository's own
+> workflow regenerates the graphs, embeds the index and triggers the rebuild.
+>
+> The sections below still describe the pre-move layout: the pipeline stages,
+> document format and frontmatter schema remain accurate, but every path and
+> `pnpm` command should be read against the corpus repository rather than this
+> one. **This chapter is owed a rewrite for the two-repository topology.**
+
+
 The knowledge base serves two audiences through two interfaces, backed by one source of truth.
 
 ```

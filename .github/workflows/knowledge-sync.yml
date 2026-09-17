@@ -7,19 +7,24 @@ name: Knowledge Sync
 #
 # What remains for this repository is Cosmo's kaizen vectors. Those move to
 # opencosmos-ai/cosmo in Phase 5, at which point this workflow is deleted.
+#
+# The graph step is gone with the corpus. generate-wiki-graph.ts read
+# <repo>/knowledge/wiki with no empty-corpus guard, so once knowledge/ was
+# deleted a dispatch here would have built an empty graph, written it over
+# the key opencosmos-ai/knowledge maintains, and exited 0. The revalidate
+# step went with it: /library/graph is no longer fed from this repository.
 on:
   workflow_dispatch:
 
 concurrency:
-  # Cancel any in-progress run when a new push arrives.
-  # Safe: the generator always reads from the full repo checkout, not a Redis
-  # delta, so restarting from the latest HEAD always includes all merged files.
-  group: knowledge-graph-generator
+  # Cancel any in-progress run when a new one is dispatched. Safe: the embedder
+  # reads the full checkout rather than a delta, so the latest HEAD is complete.
+  group: kaizen-embed
   cancel-in-progress: true
 
 jobs:
   sync:
-    name: Sync knowledge corpus and regenerate graph
+    name: Embed Cosmo's kaizen vectors
     runs-on: ubuntu-latest
 
     steps:
@@ -37,24 +42,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Regenerate knowledge graph
-        env:
-          UPSTASH_REDIS_REST_URL:   ${{ secrets.UPSTASH_REDIS_REST_URL }}
-          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
-        run: pnpm graph
-
-      - name: Embed knowledge corpus
+      - name: Embed the kaizen learning log
         env:
           UPSTASH_VECTOR_REST_URL:   ${{ secrets.UPSTASH_VECTOR_REST_URL }}
           UPSTASH_VECTOR_REST_TOKEN: ${{ secrets.UPSTASH_VECTOR_REST_TOKEN }}
         run: pnpm embed
-
-      - name: Revalidate graph route (on-demand ISR)
-        # Triggers Next.js ISR so all users see the updated graph within seconds.
-        # The revalidate secret prevents unauthorized cache busting.
-        run: |
-          curl -X POST "${{ secrets.NEXT_PUBLIC_APP_URL }}/api/revalidate" \
-            -H "Content-Type: application/json" \
-            -H "x-revalidate-secret: ${{ secrets.REVALIDATE_SECRET }}" \
-            -d '{"path": "/library/graph"}' \
-            --fail-with-body
