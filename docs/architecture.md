@@ -12,8 +12,8 @@
 |---------|----------|--------------|------|
 | opencosmos.ai | Vercel | `opencosmos/apps/web` | Free / Pro |
 | Auth (user accounts, login, OAuth) | WorkOS AuthKit | `@workos-inc/authkit-nextjs` | Free tier |
-| Portfolio (shalomormsby.com) | Vercel | `opencosmos/apps/portfolio` | Free / Pro |
-| Creative Powerup | Vercel | `opencosmos/apps/creative-powerup` | Free / Pro |
+| Portfolio (shalomormsby.com) | Vercel | `shalomormsby/portfolio` | Free / Pro |
+| Creative Powerup (creativepowerup.com) | Vercel | `shalomormsby/creative-powerup` | Free / Pro |
 | OpenCosmos Studio (component docs) | Vercel | `opencosmos-ui/apps/web` | Free / Pro |
 | Knowledge base (docs site) | Vercel (opencosmos.ai) | `opencosmos/apps/web` | Free |
 | Knowledge base (vector store) | Upstash Vector | Cloud-primary RAG — embedding storage + similarity search | Free (10K vectors, 10K queries/day) |

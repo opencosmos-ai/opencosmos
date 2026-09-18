@@ -68,7 +68,7 @@ cd opencosmos
 pnpm install
 
 # Start portfolio
-pnpm dev --filter portfolio
+pnpm dev --filter web
 # Open http://localhost:3000
 ```
 
@@ -99,7 +99,7 @@ This platform is built on four principles:
 ```bash
 # Development
 pnpm dev                    # Start all apps
-pnpm dev --filter portfolio # Start specific app
+pnpm dev --filter web # Start specific app
 
 # Building
 pnpm build                  # Build everything
@@ -127,7 +127,7 @@ When testing design system changes before publishing:
 cd packages/ui && pnpm link --global
 
 # In this repo
-cd apps/portfolio && pnpm link --global @opencosmos/ui
+cd apps/web && pnpm link --global @opencosmos/ui
 
 # Don't forget to unlink when done
 pnpm unlink @opencosmos/ui && pnpm install

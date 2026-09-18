@@ -58,9 +58,9 @@
 | @opencosmos/ai | [Phase 6: Federated Cosmo schema](#phase-6-federated-cosmo-schema-design-phase) | ⚪ Planned | P3 | Design only — no code |
 | @opencosmos/ai | [Phase 7: Cosmo-powered CP programs](#phase-7-cosmo-powered-cp-programs) | ⚪ Planned | P3 | Depends on Phase 5 + CP tokens |
 | **@opencosmos/ui** (separate repo) | Ongoing maintenance | 🟢 Active | P1 | — |
-| **Portfolio** (`apps/portfolio`) | Case studies + consulting pipeline | ⚪ Planned | P2 | — |
-| **Creative Powerup** (`apps/creative-powerup`) | Cosmo integration | ⚪ Planned | P3 | Depends on Phase 2 CP tokens |
-| **Stocks** (`apps/stocks`) | TBD | ⚪ Planned | P3 | No active sprint |
+| **Portfolio** ([shalomormsby/portfolio](https://github.com/shalomormsby/portfolio)) | Case studies + consulting pipeline | ⚪ Planned | P2 | — |
+| **Creative Powerup** ([shalomormsby/creative-powerup](https://github.com/shalomormsby/creative-powerup)) | Cosmo integration | ⚪ Planned | P3 | Depends on Phase 2 CP tokens |
+| **Stocks** ([shalomormsby/stocks](https://github.com/shalomormsby/stocks)) | TBD | ⚫ Archived | — | Peeled out and archived 18 Sept 2026 |
 | **Turnstile** | Verify free-tier activation on Vercel | 🔵 Blocked | P2 | Nothing in logs — needs investigation |
 
 > Shipped sub-phases (1.0–1.2) and historical workstreams (Phase 1a Voice, Phase 1b Subscriptions, Brand Architecture Pivot) live in [Done](#done). Deprecated work (Phase 1c+ sigma.js graph) lives in [Paused / Deprecated](#paused--deprecated).
@@ -799,7 +799,7 @@ License: RAIL (not MIT).
 
 ---
 
-## Portfolio — `apps/portfolio`
+## Portfolio — [shalomormsby/portfolio](https://github.com/shalomormsby/portfolio)
 
 Production at [shalomormsby.com](https://www.shalomormsby.com/).
 
@@ -810,9 +810,9 @@ Production at [shalomormsby.com](https://www.shalomormsby.com/).
 
 ---
 
-## Creative Powerup — `apps/creative-powerup`
+## Creative Powerup — [shalomormsby/creative-powerup](https://github.com/shalomormsby/creative-powerup)
 
-Community platform. In development at ecosystem-creative-powerup.vercel.app. This is where paid Cosmo access lives (no API key required for members). See [strategy.md § Brand Architecture](strategy.md) for the OpenCosmos / CP split.
+Community platform. In development at [creativepowerup.com](https://creativepowerup.com/). This is where paid Cosmo access lives (no API key required for members). See [strategy.md § Brand Architecture](strategy.md) for the OpenCosmos / CP split.
 
 **Open tasks:**
 - [ ] CP member token access on OpenCosmos — see [Phase 2](#phase-2-cp-member-token-access--top-up) above; requires Circle webhook or equivalent membership verification
@@ -820,9 +820,12 @@ Community platform. In development at ecosystem-creative-powerup.vercel.app. Thi
 
 ---
 
-## Stocks — `apps/stocks`
+## Stocks — [shalomormsby/stocks](https://github.com/shalomormsby/stocks)
 
-AI-powered investment intelligence. In development. No active sprint items.
+AI-powered investment intelligence, BUSL 1.1. **Archived.** Peeled out of this
+repository on 18 September 2026 with its history intact and the repository marked
+read-only. Dormant since its Vercel deployment was disconnected on 2026-03-09;
+resuscitate by un-archiving rather than by starting again.
 
 ---
 

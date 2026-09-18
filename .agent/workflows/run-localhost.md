@@ -23,7 +23,7 @@ To run the local development server efficiently and avoid common pitfalls (like 
 
     *   **For Portfolio**:
         ```bash
-        pnpm dev --filter portfolio
+        pnpm dev --filter web
         ```
 
     *   **For Creative Powerup**:

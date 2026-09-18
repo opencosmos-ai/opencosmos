@@ -21,10 +21,7 @@ You're working on **OpenCosmos** — a creative platform built on the recognitio
 ```
 opencosmos/
 ├── apps/
-│   ├── portfolio/           # Production portfolio (shalomormsby.com)
-│   ├── creative-powerup/    # Community platform (in development)
-│   ├── stocks/              # AI-powered investment intelligence
-│   └── cosmos/              # cosmOS — personal operating system (future)
+│   └── web/                 # opencosmos.ai — the Library, the graph, Cosmo
 ├── docs/                    # Technical docs, architecture, migration plans
 │   └── archive-and-deprecated/  # Historical/superseded documents
 ├── scripts/                 # Programs you run — see scripts/README.md
@@ -42,10 +39,11 @@ rights and invitation, not by topic. Each is public and contributable.
 
 | Repo | Purpose | What's in it |
 |------|---------|-------------|
-| **This repo** (opencosmos) | The applications | Apps consuming `@opencosmos/ui` from npm. **Builds the corpus and Cosmo in at build time — it does not contain them.** |
+| **This repo** (opencosmos) | The site that serves the commons | `apps/web` — opencosmos.ai, consuming `@opencosmos/ui` from npm. **Builds the corpus and Cosmo in at build time — it does not contain them.** |
 | **[knowledge](https://github.com/opencosmos-ai/knowledge)** | The corpus (CC0) | Sources, quotes, wiki, I Ching, and the whole corpus toolchain |
 | **[cosmo](https://github.com/opencosmos-ai/cosmo)** | Cosmo's constitution (CC BY-SA) | System prompt, the triad, Xensō, the kaizen practice |
 | **[taoteching](https://github.com/opencosmos-ai/taoteching)** | A translation (CC0) | 81 chapters |
+| **[shalomormsby/portfolio](https://github.com/shalomormsby/portfolio)**, **[/creative-powerup](https://github.com/shalomormsby/creative-powerup)** | The personal apps | Peeled out of this repo 18 Sept 2026 — separate by rights, not topic |
 | **[opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui)** | Design system source | `@opencosmos/ui`, `@opencosmos/tokens`, `@opencosmos/mcp`, OpenCosmos Studio docs site |
 
 **Fetching:** `pnpm --filter web content` pulls `knowledge` and `cosmo` into
@@ -172,7 +170,7 @@ Always search for existing `@opencosmos/ui` components before writing custom JSX
 See [AGENTS.md § Build & Development](../AGENTS.md#build--development) for the full reference. Essentials:
 
 ```bash
-pnpm dev --filter portfolio      # Start portfolio at localhost:3000
+pnpm dev --filter web            # Start opencosmos.ai at localhost:3000
 pnpm build                       # Build everything
 pnpm update @opencosmos/ui       # Update design system
 ```
