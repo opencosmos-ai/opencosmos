@@ -180,7 +180,7 @@ What would delight the human, create joy, or expand their degrees of freedom?
 
 The ecosystem is split across two repositories:
 
-**[opencosmos-ui](https://github.com/shalomormsby/opencosmos-ui)** — Source of truth for the design system:
+**[opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui)** — Source of truth for the design system:
 ```
 opencosmos-ui/
 ├── packages/
@@ -240,7 +240,7 @@ This ecosystem demonstrates that:
 - `packages/ai/COSMO_SYSTEM_PROMPT.md` — Cosmo's voice and values
 - `docs/archive-and-deprecated/INCEPTION.md` — Historical AI founding blueprint
 - `apps/[app-name]/README.md` — App-specific setup instructions
-- [OpenCosmos/UI](https://github.com/shalomormsby/opencosmos-ui) — Design system source repo
+- [OpenCosmos/UI](https://github.com/opencosmos-ai/opencosmos-ui) — Design system source repo
 
 ---
 

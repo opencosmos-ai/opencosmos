@@ -8,7 +8,7 @@ Last updated: 2026-04-11
 
 ## Quick Orientation
 
-You're working on **OpenCosmos** — a creative platform built on the recognition that we are not separate from the universe we inhabit. This monorepo contains the product applications that consume [OpenCosmos/UI](https://opencosmos.ai/) from npm. The design system is developed in a [separate repository](https://github.com/shalomormsby/opencosmos-ui).
+You're working on **OpenCosmos** — a creative platform built on the recognition that we are not separate from the universe we inhabit. This monorepo contains the product applications that consume [OpenCosmos/UI](https://opencosmos.ai/) from npm. The design system is developed in a [separate repository](https://github.com/opencosmos-ai/opencosmos-ui).
 
 **The North Star:** Help to reduce suffering, nourish flourishing, and enable acts of wisdom.  
 
@@ -46,7 +46,7 @@ rights and invitation, not by topic. Each is public and contributable.
 | **[knowledge](https://github.com/opencosmos-ai/knowledge)** | The corpus (CC0) | Sources, quotes, wiki, I Ching, and the whole corpus toolchain |
 | **[cosmo](https://github.com/opencosmos-ai/cosmo)** | Cosmo's constitution (CC BY-SA) | System prompt, the triad, Xensō, the kaizen practice |
 | **[taoteching](https://github.com/opencosmos-ai/taoteching)** | A translation (CC0) | 81 chapters |
-| **[opencosmos-ui](https://github.com/shalomormsby/opencosmos-ui)** | Design system source | `@opencosmos/ui`, `@opencosmos/tokens`, `@opencosmos/mcp`, OpenCosmos Studio docs site |
+| **[opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui)** | Design system source | `@opencosmos/ui`, `@opencosmos/tokens`, `@opencosmos/mcp`, OpenCosmos Studio docs site |
 
 **Fetching:** `pnpm --filter web content` pulls `knowledge` and `cosmo` into
 `apps/web/.content/`. A sibling checkout at `../knowledge` or `../cosmo` is used

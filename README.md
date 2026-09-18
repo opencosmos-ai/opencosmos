@@ -20,7 +20,7 @@ This platform expresses one unified vision through multiple products:
 - **[Stocks](https://stocks.shalomormsby.com/)** — AI-powered investment intelligence that respects user agency
 - **cosmOS** — Personal operating system for creative work *(concept)*
 
-**The unifying element:** All apps consume [OpenCosmos/UI](https://github.com/shalomormsby/opencosmos-ui) (`@opencosmos/*` packages) from npm, which embodies human-centered principles into every component, token, and interaction.
+**The unifying element:** All apps consume [OpenCosmos/UI](https://github.com/opencosmos-ai/opencosmos-ui) (`@opencosmos/*` packages) from npm, which embodies human-centered principles into every component, token, and interaction.
 
 ---
 
@@ -41,7 +41,7 @@ opencosmos/
 
 ### Design System
 
-OpenCosmos/UI is maintained in a [separate repository](https://github.com/shalomormsby/opencosmos-ui) and consumed via npm:
+OpenCosmos/UI is maintained in a [separate repository](https://github.com/opencosmos-ai/opencosmos-ui) and consumed via npm:
 
 ```bash
 pnpm add @opencosmos/ui
