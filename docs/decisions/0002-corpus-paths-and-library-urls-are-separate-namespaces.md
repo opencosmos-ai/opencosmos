@@ -20,7 +20,7 @@ This distinction is what made renaming `/knowledge` to `/library` safe. Citation
 
 Renaming the corpus directory attacks that same property from the other side. Every chunk id changes, so the embed reconciliation deletes ~4,000 vectors and re-upserts ~4,000 replacements. Worse, the citation vocabulary either stops matching the directory — a deeper incoherence than the one being fixed — or changes, breaking every token already sitting in conversation history unless dual-prefix support is carried forever.
 
-There is also a scoping reason the names should differ. `knowledge/` is a superset of what the Library shows: it covers `iching/` (a keyed lookup table deliberately never embedded), `incoming/` (unreviewed staging) and `data/quotes-pending/` (records that have not cleared provenance), none of which appear at `/library`. Naming it `library/` would assert an equivalence that is false and make `library/incoming/` read as a promise the Library does not keep.
+There is also a scoping reason the names should differ. `knowledge/` is a superset of what the Library shows: it covers `incoming/` (unreviewed staging) and `data/quotes-pending/` (records that have not cleared provenance), neither of which appears at `/library`. Naming it `library/` would assert an equivalence that is false and make `library/incoming/` read as a promise the Library does not keep.
 
 ## Decision
 
