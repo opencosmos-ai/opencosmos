@@ -18,7 +18,7 @@ There is also a values dimension. The question of whether this work could be a c
 
 Build on `@cosmos.gl/graph` (MIT) and publish the React wrapper as **`@opencosmos/constellation`**, a standalone package, rather than a component inside `@opencosmos/ui`.
 
-Consumers import the renderer from `@opencosmos/constellation`; the graph payload is generated separately by `scripts/knowledge/generate-constellation-graph.ts` and served from Redis.
+Consumers import the renderer from `@opencosmos/constellation`; the graph payload is generated separately by [`scripts/knowledge/generate-constellation-graph.ts`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/generate-constellation-graph.ts), in [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge), and served from Redis.
 
 ## Consequences
 

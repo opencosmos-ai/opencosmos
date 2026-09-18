@@ -18,7 +18,7 @@ Use Upstash Vector as the single retrieval substrate for the corpus, with embedd
 
 Chunk ids are corpus paths — `knowledge/sources/x.md#section-slug`, `knowledge/quotes/y.yaml#q_0003` — which is what makes 0002 load-bearing and what lets the embed pipeline reconcile: list every id in the index, diff against the corpus, delete what no longer exists. Renames and deletions stay correct without manual cleanup.
 
-`scripts/knowledge/embed-knowledge.ts` is the only writer. The index is derived state, rebuildable from the repository with `pnpm embed`.
+[`scripts/knowledge/embed-knowledge.ts`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts) in [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) is the corpus's only writer, run there with `npm run embed`. Cosmo's kaizen vectors are written by [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo) under the `kaizen/` prefix; each side reconciles only the prefixes it owns. The index is derived state, rebuildable from those repositories.
 
 ## Consequences
 

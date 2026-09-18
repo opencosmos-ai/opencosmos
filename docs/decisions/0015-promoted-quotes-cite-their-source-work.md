@@ -8,7 +8,7 @@ _The constellation's `quote → work` edge had never fired once because the emit
 
 The constellation defines a four-tier hierarchy, and its intended shape is quotes orbiting the works they came from — a `cites` edge from quote to work, with `member_of` to a tradition as the fallback for quotes whose source isn't in the corpus.
 
-That edge had **never fired, for any of the 349 promoted quotes**. `emitQuoteBlock` in `scripts/normalize-quotes/shared.ts` wrote `source_work: null` unconditionally, so every quote took the fallback and hung off its tradition. The graph looked plausible, which is why nobody noticed: a tradition-clustered constellation is a reasonable-looking constellation.
+That edge had **never fired, for any of the 349 promoted quotes**. `emitQuoteBlock` in the corpus repository's `scripts/normalize-quotes/shared.ts` wrote `source_work: null` unconditionally, so every quote took the fallback and hung off its tradition. The graph looked plausible, which is why nobody noticed: a tradition-clustered constellation is a reasonable-looking constellation.
 
 Meanwhile Stage 3 had recorded `earliest_print_source` for 338 quotes, and some of those name works the corpus actually holds — *Meditations*, *Leaves of Grass*, the *Tao Te Ching*, the *Dhammapada*. The data to draw the edge existed; nothing was reading it.
 
@@ -16,7 +16,7 @@ The obvious matcher — does the print source contain a corpus work's title — 
 
 ## Decision
 
-`09-resolve-source-works.ts` (`pnpm quotes:link-works`) resolves `source_work` by matching a quote's `earliest_print_source` against corpus works, requiring **both**:
+`09-resolve-source-works.ts` (`npm run quotes:link-works`) resolves `source_work` by matching a quote's `earliest_print_source` against corpus works, requiring **both**:
 
 1. the work's title appears in the print source, and
 2. the authors agree — work author matches quote author, or the work's author name appears in the print source

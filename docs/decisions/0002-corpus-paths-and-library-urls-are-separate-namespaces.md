@@ -2,11 +2,11 @@
 
 **Date:** 2026-08-22 · **Status:** Accepted · **Relates to** 0004, 0008
 
-_The `knowledge/` directory and the `/library` URL look inconsistent and are not: the corpus path is an identifier baked into stored data, and renaming it would break every citation Cosmo has ever emitted._
+_The `knowledge/` prefix and the `/library` URL look inconsistent and are not: the corpus path is an identifier baked into stored data, and renaming it would break every citation Cosmo has ever emitted._
 
 ## Context
 
-The corpus lives on disk at `knowledge/`. The pages that serve it live at `/library`. A reader encountering both will reasonably assume someone forgot to finish a rename, and will be tempted to finish it.
+The corpus is addressed as `knowledge/`. The pages that serve it live at `/library`. A reader encountering both will reasonably assume someone forgot to finish a rename, and will be tempted to finish it.
 
 They are not the same kind of thing. A corpus path is an **identifier**, not a location:
 
@@ -20,7 +20,7 @@ This distinction is what made renaming `/knowledge` to `/library` safe. Citation
 
 Renaming the corpus directory attacks that same property from the other side. Every chunk id changes, so the embed reconciliation deletes ~4,000 vectors and re-upserts ~4,000 replacements. Worse, the citation vocabulary either stops matching the directory — a deeper incoherence than the one being fixed — or changes, breaking every token already sitting in conversation history unless dual-prefix support is carried forever.
 
-There is also a scoping reason the names should differ. `knowledge/` is a superset of what the Library shows: it holds `iching/` (a keyed lookup table deliberately never embedded), `incoming/` (unreviewed staging), and `specifications/`, none of which appear at `/library`. Naming the directory `library/` would assert an equivalence that is false and make `library/incoming/` read as a promise the Library does not keep.
+There is also a scoping reason the names should differ. `knowledge/` is a superset of what the Library shows: it covers `iching/` (a keyed lookup table deliberately never embedded), `incoming/` (unreviewed staging) and `data/quotes-pending/` (records that have not cleared provenance), none of which appear at `/library`. Naming it `library/` would assert an equivalence that is false and make `library/incoming/` read as a promise the Library does not keep.
 
 ## Decision
 
@@ -33,10 +33,11 @@ Treat these as two namespaces with different lifetimes and different owners.
 
 `apps/web/lib/corpus-href.ts` is the single translation layer between them, shared by the chat renderer, the constellation, and the library index so all three agree. Changing the reader-facing base is a one-constant edit there.
 
-When searching for URLs to update, match on the **leading slash** — `'/knowledge` — never bare `knowledge`. The bare string appears in corpus paths, `scripts/knowledge/`, `/api/knowledge/*`, and the `/knowledge-compile` family of slash commands, none of which are URLs.
+When searching for URLs to update, match on the **leading slash** — `'/knowledge` — never bare `knowledge`. The bare string appears in corpus paths, in the corpus repository's `scripts/knowledge/`, in `/api/knowledge/*`, and in the `/knowledge-compile` family of slash commands, none of which are URLs.
 
 ## Consequences
 
+- **This was tested in September 2026 and held.** The corpus left the monorepo for [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge), where it *is* the repository root — so the directory named `knowledge/` stopped existing. Every chunk id still begins `knowledge/`, deliberately, and the embedder now carries an explicit `CORPUS_PREFIX` to keep it that way. Nothing re-embedded, no citation broke. A path that survives its own directory is the clearest possible demonstration that it was never a location.
 - The apparent inconsistency between `knowledge/` and `/library` is permanent and intentional. This record exists so it is not repeatedly rediscovered as a bug.
 - Reader-facing URLs stay cheap to change; the corpus stays stable.
 - A future rename of the corpus directory is possible but is a data migration, not a rename: it requires a full re-embed and dual-prefix citation support for the lifetime of stored conversations.

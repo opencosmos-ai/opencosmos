@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-07 · **Status:** Accepted · **Implements** 0003 · **Relates to** 0012
 
-_Unverified quotes live outside `knowledge/` entirely, so they cannot leak into the index by accident rather than by policy._
+_Unverified quotes live outside the corpus categories entirely, so they cannot leak into the index by accident rather than by policy._
 
 ## Context
 
@@ -16,12 +16,12 @@ A quote is also not shaped like the rest of the corpus. It has no sections, no t
 
 Two physically separate pools:
 
-- **`knowledge/quotes/*.yaml`** — embeddable records only, `status ∈ {verified, attributed}`. One YAML file per author, plus three collective files: `proverbs.yaml` (traditional sayings), `attributed-collectives.yaml` (e.g. a Delphic maxim), `anonymous.yaml` (unknown).
+- **`quotes/*.yaml`** — embeddable records only, `status ∈ {verified, attributed}`. One YAML file per author, plus three collective files: `proverbs.yaml` (traditional sayings), `attributed-collectives.yaml` (e.g. a Delphic maxim), `anonymous.yaml` (unknown).
 - **`data/quotes-pending/`** — everything awaiting validation, as `pending.jsonl` plus a working `pending.csv`.
 
-`data/` is outside `knowledge/`, so the embed pipeline never walks it. The separation is structural: an unverified quote is not in a place the indexer looks.
+`data/quotes-pending/` is not a corpus category, and the embedder refuses to descend into it. The separation is structural: an unverified quote is not in a place the indexer looks. Both pools now live in [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge).
 
-Stage 3 mutates the pending pool; Stage 4 applies human decisions; `pnpm quotes:promote` migrates records that clear the bar into the embeddable pool. Promotion is the only path in, and it lives in one script.
+Stage 3 mutates the pending pool; Stage 4 applies human decisions; `npm run quotes:promote` migrates records that clear the bar into the embeddable pool. Promotion is the only path in, and it lives in one script.
 
 Three collective files rather than one because the tradition signal is what the graph clusters on — "Zen proverb", "Delphic maxim", and "unknown" are genuinely different, and merging them later is trivial if any turns out redundant.
 
@@ -30,7 +30,7 @@ Three collective files rather than one because the tradition signal is what the 
 - The guarantee in 0003 holds by construction. No consumer can accidentally embed an unverified quote, because the file is not there.
 - One file per author gives readable diffs and no edit collisions between authors.
 - Promotion is auditable: a single script, with `--dry`, that reports exactly what moved.
-- The pools must reconcile, so `pnpm quotes:lint` checks cross-pool integrity — unique ids, no overlap, and every record from the original import present in exactly one pool.
+- The pools must reconcile, so `npm run quotes:lint` checks cross-pool integrity — unique ids, no overlap, and every record from the original import present in exactly one pool.
 - Two locations to reason about, and a `data/` directory that is corpus-adjacent but deliberately not corpus.
 - YAML files in the embeddable pool are written by the pipeline, so they are not hand-edited (see 0012 for what became canonical).
 

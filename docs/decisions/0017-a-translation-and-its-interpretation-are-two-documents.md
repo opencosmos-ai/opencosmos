@@ -37,13 +37,13 @@ And one guess that was wrong: `quiesence` looked like a misspelling of *quiescen
 
 2. **A translator's voice is typographically separable from the source text.** Woods's group headings and group summaries are his own — the section's own subtitle says *"group-headings added by the translator"* — so summaries are italic and sutras bold. This is a retrieval requirement, not styling: an undifferentiated chunk lets a translator's paraphrase be quoted as scripture.
 
-3. **A text declares its transcription warrant.** Human transcription and machine OCR are different grades and the document says which. This generalises [`knowledge/iching/sources/PROVENANCE.md`](../../knowledge/iching/sources/PROVENANCE.md) — *"Before any OCR-grade line is quoted or relied on, check it against the scan"* — from the I Ching to the whole corpus.
+3. **A text declares its transcription warrant.** Human transcription and machine OCR are different grades and the document says which. This generalises [`iching/sources/PROVENANCE.md`](https://github.com/opencosmos-ai/iching/blob/main/sources/PROVENANCE.md) — *"Before any OCR-grade line is quoted or relied on, check it against the scan"* — from the I Ching to the whole corpus.
 
 4. **Repair only where independent witnesses agree, and never splice across textual states.** Agreement is what licenses a repair. Disagreement means you may have found two books rather than one error, and the burden is to establish which.
 
 5. **Orthography goes to the page images.** Diacritics, and anything else the type carries but a text layer cannot, are settled against the scan itself or left alone and flagged.
 
-6. **Repairs are auditable tables in version control, with per-entry evidence and occurrence assertions** — never silent edits. [`scripts/knowledge/groom.py`](../../scripts/knowledge/groom.py) carries 61 repairs for Johnston, and for Woods 35 line-break hyphen decisions plus 13 Sanskrit readings, each recording the folio or the evidence it rests on.
+6. **Repairs are auditable tables in version control, with per-entry evidence and occurrence assertions** — never silent edits. [`scripts/knowledge/groom.py`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/groom.py) carries 61 repairs for Johnston, and for Woods 35 line-break hyphen decisions plus 13 Sanskrit readings, each recording the folio or the evidence it rests on.
 
 ## Consequences
 

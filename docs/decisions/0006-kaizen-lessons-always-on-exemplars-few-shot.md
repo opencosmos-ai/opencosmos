@@ -18,8 +18,8 @@ Naming matters here too. Grouping the artifacts under `kaizen/` (改善, increme
 
 Two mechanisms, deliberately different:
 
-- **Lessons — always on.** `packages/ai/kaizen/LESSONS.md` is a curated digest read at build time and injected as a system block on every turn. Never retrieved, never optional. It sets a floor.
-- **Exemplars — few-shot.** `packages/ai/kaizen/exemplars/cosmo/*.md` are curated real sessions, frontmatter stripped, injected as a cached block to steer voice and rhythm. They set a ceiling. Absorb the posture; do not reuse the words.
+- **Lessons — always on.** [`kaizen/LESSONS.md`](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/LESSONS.md) is a curated digest read at build time and injected as a system block on every turn. Never retrieved, never optional. It sets a floor.
+- **Exemplars — few-shot.** [`kaizen/exemplars/cosmo/*.md`](https://github.com/opencosmos-ai/cosmo/tree/main/kaizen/exemplars/cosmo) are curated real sessions, frontmatter stripped, injected as a cached block to steer voice and rhythm. They set a ceiling. Absorb the posture; do not reuse the words.
 
 The kaizen material is *also* indexed with `role: 'kaizen'` so Cosmo can answer honestly when asked what it has learned — but it is rendered under a separate "Your Learning Log" heading with anti-citation framing, so a logged failure is never read back as wisdom to repeat.
 
