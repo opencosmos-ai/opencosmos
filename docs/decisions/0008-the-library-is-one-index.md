@@ -10,7 +10,7 @@ Quotes are YAML records with a provenance block. Documents are markdown with fro
 
 That difference was then allowed to propagate upward. Quotes got their own route, their own browser component, and their own index page, because a quote tile and a document tile do not look alike. No one decided the corpus should have two rooms; a parsing detail decided it.
 
-The cost was concrete and user-visible: **searching "einstein" on the library returned zero results** while `knowledge/quotes/albert-einstein.yaml` held eleven quotes one route away. The two browsers had also drifted into near-clones — byte-identical pill and card class strings — and the library index page already imported both readers, rendering quotes as a teaser card instead of merging them. The merge point existed and was unused.
+The cost was concrete and user-visible: **searching "einstein" on the library returned zero results** while `quotes/albert-einstein.yaml` held eleven quotes one route away. The two browsers had also drifted into near-clones — byte-identical pill and card class strings — and the library index page already imported both readers, rendering quotes as a teaser card instead of merging them. The merge point existed and was unused.
 
 Investigating surfaced that the silo was the smaller half of the problem. The document filter searched `title`, `summary`, `tags`, `domain` — **not `author`**, which the card nonetheless rendered. So "hesse" failed too, quotes or no quotes.
 

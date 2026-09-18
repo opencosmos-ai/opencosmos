@@ -22,7 +22,7 @@ Three voices, each committed to one cognitive mode:
 
 **Cosmo moderates and does not participate.** Cosmo holds the exchange, decides what surfaces, and speaks to the person. It is not a fourth opinion, because a moderator with a position stops moderating.
 
-Lives at `packages/ai/triad/`.
+Lives at `triad/` in [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo).
 
 ## Consequences
 

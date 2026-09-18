@@ -6,7 +6,7 @@ _Once every quote carried a provenance verdict, the original import stopped bein
 
 ## Context
 
-`knowledge/quotes/_source/quotes_normalized.jsonl` seeded the corpus in May 2026. `01-jsonl-to-yaml.ts` (`pnpm quotes:normalize`) read it and rebuilt both pools, wiping whatever was there first. That was correct and safe while the source genuinely was the truth and the pools were pure derivations.
+`quotes/_source/quotes_normalized.jsonl` seeded the corpus in May 2026. `01-jsonl-to-yaml.ts` (`pnpm quotes:normalize`) read it and rebuilt both pools, wiping whatever was there first. That was correct and safe while the source genuinely was the truth and the pools were pure derivations.
 
 It stopped being true incrementally, then completely. The pools accumulated provenance verdicts for all 1,509 records, human review decisions, promotion state, `reviewed_by_human` flags, and resolved `source_work` links — **none of which exist in the source file**. A re-run would have silently discarded all of it and reported success.
 
@@ -18,8 +18,8 @@ There was also no supported way to add a quote. The only entry point was editing
 
 The YAML pool and `pending.jsonl` are the source of truth. `_source/quotes_normalized.jsonl` is the historical import, retained for provenance of the corpus itself.
 
-- `01-jsonl-to-yaml.ts` is **retired**: renamed to `pnpm quotes:migrate-from-source`, and it refuses to run without `--i-know-this-wipes`, printing what it would destroy first. Kept rather than deleted because it documents how the corpus was built and a re-import from a corrected source is imaginable.
-- New quotes enter through **`pnpm quotes:add`** (`08-add-quote.ts`), the single enforcement point for id allocation, author-key normalization, routing, and duplicate detection. `--json` is the primary interface because quotes are full of apostrophes and em-dashes and shell escaping eventually mangles one.
+- `01-jsonl-to-yaml.ts` is **retired**: renamed to `npm run quotes:migrate-from-source`, and it refuses to run without `--i-know-this-wipes`, printing what it would destroy first. Kept rather than deleted because it documents how the corpus was built and a re-import from a corrected source is imaginable.
+- New quotes enter through **`npm run quotes:add`** (`08-add-quote.ts`), the single enforcement point for id allocation, author-key normalization, routing, and duplicate detection. `--json` is the primary interface because quotes are full of apostrophes and em-dashes and shell escaping eventually mangles one.
 - The `/new-quote` skill is the conversational front door and *drives* that script rather than writing YAML itself, so there is one enforcement point rather than two implementations that drift.
 - `quotes:lint` changed from an exact-count check to **source coverage**: every id in the import must still live in exactly one pool, but ids beyond it are legal.
 

@@ -16,7 +16,7 @@ Web search was where the money went, and it was also not needed. Provenance asse
 
 ## Decision
 
-Run validation through Claude Code subagents rather than the API. `scripts/normalize-quotes/02b-checkpoint.ts` queues batches as input files, fans them out to subagents, and takes verdicts back.
+Run validation through Claude Code subagents rather than the API. [`scripts/normalize-quotes/02b-checkpoint.ts`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/normalize-quotes/02b-checkpoint.ts) queues batches as input files, fans them out to subagents, and takes verdicts back.
 
 **The checkpoint format is unchanged**, so `03-merge-validation.ts` consumes either driver's output without knowing which produced it, and the original API driver stays valid for anyone who wants it.
 
