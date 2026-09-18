@@ -50,7 +50,7 @@ opencosmos/
    ```bash
    pnpm install
    pnpm build
-   pnpm dev --filter portfolio
+   pnpm dev --filter web
    ```
    Portfolio runs at **http://localhost:3000**.
 
@@ -87,25 +87,23 @@ Skills are procedures an agent follows. For programs it runs, see
 
 ## Applications
 
-### Portfolio (`apps/portfolio/`)
-- **URL:** [shalomormsby.com](https://www.shalomormsby.com/)
-- **Purpose:** Proof of the design philosophy. Showcases the Customizer.
-- **Deps:** `@opencosmos/ui` (npm)
+### The Library (`apps/web/`)
+- **URL:** [opencosmos.ai](https://opencosmos.ai/)
+- **Purpose:** The site that serves the commons — the Library, the graph, Cosmo.
+- **Deps:** `@opencosmos/ui`, `@opencosmos/constellation` (npm)
 
-### Creative Powerup (`apps/creative-powerup/`)
-- **URL:** [ecosystem-creative-powerup.vercel.app](https://ecosystem-creative-powerup.vercel.app/)
-- **Purpose:** Community platform and experiment gallery
-- **Status:** In development
-- **Deps:** `@opencosmos/ui` (npm)
+**This is the only application in this repository.** The personal apps were
+peeled out on 18 September 2026 (migration step `c-6-7`), so the organization
+holds the commons and the site that serves it, and nothing else:
 
-### Stocks (`apps/stocks/`)
-- **Purpose:** AI-powered investment intelligence
-- **Status:** Dormant — not in use, Vercel deployment disconnected 2026-03-09. The code is preserved deliberately; resume when there's a clear publishing plan.
-- **Not built.** Excluded from both `pnpm dev` and `pnpm build`, so it is not compiled in CI and its `engines: node 20.x` pin no longer produces a warning on every build. That pin stays: this app runs `vercel dev` and Vercel reads `engines.node` to choose the serverless runtime, so it is load-bearing if the app is ever revived. Build it directly with `pnpm --filter @opencosmos/stocks build`.
+| App | Repository | URL |
+|---|---|---|
+| Portfolio | [shalomormsby/portfolio](https://github.com/shalomormsby/portfolio) | [shalomormsby.com](https://www.shalomormsby.com/) |
+| Creative Powerup | [shalomormsby/creative-powerup](https://github.com/shalomormsby/creative-powerup) | [creativepowerup.com](https://creativepowerup.com/) |
+| Stocks | [shalomormsby/stocks](https://github.com/shalomormsby/stocks) — **archived** | dormant since 2026-03-09 |
 
-### cosmOS (`apps/cosmos/`)
-- **Purpose:** Personal operating system
-- **Status:** Future
+cosmOS was a single README with no application behind it and was dropped rather
+than given a repository; its text is in this repository's history.
 
 ---
 
@@ -200,7 +198,7 @@ When testing design system changes before publishing:
 cd packages/ui && pnpm link --global
 
 # In this repo
-cd apps/portfolio && pnpm link --global @opencosmos/ui
+cd apps/web && pnpm link --global @opencosmos/ui
 
 # Unlink when done
 pnpm unlink @opencosmos/ui && pnpm install
@@ -224,7 +222,7 @@ Zustand for client-side state with localStorage persistence.
 
 ```typescript
 // App-specific store
-// apps/portfolio/store/navigation.ts
+// apps/web/store/navigation.ts
 import { create } from 'zustand'
 
 interface NavigationState {
@@ -247,11 +245,11 @@ Design system stores (`useTheme`, `useMotionPreference`) come from `@opencosmos/
 ```bash
 # Development
 pnpm dev                         # Start all apps
-pnpm dev --filter portfolio      # Start specific app
+pnpm dev --filter web      # Start specific app
 
 # Build
 pnpm build                       # Build everything
-pnpm build --filter portfolio    # Build specific app
+pnpm build --filter web    # Build specific app
 
 # Quality
 pnpm lint

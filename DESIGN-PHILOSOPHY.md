@@ -134,14 +134,17 @@ For AI agents working in this repo: the [`/create` skill](.claude/skills/create/
 
 ### The Expressions (Current)
 
-**Portfolio** (`apps/portfolio/`)
+**The Library** (`apps/web/` — [opencosmos.ai](https://opencosmos.ai/))
+The commons made readable. The corpus, the constellation graph, and Cosmo.
+
+**Portfolio** ([shalomormsby/portfolio](https://github.com/shalomormsby/portfolio))
 The proof of philosophy. An interactive experience that embodies human-centered design through the experience itself.
 
-**Creative Powerup** (`apps/creative-powerup/`)
+**Creative Powerup** ([shalomormsby/creative-powerup](https://github.com/shalomormsby/creative-powerup))
 Community platform and experiment gallery for purpose-driven creators.
 
-**cosmOS** (`apps/cosmos/`)
-Personal operating system. Future home for the productivity philosophy and tools that power everything else.
+The last two moved to their own repositories on 18 September 2026. The philosophy
+is shared; the rights are not, which is the whole basis of the split.
 
 ### The Shared Foundation
 

@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "turbo run dev --concurrency 20 --filter=!@opencosmos/stocks",
-    "build": "turbo run build --filter=!@opencosmos/stocks",
+    "dev": "turbo run dev --concurrency 20",
+    "build": "turbo run build",
     "lint": "turbo run lint",
     "xenso:check-iching": "tsx scripts/xenso/iching-check.ts",
     "adr:index": "tsx scripts/adr-index.ts"
@@ -16,7 +16,7 @@
     "graphology-layout-forceatlas2": "^0.10.1",
     "js-yaml": "^4.1.1",
     "tsx": "^4.21.0",
-    "turbo": "latest"
+    "turbo": "2.11.2"
   },
   "packageManager": "pnpm@10.26.1",
   "pnpm": {
