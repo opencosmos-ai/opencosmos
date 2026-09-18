@@ -50,7 +50,7 @@ const nextConfig = {
   transpilePackages: ['@opencosmos/ui'],
   env: {
     COSMO_SYSTEM_PROMPT: readFileSync(
-      join(__dirname, '../../packages/ai/COSMO_SYSTEM_PROMPT.md'),
+      join(__dirname, '.content/cosmo/COSMO_SYSTEM_PROMPT.md'),
       'utf-8'
     ),
     COSMO_WIKI_INDEX: readFileSync(
@@ -59,17 +59,28 @@ const nextConfig = {
     ),
     // Cosmo's curated Operating Lessons digest — distilled from kaizen/feedback
     // and injected into every chat + inception turn. Optional: absent file → ''.
-    COSMO_LESSONS: readOptional('../../packages/ai/kaizen/LESSONS.md'),
+    COSMO_LESSONS: readOptional('.content/cosmo/kaizen/LESSONS.md'),
     // Curated few-shot exemplars — Cosmo at its best — injected to steer voice
     // and rhythm. Bodies concatenated, frontmatter stripped. Optional: none → ''.
-    COSMO_EXEMPLARS: readExemplars('../../packages/ai/kaizen/exemplars/cosmo'),
+    COSMO_EXEMPLARS: readExemplars('.content/cosmo/kaizen/exemplars/cosmo'),
     // Shalom-specific relational context (the Daily Mystic posture) — injected
-    // only into admin sessions, never the base prompt. Optional: absent file → ''.
-    COSMO_SHALOM_CONTEXT: readOptional('../../packages/ai/COSMO_SHALOM_CONTEXT.md'),
+    // only into admin sessions, never the base prompt. Optional: absent → ''.
+    //
+    // Deliberately absent from opencosmos-ai/cosmo, so unlike its neighbours it
+    // is NOT fetched. It comes from a local file in development and from a
+    // Vercel environment variable in deployment. The `process.env` arm is
+    // load-bearing: entries in this `env` block are inlined at build, so
+    // without it an absent file would bake '' over the top of the Vercel
+    // variable and admin sessions would go quietly generic — no error, nothing
+    // in a log, just Cosmo not knowing who it is talking to.
+    COSMO_SHALOM_CONTEXT:
+      readOptional('../../packages/ai/COSMO_SHALOM_CONTEXT.md') ||
+      process.env.COSMO_SHALOM_CONTEXT ||
+      '',
     // Xensō quest-guide module — injected only when a request arrives with
     // xensoMode: true. Adds the authorship rule, the five-question spine, the
     // three safety tiers, and the xenso-state protocol. Optional: absent → ''.
-    XENSO_MODULE: readOptional('../../packages/ai/xenso/XENSO_MODULE.md'),
+    XENSO_MODULE: readOptional('.content/cosmo/xenso/XENSO_MODULE.md'),
   },
   async headers() {
     return [
