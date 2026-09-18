@@ -47,7 +47,7 @@ pnpm build
 
 ### Adding Components
 
-If you're adding a new component to `@opencosmos/ui`, that work happens in the [opencosmos-ui](https://github.com/shalomormsby/opencosmos-ui) repository, not here.
+If you're adding a new component to `@opencosmos/ui`, that work happens in the [opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui) repository, not here.
 
 ### Contributing to the Knowledge Base
 

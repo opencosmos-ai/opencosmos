@@ -8,7 +8,7 @@ Last updated: 2026-03-08
 
 ## Quick Orientation
 
-This is a **consumer monorepo** — the product applications that use [OpenCosmos/UI](https://opencosmos.ai/). Apps here install `@opencosmos/ui` from npm. The design system packages are developed and published from a [separate repository](https://github.com/shalomormsby/opencosmos-ui).
+This is a **consumer monorepo** — the product applications that use [OpenCosmos/UI](https://opencosmos.ai/). Apps here install `@opencosmos/ui` from npm. The design system packages are developed and published from a [separate repository](https://github.com/opencosmos-ai/opencosmos-ui).
 
 ```
 opencosmos/
@@ -29,7 +29,7 @@ opencosmos/
 
 | What | Where | Why |
 |------|-------|-----|
-| `@opencosmos/ui` (components) | [opencosmos-ui](https://github.com/shalomormsby/opencosmos-ui) | Published to npm |
+| `@opencosmos/ui` (components) | [opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui) | Published to npm |
 | `@opencosmos/tokens` (design tokens) | opencosmos-ui | Published to npm |
 | `@opencosmos/mcp` (MCP server) | opencosmos-ui | Published to npm |
 | OpenCosmos Studio (component docs) | opencosmos-ui (`apps/web`) | Lives with packages it documents |
@@ -38,7 +38,7 @@ opencosmos/
 | Knowledge base + RAG API | **This repo** (`apps/web/` + `knowledge/`) | Deployed to opencosmos.ai |
 | Cosmo AI (`@opencosmos/ai`) | **This repo** (`packages/ai/`) | Platform intelligence layer |
 
-**Key rule:** To modify a component, hook, or utility from `@opencosmos/ui` — work in [opencosmos-ui](https://github.com/shalomormsby/opencosmos-ui), not here. This repo consumes published packages.
+**Key rule:** To modify a component, hook, or utility from `@opencosmos/ui` — work in [opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui), not here. This repo consumes published packages.
 
 ---
 
@@ -142,7 +142,7 @@ Sovereignty Tiers govern **compute** — where LLMs process prompts. The knowled
 | AI capabilities (shared) | `packages/ai/src/` |
 | Documentation | See "Document Organization" below |
 
-**Do NOT create `packages/ui/`, `packages/tokens/`, or `packages/mcp/` in this repo.** Those packages live in [opencosmos-ui](https://github.com/shalomormsby/opencosmos-ui).
+**Do NOT create `packages/ui/`, `packages/tokens/`, or `packages/mcp/` in this repo.** Those packages live in [opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui).
 
 ---
 
@@ -368,5 +368,5 @@ When in doubt, ask Shalom.
 - **[docs/chronicle.md](docs/chronicle.md)** — The narrative story behind the work
 - **[docs/projects/opencosmos-migration.md](docs/projects/opencosmos-migration.md)** — Active migration plan
 - **[CHANGELOG.md](CHANGELOG.md)** — Work history
-- **[OpenCosmos/UI repo](https://github.com/shalomormsby/opencosmos-ui)** — Where the design system lives
+- **[OpenCosmos/UI repo](https://github.com/opencosmos-ai/opencosmos-ui)** — Where the design system lives
 - **[opencosmos.ai](https://opencosmos.ai/)** — Interactive component documentation

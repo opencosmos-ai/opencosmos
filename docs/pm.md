@@ -785,7 +785,7 @@ Key: `/studio` maps via Vercel rewrites to the `opencosmos-ui` repo's deployed d
 
 ## @opencosmos/ui — Separate Repo
 
-Design system published to npm as `@opencosmos/ui`. Maintained in the [opencosmos-ui repo](https://github.com/shalomormsby/opencosmos-ui).
+Design system published to npm as `@opencosmos/ui`. Maintained in the [opencosmos-ui repo](https://github.com/opencosmos-ai/opencosmos-ui).
 
 **Current tasks:** Ongoing maintenance. No blocking items. Update in this repo with `pnpm update @opencosmos/ui`.
 
