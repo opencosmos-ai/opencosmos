@@ -7,7 +7,6 @@
     "build": "turbo run build --filter=!@opencosmos/stocks",
     "lint": "turbo run lint",
     "xenso:check-iching": "tsx scripts/xenso/iching-check.ts",
-    "embed": "tsx scripts/knowledge/embed-knowledge.ts",
     "adr:index": "tsx scripts/adr-index.ts"
   },
   "devDependencies": {

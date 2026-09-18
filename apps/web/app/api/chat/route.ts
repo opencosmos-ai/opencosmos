@@ -24,7 +24,7 @@ const EXEMPLARS = process.env.COSMO_EXEMPLARS ?? ''
 // build time. Injected only into admin sessions — see isAdmin below — never
 // the base prompt, so it never reaches a general-audience conversation.
 const SHALOM_CONTEXT = process.env.COSMO_SHALOM_CONTEXT ?? ''
-// Xensō quest-guide module (packages/ai/xenso/XENSO_MODULE.md), baked in at
+// Xensō quest-guide module (opencosmos-ai/cosmo → xenso/XENSO_MODULE.md), baked in at
 // build time. Injected only when a request carries xensoMode — see below.
 const XENSO_MODULE = process.env.XENSO_MODULE ?? ''
 const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL!
