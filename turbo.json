@@ -23,7 +23,15 @@
     "CIRCLE_API_KEY",
     "CIRCLE_COMMUNITY_ID",
     "NEXT_PUBLIC_TURNSTILE_SITE_KEY",
-    "TURNSTILE_SECRET_KEY"
+    "TURNSTILE_SECRET_KEY",
+    "COSMO_SHALOM_CONTEXT",
+    "XENSO_MODULE",
+    "CONTENT_TOKEN",
+    "CONTENT_REF",
+    "KNOWLEDGE_REPO",
+    "COSMO_REPO",
+    "KNOWLEDGE_LOCAL_DIR",
+    "COSMO_LOCAL_DIR"
   ],
   "tasks": {
     "build": {
@@ -41,7 +49,9 @@
     },
     "lint": {},
     "typecheck": {
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     }
   }
 }

@@ -51,3 +51,10 @@ knowledge/iching/sources/.cache/
 
 # Corpus fetched from opencosmos-ai/knowledge at build time
 apps/web/.content/
+
+# Cosmo's constitutional layer lives in opencosmos-ai/cosmo and is fetched into
+# apps/web/.content/cosmo at build time. The one file deliberately NOT published
+# there is Shalom's personal relational context: it is supplied to deployments
+# through the COSMO_SHALOM_CONTEXT environment variable, and kept here only as
+# an untracked local copy so `next dev` behaves the same as production.
+packages/ai/
