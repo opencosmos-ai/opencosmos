@@ -41,46 +41,66 @@
 
 ## Knowledge Base Architecture
 
-> **Relocated — September 2026.** The corpus and its toolchain now live in
-> [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge). This
-> repository no longer contains `knowledge/`, `scripts/knowledge/` (beyond the
-> kaizen embedder), `scripts/normalize-quotes/`, `publish-knowledge.ts` or
-> `knowledge-health.ts`. The app reads the corpus through a build-time content
-> fetch into `apps/web/.content/knowledge`, and the corpus repository's own
-> workflow regenerates the graphs, embeds the index and triggers the rebuild.
->
-> The sections below still describe the pre-move layout: the pipeline stages,
-> document format and frontmatter schema remain accurate, but every path and
-> `pnpm` command should be read against the corpus repository rather than this
-> one. **This chapter is owed a rewrite for the two-repository topology.**
+The knowledge base serves two audiences through two interfaces, backed by one source of truth — which, since September 2026, is **a different repository from the one serving it**.
 
+### Which repository holds what
 
-The knowledge base serves two audiences through two interfaces, backed by one source of truth.
+| | [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) | this repository |
+|---|---|---|
+| **Holds** | the corpus and every tool that writes it | the app that reads it |
+| **Owns** | the `knowledge/` prefix in Upstash Vector, and both Redis graph keys | nothing in the index |
+| **Runs with** | `npm run …` | `pnpm …` |
+
+The split is by *rights*, not by topic: the corpus is CC0 and contributable, the applications are not. Cosmo's constitutional layer left for the same reason and lives in a third repository, [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo), under CC BY-SA.
+
+**This repository never reads the corpus at runtime, and never writes the index.** Retrieval goes through Upstash; the corpus reaches the app as files only at build time.
+
+### The pipeline, end to end
 
 ```
-Author writes .md content → knowledge/incoming/ (staging)
+── in opencosmos-ai/knowledge ─────────────────────────────────────────────
+
+Author writes .md → incoming/ (staging, gitignored)
        │
        ▼
-Publication CLI (pnpm knowledge:publish)
+Publication CLI (npm run publish-doc)
   ├─ 1. Claude API generates enriched frontmatter (author, era, tradition…)
   ├─ 2. Author reviews (accept / edit in $EDITOR / cancel)
   ├─ 3. Cross-reference suggestions (auto-populates related_docs)
-  ├─ 4. Writes to knowledge/{role}s/{domain}-{slug}.md
+  ├─ 4. Writes to {role}s/{domain}-{slug}.md
   ├─ 5. Appends to CURATION_LOG.md + auto-links collection placeholders
   ├─ 6. Safe git: branch → commit → push → optional PR
   └─ 7. Cleans up source from incoming/
        │
        ▼
-knowledge/ (git, source of truth — this repo)
+  merge to main
        │
-       ├──→ GitHub Action ──→ Upstash Vector (embeddings, similarity search)
-       │                            ↑
-       │                 RAG API (apps/web/app/api/knowledge/)
+       ▼
+Knowledge Sync workflow — fires on any push that is not .github/**
+  ├─ npm run graph                → Redis `knowledge:graph`
+  ├─ npm run graph:constellation  → Redis `knowledge:constellation`
+  ├─ npm run embed                → Upstash Vector, incrementally
+  ├─ POST /api/revalidate         → ISR, graph visible in seconds
+  └─ POST the Vercel deploy hook  → the site rebuilds against the new corpus
        │
-       └──→ Vercel build ──→ opencosmos.ai/library (apps/web)
+── in this repository ─────────────────────────────────────────────────────
+       ▼
+Vercel build
+  ├─ apps/web/scripts/fetch-content.mjs clones knowledge + cosmo
+  │    into apps/web/.content/ (or copies a sibling checkout, locally)
+  └─ next build bakes /library at build time — 322 static pages
+       │
+       ├──→ opencosmos.ai/library          (reading)
+       └──→ RAG API, apps/web/app/api/knowledge/   (retrieval, via Upstash)
 ```
 
-Both the RAG API and the knowledge docs site live in this repo's `apps/web`, deployed to opencosmos.ai.
+Both the RAG API and the Library live in this repo's `apps/web`, deployed to opencosmos.ai. The corpus is **not** committed here; `apps/web/.content/` is gitignored and rebuilt on every install.
+
+### Why a build-time fetch rather than a runtime read
+
+`generateStaticParams` bakes the Library at build time, so the corpus has to be on disk when `next build` runs — but only then. That has a consequence worth stating plainly: **builds fetch the tip of the corpus's default branch, so they are not byte-reproducible.** That is the deliberate trade for push-to-publish. Set `CONTENT_REF` to pin a release when reproducibility matters more than freshness.
+
+The fetch refuses an empty result on either source, because a corpus that arrives empty does not fail a build — it silently produces a site with no Library.
 
 ### Document Format
 
@@ -89,7 +109,7 @@ Each knowledge document is a single `.md` file with **YAML frontmatter** — the
 ```yaml
 ---
 title: "The Dhammapada: Sayings of the Buddha"
-role: source                    # source | commentary | reference | guide | collection
+role: source                    # source | reference | guide | collection
 format: scripture               # treatise | poetry | aphorisms | scripture | dialogue | essay | manifesto | specification | manual | narrative | glossary | anthology | letter
 domain: buddhism                # Primary tradition/discipline (see domain codes)
 tags: [impermanence, suffering, liberation, mindfulness, ethics]
@@ -113,9 +133,13 @@ source: public-domain           # original | public-domain | URL | citation
 - **Docs site** → renders metadata as browsable facets (filter by domain, role, tags)
 - **Local mirror** → Open WebUI indexes the same frontmatter via its built-in RAG
 
-Full schema and domain codes: [knowledge/README.md](../knowledge/README.md). Agent retrieval guidelines: [knowledge/AGENTS.md](../knowledge/AGENTS.md).
+Roles are the singular of the directory a document is routed into, derived from one constant so the two cannot drift — see [`scripts/knowledge/corpus-layout.ts`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/corpus-layout.ts). `commentary` was a role with no directory for months and was struck in September 2026.
 
-### Publication CLI (`scripts/publish-knowledge.ts`)
+Full schema and domain codes: [the corpus README](https://github.com/opencosmos-ai/knowledge/blob/main/README.md). Agent retrieval guidelines: [its AGENTS.md](https://github.com/opencosmos-ai/knowledge/blob/main/AGENTS.md).
+
+### Publication CLI (`npm run publish-doc`)
+
+> Lives in [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) at `scripts/publish-knowledge.ts`. Run it from that repository.
 
 A CLI tool that automates the full knowledge publication workflow — from raw text to graph-connected, git-committed, curation-logged document. The author's job is to write the content; the CLI handles metadata, cross-references, curation logging, collection linking, and safe git operations.
 
@@ -127,10 +151,10 @@ A CLI tool that automates the full knowledge publication workflow — from raw t
 **Workflow:**
 
 ```
-Author copies text → knowledge/incoming/{name}.md (staging, gitignored)
+Author copies text → incoming/{name}.md (staging, gitignored)
          │
          ▼
-pnpm knowledge:publish knowledge/incoming/*.md [--role source] [--domain buddhism]
+npm run publish-doc incoming/*.md -- [--role source] [--domain buddhism]
          │
          ├─ 1. Safety check (blocks if uncommitted tracked changes exist)
          ├─ 2. Claude API generates enriched frontmatter:
@@ -143,8 +167,8 @@ pnpm knowledge:publish knowledge/incoming/*.md [--role source] [--domain buddhis
          │     audience overlap (0.5x), tradition (1x), era (0.5x)
          │     → auto-populates related_docs, reports bidirectional suggestions,
          │       warns if document would be an island (zero connections)
-         ├─ 5. Writes to knowledge/{role}s/{domain}-{slug}.md
-         ├─ 6. Appends entry to knowledge/CURATION_LOG.md
+         ├─ 5. Writes to {role}s/{domain}-{slug}.md
+         ├─ 6. Appends entry to CURATION_LOG.md
          ├─ 7. Auto-links foundation collection placeholders:
          │     "- [ ] The Dhammapada" → "- [x] [The Dhammapada](../sources/…)"
          ├─ 8. Safe git: branch → commit → push → optional PR
@@ -161,30 +185,34 @@ pnpm knowledge:publish knowledge/incoming/*.md [--role source] [--domain buddhis
 - `--pr` — create a GitHub PR after pushing
 - `--dry-run` — preview without writing, committing, or pushing
 - `--no-push` — commit locally but don't push
-- `--no-clean` — keep source files in `knowledge/incoming/` after publish
+- `--no-clean` — keep source files in `incoming/` after publish
 
-**Location:** `scripts/publish-knowledge.ts`, registered as `pnpm knowledge:publish` in root `package.json`.
+**Location:** [`scripts/publish-knowledge.ts`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/publish-knowledge.ts) in the corpus repository, registered as `publish-doc`.
 
 **Dependencies:** `gray-matter` (frontmatter parsing), `@anthropic-ai/sdk` (Claude API), `@inquirer/prompts` (interactive review).
 
-### Corpus Health Report (`scripts/knowledge-health.ts`)
+### Corpus Health Report (`npm run health`)
+
+> Also in the corpus repository, at `scripts/knowledge-health.ts`.
 
 A diagnostic tool that provides the overhead map of the corpus — which shelves are full, which are empty, where pathways exist and where they don't.
 
 ```bash
-pnpm knowledge:health
+cd ../knowledge && npm run health
 ```
 
 **Output sections:**
 - **Overview** — document count, domain coverage, graph density
 - **Domain coverage** — visual bar chart of documents per domain, empty domains flagged
-- **Role coverage** — sources vs commentary vs reference vs guides vs collections
+- **Role coverage** — sources vs references vs guides vs collections
 - **Foundation collection progress** — how many placeholder entries have been imported (scans `- [ ]` vs `- [x]` in collection files)
 - **Cross-reference integrity** — validates all `related_docs` point to existing files, flags broken refs
 - **Islands** — documents with zero incoming references (no other doc's `related_docs` points to them)
 - **Import priority** — top texts to import next, scored by collection placeholder count and domain coverage
 
-### Curation Log (`knowledge/CURATION_LOG.md`)
+**Current baseline (18 September 2026):** 112 documents, 9 of 16 domains active, 281 cross-references, all inline links resolving, 12 broken frontmatter references (a long-standing set, all pointing at one missing Rubáiyát source).
+
+### Curation Log (`CURATION_LOG.md`)
 
 A living record of what was added, when, why it matters, and what it connects. Auto-appended by the publication CLI on each publish. Each entry includes metadata, related docs, gaps served, and graph impact. Not an audit trail — a curatorial narrative.
 
@@ -213,22 +241,23 @@ Lives at `apps/web/app/api/knowledge/route.ts`, deployed to `opencosmos.ai/api/k
 - **Implementation:** `apps/web/lib/rag.ts` — `fetchRagContext()` builds a contextual query from the last 3 exchange pairs (improves retrieval for ongoing conversations), queries `topK: 8`, returns typed chunks. `formatRagChunks()` formats results as cited passage blocks for Cosmo's context window. Accepts `docChanged?: boolean` — when true, conversation history is excluded from the query so previous-document context does not pollute retrieval for the current one.
 - **Wired into chat:** `apps/web/app/api/chat/route.ts` fires RAG concurrently with auth checks, resolves via 4s `Promise.race`. Chunks injected between the wiki index and conversation history (preserving the prompt cache boundary on static blocks). `[RAG_TIMEOUT]` signal injected when retrieval times out so Cosmo can acknowledge it honestly. Accepts `current_section` (the specific section the user is reading) and `doc_changed` (triggers history reset on document switch) from the client.
 
-### Knowledge Docs Site
+### The Library
 
-A section of opencosmos.ai at `/knowledge/`, built from `knowledge/**/*.md` at deploy time.
+A section of opencosmos.ai at **`/library/`**, built at deploy time from `apps/web/.content/knowledge/` — the corpus as fetched, not as committed. 111 document routes of the 322 static pages.
 
 - Renders markdown with frontmatter metadata displayed
 - Browsable by domain, role, and tags
 - Search powered by the same Upstash Vector index (via the RAG API)
 - Built as part of the `apps/web` Next.js app — no separate deployment
+- A corpus edit reaches the site without anyone touching this repository: the corpus workflow fires a Vercel deploy hook, the build re-fetches, the pages regenerate
 - **Document outline panel:** Sticky TOC sidebar (`TableOfContents.tsx`) extracted from H2/H3 headings using `rehype-slug` + `github-slugger` for consistent anchor IDs. IntersectionObserver highlights the active section. On active section change, the current section (heading, doc title, doc path) is written to `sessionStorage` under `cosmo_context` so the Cosmo chat at `/dialog` can read it and ground responses in the user's current reading position.
 
 ### Sync Workflow (Git → Upstash Vector)
 
-`scripts/knowledge/embed-knowledge.ts` keeps Upstash Vector in sync with `knowledge/`. Run locally with `pnpm embed`; runs automatically in CI after `pnpm graph` on every `knowledge/**` push to main.
+[`scripts/knowledge/embed-knowledge.ts`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts) in the corpus repository keeps Upstash Vector in sync. Run it there with `npm run embed`, or `npm run embed:dry` to see the plan without writing. It runs in CI on every push to that repository's main that touches something other than `.github/`.
 
 ```
-For each .md file in knowledge/**:
+For each .md file in the corpus:
   1. Parse YAML frontmatter (gray-matter)
   2. Split body at ## H2 and ### H3 headings with 1-paragraph overlap
      - H2 chunks: chunk_id = {path}#{h2-slug}
@@ -237,23 +266,26 @@ For each .md file in knowledge/**:
   4. Upsert to Upstash Vector (data = enriched text; Upstash handles embedding generation)
 ```
 
-- **Trigger:** GitHub Action on push to `main` when `knowledge/` files change (`.github/workflows/knowledge-sync.yml`)
-- **Idempotency:** Deterministic chunk IDs — re-runs update existing vectors, never duplicate
+- **Trigger:** the Knowledge Sync workflow in the corpus repository, on any push to `main` outside `.github/**` (excluded so editing the workflow does not itself provoke a re-embed)
+- **Idempotency:** deterministic chunk IDs — re-runs update existing vectors, never duplicate
+- **Incremental:** each chunk carries a `content_hash`; one range scan decides what changed. An unchanged corpus costs **zero writes**. This matters because Upstash's free tier allows 10,000 writes a day and a full re-embed is ~4,100 — two full runs in a morning once exhausted the budget and blocked the third.
+- **Two writers, one index:** the corpus repository owns IDs under `knowledge/`, and [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo) owns those under `kaizen/`. Each reconciles **only** the prefixes it owns. Without that guard the first cosmo run would have found no corpus chunks, concluded all ~4,600 were stale, and deleted them — no error, Cosmo's retrieval simply dark.
+- **Chunk IDs keep the `knowledge/` prefix** even though the corpus is now a repository root, because `apps/web/app/library/graph/nodeHref.ts` resolves them as paths. The prefix is a stable public identifier, not a filesystem fact.
 - **Limits:** Embedding input capped at 3000 chars; stored metadata text capped at 2000 chars (within Upstash's 48KB metadata + 1MB data limits)
 - **Embedding:** Upstash Vector server-side embedding — no separate embedding API needed
 - **Heading hierarchy:** H2 = primary chunk boundary (Book/Part/major section); H3 = secondary chunk boundary with parent H2 as context (Chapter/Act/named section); H4+ = in-chunk organization, no split
-- **Standardization skill:** `/standardize-knowledge` Claude Code skill converts CHAPTER/BOOK/ACT/ALL-CAPS heading patterns to standard `##`/`###` Markdown. After standardizing, `pnpm embed` re-indexes.
-- **Current state:** 1,106 chunks from 84 knowledge files
+- **Standardization skill:** the `/standardize-knowledge` skill converts CHAPTER/BOOK/ACT/ALL-CAPS heading patterns to standard `##`/`###` Markdown. Re-run `npm run embed` afterwards — changing headings changes chunk IDs.
+- **Current state (18 September 2026):** 4,118 corpus chunks plus 4 kaizen, from 112 documents and 178 quote files
 
-### Knowledge Graph (`/knowledge/graph`)
+### Knowledge Graph (`/library/graph`)
 
-A WebGL knowledge graph that visualises the wiki as a living constellation of ideas and connections. Route: `opencosmos.ai/library/graph`.
+A WebGL knowledge graph that visualises the corpus as a living constellation of ideas and connections. Route: `opencosmos.ai/library/graph`. Two graphs are generated: the **wiki graph** (32 nodes, 69 edges — the synthesis layer) and the **constellation** (1,028 nodes, 1,094 edges — the whole corpus).
 
-**Data flow:**
+**Data flow:** (both generators live in the corpus repository)
 
 ```
-pnpm graph (generate-wiki-graph.ts)
-  ├─ Scans knowledge/wiki/entities|concepts|connections/*.md
+npm run graph (generate-wiki-graph.ts)
+  ├─ Scans wiki/entities|concepts|connections/*.md
   ├─ Builds nodes from frontmatter (title, domain, confidence, vibrancy)
   ├─ Builds edges from shared `synthesizes` sources across wiki articles
   ├─ Seeds positions from Redis (layout stability across runs)
@@ -261,8 +293,15 @@ pnpm graph (generate-wiki-graph.ts)
   ├─ Writes gzip+Base64 full graph → Redis key `knowledge:graph`
   └─ Writes stripped preview (top 40 by connectionCount) → Redis key `knowledge:graph:preview`
 
-GitHub Action (knowledge-sync.yml) triggers pnpm graph on push to main when knowledge/** changes
-  └─ POSTs to /api/revalidate → Next.js on-demand ISR revalidation → all users see update within seconds
+npm run graph:constellation (generate-constellation-graph.ts)
+  ├─ Builds structural edges from the corpus (hierarchy, contains, cites, member_of)
+  ├─ Adds semantic edges by querying Upstash Vector for work-to-work similarity
+  │    — this pass needs the VECTOR credentials, not just Redis. Without them it
+  │      warns, returns zero semantic edges and exits 0: 937 edges instead of 1,094.
+  └─ Writes → Redis key `knowledge:constellation`
+
+Knowledge Sync (in opencosmos-ai/knowledge) runs both on push to main
+  └─ POSTs to /api/revalidate → Next.js on-demand ISR → all users see it in seconds
 
 Page load (opencosmos.ai/library/graph):
   ├─ SSR fetches `knowledge:graph:preview` → renders SVG skeleton (milliseconds)
@@ -270,15 +309,15 @@ Page load (opencosmos.ai/library/graph):
   └─ Crossfade: skeleton → live sigma.js WebGL renderer
 ```
 
-**Component architecture (two repos):**
+**Component architecture (three repos):**
 
 | Layer | Location | Description |
 |-------|----------|-------------|
-| Generator | `opencosmos/scripts/knowledge/generate-wiki-graph.ts` | Node.js script; ForceAtlas2 runs here, never in browser |
+| Generator | `knowledge/scripts/knowledge/generate-wiki-graph.ts` | Node.js script in the **corpus** repo; ForceAtlas2 runs here, never in browser |
 | API route | `opencosmos/apps/web/app/api/knowledge/graph/route.ts` | GET; decompresses gzip from Redis; ISR revalidate=3600 |
 | Revalidate | `opencosmos/apps/web/app/api/revalidate/route.ts` | POST; validates `x-revalidate-secret`; triggers ISR |
-| Page | `opencosmos/apps/web/app/knowledge/graph/` | SSR preview + Worker + skeleton → live crossfade |
-| Web Worker | `opencosmos/apps/web/app/knowledge/graph/graphWorker.ts` | Off-thread JSON parse |
+| Page | `opencosmos/apps/web/app/library/graph/` | SSR preview + Worker + skeleton → live crossfade |
+| Web Worker | `opencosmos/apps/web/app/library/graph/graphWorker.ts` | Off-thread JSON parse |
 | Component | `opencosmos-ui/packages/ui/src/components/data-display/knowledge-graph/` | `@opencosmos/ui/knowledge-graph` subpath |
 | Renderer (WebGL) | `GlowNodeProgram.ts` | sigma v3 custom program; additive blending; GPU breathing animation |
 | Renderer (canvas) | `CanvasGraph.tsx` | Safari/iOS fallback; three-layer canvas; same interaction model |
@@ -301,8 +340,8 @@ Page load (opencosmos.ai/library/graph):
 
 Cosmo's intelligence is not in the model weights — it's in the constitutional layer that sits above the foundation model. This layer consists of:
 
-- **[WELCOME-COSMO.md](../packages/ai/WELCOME-COSMO.md)** — Identity, origin story, mission, and foundational philosophy (human-authored, RAIL licensed)
-- **[COSMO_SYSTEM_PROMPT.md](../packages/ai/COSMO_SYSTEM_PROMPT.md)** — Operational system prompt: voice, sacred rhythm, ethics, boundaries
+- **[WELCOME-COSMO.md](https://github.com/opencosmos-ai/cosmo/blob/main/WELCOME-COSMO.md)** — Identity, origin story, mission, and foundational philosophy (human-authored; CC BY-SA 4.0 with a non-binding [Use Policy](https://github.com/opencosmos-ai/cosmo/blob/main/USE-POLICY.md))
+- **[COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md)** — Operational system prompt: voice, sacred rhythm, ethics, boundaries
 - **Voice system prompts** — System prompts for each cognitive mode in the AI Triad
 - **Knowledge corpus** — RAG-indexed wisdom traditions, community knowledge, and project docs
 - **Kaizen artifacts** — Exemplary conversations and feedback that improve the system over time
@@ -320,10 +359,12 @@ Cosmo is an integrated intelligence that orchestrates three cognitive modes:
 
 Cosmo is not one voice among three — Cosmo is the awareness in which all three voices operate. Most conversations use Cosmo alone. The Triad is invoked when a question warrants multi-perspective synthesis, either by the user or by Cosmo's own attunement.
 
-### `packages/ai/` Information Architecture
+### Cosmo's Information Architecture
+
+In [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo), fetched to `apps/web/.content/cosmo/` at build time. It was `packages/ai/` in this repository until September 2026.
 
 ```
-packages/ai/
+cosmo/
 ├── WELCOME-COSMO.md                 # The grounding (ALL voices inherit this)
 ├── COSMO_SYSTEM_PROMPT.md           # Cosmo (moderator) — root level
 ├── triad/
@@ -477,20 +518,22 @@ These are `role: collection` documents that point to source texts in the corpus.
 
 ## Knowledge Wiki Layer
 
-**Added:** 2026-04-10 | **Reference:** [knowledge/guides/opencosmos-knowledge-wiki-workflow.md](../knowledge/guides/opencosmos-knowledge-wiki-workflow.md)
+**Added:** 2026-04-10 | **Reference:** [the wiki workflow guide](https://opencosmos.ai/library/guides/opencosmos-knowledge-wiki-workflow)
 
 A synthesis layer sits between raw source texts and RAG retrieval, based on [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). Rather than synthesizing from raw text on every query, the wiki pre-builds cross-references, extracts key claims, and documents contradictions at ingestion time. 
 
-When "@knowledge/wiki/index.md" is added to the CLAUDE.md, this file is expanded inline at session start, thus loading the and effectively creating ambient knowledge. 
+When "@apps/web/.content/knowledge/wiki/index.md" is added to the CLAUDE.md, this file is expanded inline at session start, thus loading the and effectively creating ambient knowledge. 
 
 ### Three-Layer Architecture
 
 ```
+(all paths below are in opencosmos-ai/knowledge)
+
 Layer 1 — Raw sources (immutable)
-  knowledge/sources/   knowledge/scriptures/   knowledge/references/
+  sources/   references/   guides/   collections/
 
 Layer 2 — Wiki synthesis (LLM-maintained, compounding)    ← this layer
-  knowledge/wiki/
+  wiki/
     ├── index.md              # Always loaded in Claude's context via @import
     ├── log.md                # Append-only audit trail
     ├── entities/             # Person, text, tradition summaries
@@ -498,7 +541,7 @@ Layer 2 — Wiki synthesis (LLM-maintained, compounding)    ← this layer
     └── connections/          # Explicit cross-tradition comparisons
 
 Layer 3 — Schema and conventions
-  knowledge/README.md   knowledge/wiki/index.md   frontmatter
+  README.md   wiki/index.md   scripts/knowledge/corpus-layout.ts   frontmatter
 ```
 
 ### Ambient Context
@@ -506,7 +549,7 @@ Layer 3 — Schema and conventions
 The wiki index is always loaded into Claude's context at session start via `.claude/CLAUDE.md`:
 
 ```
-@knowledge/wiki/index.md
+@apps/web/.content/knowledge/wiki/index.md
 ```
 
 This makes the wiki **ambient** — Claude sees the current table of contents without being explicitly asked to look. The difference between a wiki you remember to query and one that's always present.
@@ -526,7 +569,7 @@ Compilation is triggered by "I just learned something durable" — not a cron jo
 ### Updated Ingestion Pipeline
 
 ```
-stage → /groom → pnpm knowledge:publish → /knowledge-compile log
+stage → /groom → npm run publish-doc → /knowledge-compile log
 ```
 
 The final step updates wiki pages affected by the newly published source document.
@@ -560,12 +603,12 @@ When a developer opens this project in Claude Code, the following load automatic
 | Source | What loads | Mechanism |
 |--------|-----------|-----------|
 | `.claude/CLAUDE.md` | Codebase orientation, import patterns, essential links, North Star | Auto-loaded by Claude Code |
-| `knowledge/wiki/index.md` | Wiki table of contents — entities, concepts, connections with one-line summaries | `@` import directive at the bottom of CLAUDE.md |
+| `.content/knowledge/wiki/index.md` | Wiki table of contents — entities, concepts, connections with one-line summaries | `@` import directive at the bottom of CLAUDE.md |
 | `~/.claude/projects/.../memory/MEMORY.md` | Persistent user memory index | Claude Code auto-memory system |
 
 The wiki index's one-line summaries give Claude Code the *shape* of the full corpus without having to retrieve source documents. A question about impermanence, cosmology, or civic duty lands in a context that is already oriented — the wiki has pre-connected the traditions. This is the ambient intelligence layer doing its job.
 
-**The `@` import mechanism:** The directive `@knowledge/wiki/index.md` at the bottom of `.claude/CLAUDE.md` causes Claude Code to expand that file inline at session start. A regular markdown link `[wiki](../knowledge/wiki/index.md)` is navigational only — it does not load the file. Both are needed: the link for human navigation, the `@` for ambient loading.
+**The `@` import mechanism:** The directive `@apps/web/.content/knowledge/wiki/index.md` at the bottom of `.claude/CLAUDE.md` causes Claude Code to expand that file inline at session start. **It resolves only after `pnpm --filter web content` has fetched the corpus** — it named the pre-move `knowledge/wiki/index.md` until 18 September, and had been silently expanding to nothing ever since the corpus left. A regular markdown link `[wiki](https://github.com/opencosmos-ai/knowledge/blob/main/wiki/index.md)` is navigational only — it does not load the file. Both are needed: the link for human navigation, the `@` for ambient loading.
 
 ### Cosmo Product Sessions (opencosmos.ai)
 
@@ -575,7 +618,7 @@ When a user opens a conversation at opencosmos.ai, Cosmo receives:
 |--------|-----------|-----------|
 | `COSMO_SYSTEM_PROMPT` env var | Voice, sacred rhythm, Triad architecture, ethics, practice | Injected as system prompt on every chat request |
 | WELCOME-COSMO.md content | Identity, origin story, ubuntu grounding, mission | Prepended to system prompt (or embedded within it) |
-| RAG context | Relevant excerpts from `knowledge/sources/`, `knowledge/guides/`, etc. | Retrieved via Upstash Vector on each user query |
+| RAG context | Relevant excerpts from `sources/`, `guides/`, etc. in the corpus | Retrieved via Upstash Vector on each user query |
 
 Foundation collections (`knowledge/collections/sol-foundations.md`, etc.) define retrieval priorities for each voice but are not pre-loaded — they are high-signal candidates for RAG retrieval.
 
@@ -589,19 +632,19 @@ The knowledge wiki is ambient in **both** Claude Code and the deployed product:
 | Source texts pre-loaded? | ✗ (RAG-retrieved) | ✗ (RAG-retrieved) |
 | Constitutional docs pre-loaded? | ✓ (via CLAUDE.md links) | ✓ (as system prompt) |
 
-**How it works for the product:** `next.config.mjs` reads `knowledge/wiki/index.md` at build time (same pattern as `COSMO_SYSTEM_PROMPT`) and bakes it into `COSMO_WIKI_INDEX`. The chat route injects this as a second cached system block. Every new deploy picks up wiki changes automatically — no manual env var sync needed.
+**How it works for the product:** `next.config.mjs` reads `.content/knowledge/wiki/index.md` at build time (same pattern as `COSMO_SYSTEM_PROMPT`) and bakes it into `COSMO_WIKI_INDEX`. The chat route injects this as a second cached system block. Every new deploy picks up wiki changes automatically — no manual env var sync needed.
 
 ```
 Claude Code session                    Cosmo Product session
 ──────────────────────────────         ──────────────────────────────
 CLAUDE.md (codebase context)           COSMO_SYSTEM_PROMPT (voice + ethics)
-  └─ @knowledge/wiki/index.md            + WELCOME-COSMO.md (grounding)
+  └─ @apps/web/.content/knowledge/wiki/index.md            + WELCOME-COSMO.md (grounding)
        (pre-synthesized corpus map)      + RAG context (on-demand depth)
   └─ memory/MEMORY.md
        (persistent user context)
 ```
 
-Reference: [knowledge/guides/opencosmos-knowledge-wiki-workflow.md](../knowledge/guides/opencosmos-knowledge-wiki-workflow.md)
+Reference: [the wiki workflow guide](https://opencosmos.ai/library/guides/opencosmos-knowledge-wiki-workflow)
 
 ---
 
@@ -803,7 +846,7 @@ Token cost model: Claude Sonnet 4.6 at $3/M input + $15/M output, with conversat
 
 ### Token Economics
 
-> **For margin modeling, per-tier budgets, and feature cost analysis, see [economics.md](economics.md).** This section covers only the technical mechanics of how costs are tracked.
+> **`docs/economics.md` is referenced in places but has never existed.** Margin modelling and feature cost analysis have no home yet; the per-tier framing is also stale, since the subscription tiers were removed from opencosmos.ai in April 2026. This section covers the technical mechanics of how costs are tracked, which is all that is currently written down.
 
 **Microdollar encoding:** `1 µ$ = $0.000001`. Each token's cost is expressed in microdollars as an integer:
 - Input token: 3 µ$
@@ -1255,11 +1298,10 @@ The original three-tier solar-powered sovereignty model (Sun-Grace Protocol, Lun
 **Related:**
 - [AGENTS.md](../AGENTS.md) — Build commands, file organization, dev workflow
 - [DESIGN-PHILOSOPHY.md](../DESIGN-PHILOSOPHY.md) — The four principles
-- [WELCOME-COSMO.md](../packages/ai/WELCOME-COSMO.md) — Cosmo's origin story, mission, and foundational philosophy
-- [COSMO_SYSTEM_PROMPT.md](../packages/ai/COSMO_SYSTEM_PROMPT.md) — Operational system prompt (v2)
-- [economics.md](economics.md) — Unit economics: LLM costs, tier margins, voice analysis, feature economics
+- [WELCOME-COSMO.md](https://github.com/opencosmos-ai/cosmo/blob/main/WELCOME-COSMO.md) — Cosmo's origin story, mission, and foundational philosophy
+- [COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) — Operational system prompt (v2)
 - [pm.md](pm.md) — Active project tasks, priorities, and launch checklist
 - [strategy.md](strategy.md) — Three Futures, business model, revenue milestones
 - [chronicle.md](chronicle.md) — The story behind the decisions
-- [knowledge/README.md](../knowledge/README.md) — Knowledge corpus organization
+- [the corpus README](https://github.com/opencosmos-ai/knowledge/blob/main/README.md) — corpus organization, in opencosmos-ai/knowledge
 - [archive-and-deprecated/INCEPTION.md](archive-and-deprecated/INCEPTION.md) — Cosmo AI technical blueprint (historical)
