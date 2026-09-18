@@ -6,9 +6,22 @@ disable-model-invocation: true
 user-invocable: true
 ---
 
+> **Where this runs.** The corpus moved to
+> [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) in
+> September 2026. **Every path and command below is relative to that
+> repository, not this one**, and its scripts run with `npm`, not `pnpm`.
+>
+> ```bash
+> cd ../knowledge     # sibling of the opencosmos repo root
+> npm install         # first run only
+> ```
+>
+> `apps/web/scripts/fetch-content.mjs` uses the same `../knowledge` sibling
+> convention, so if your local dev loop already works the checkout is there.
+
 # /knowledge-review — Wiki Health Check Skill
 
-Run a health check on `knowledge/wiki/`. Returns a structured report of issues, gaps, and opportunities.
+Run a health check on `wiki/`. Returns a structured report of issues, gaps, and opportunities.
 
 **Optional flags (from `$ARGUMENTS`):**
 - `--orphans` — only report orphan and asymmetric link issues
@@ -21,7 +34,7 @@ Run a health check on `knowledge/wiki/`. Returns a structured report of issues, 
 
 ## Step 1: Read the Wiki Index
 
-Read `knowledge/wiki/index.md`. Build a list of all wiki pages referenced.
+Read `wiki/index.md`. Build a list of all wiki pages referenced.
 
 ---
 
@@ -78,7 +91,7 @@ Collect all `open_questions` from frontmatter across every wiki page. Display th
 
 ### Check 6 — Index completeness
 
-Check that every page in `knowledge/wiki/` (scanning the directory) has a corresponding entry in `knowledge/wiki/index.md`. Flag any pages that exist on disk but are not indexed.
+Check that every page in `wiki/` (scanning the directory) has a corresponding entry in `wiki/index.md`. Flag any pages that exist on disk but are not indexed.
 
 ---
 
@@ -139,7 +152,7 @@ From wiki/concepts/the-self.md:
 If `--fix` is passed, attempt these safe auto-fixes:
 1. Update `last_reviewed` to today on pages that are otherwise healthy (no other issues)
 2. Add empty `## Open Questions` section to pages missing it
-3. Append missing page entries to `knowledge/wiki/index.md` with a placeholder one-liner
+3. Append missing page entries to `wiki/index.md` with a placeholder one-liner
 
 Do NOT auto-fix:
 - Confidence promotions (require human judgment)

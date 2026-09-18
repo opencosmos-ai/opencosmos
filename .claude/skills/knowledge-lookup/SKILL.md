@@ -6,6 +6,19 @@ disable-model-invocation: true
 user-invocable: true
 ---
 
+> **Where this runs.** The corpus moved to
+> [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) in
+> September 2026. **Every path and command below is relative to that
+> repository, not this one**, and its scripts run with `npm`, not `pnpm`.
+>
+> ```bash
+> cd ../knowledge     # sibling of the opencosmos repo root
+> npm install         # first run only
+> ```
+>
+> `apps/web/scripts/fetch-content.mjs` uses the same `../knowledge` sibling
+> convention, so if your local dev loop already works the checkout is there.
+
 # /knowledge-lookup — Wiki Search Skill
 
 Search the knowledge wiki for existing synthesis relevant to `$ARGUMENTS`. Returns pre-built concept pages and connections so you don't have to synthesize from scratch.
@@ -26,7 +39,7 @@ Read `$ARGUMENTS` as a free-text query. Examples:
 
 ## Step 2: Search the Wiki Index
 
-Read `knowledge/wiki/index.md`. Find all entries whose titles or summaries are semantically related to the query. Rank by relevance.
+Read `wiki/index.md`. Find all entries whose titles or summaries are semantically related to the query. Rank by relevance.
 
 ---
 
@@ -78,7 +91,7 @@ Run `/knowledge-compile convo` after this session to add them.
 
 ## Step 5: Source Recommendations (if gaps exist)
 
-If the query touches topics not covered by wiki pages, check `knowledge/wiki/index.md` and suggest which source documents in the corpus are most likely to contain relevant primary material:
+If the query touches topics not covered by wiki pages, check `wiki/index.md` and suggest which source documents in the corpus are most likely to contain relevant primary material:
 
 ```
 ### Relevant Source Documents (not yet synthesized)

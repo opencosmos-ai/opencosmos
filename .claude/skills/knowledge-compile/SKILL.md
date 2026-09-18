@@ -6,9 +6,22 @@ disable-model-invocation: true
 user-invocable: true
 ---
 
+> **Where this runs.** The corpus moved to
+> [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) in
+> September 2026. **Every path and command below is relative to that
+> repository, not this one**, and its scripts run with `npm`, not `pnpm`.
+>
+> ```bash
+> cd ../knowledge     # sibling of the opencosmos repo root
+> npm install         # first run only
+> ```
+>
+> `apps/web/scripts/fetch-content.mjs` uses the same `../knowledge` sibling
+> convention, so if your local dev loop already works the checkout is there.
+
 # /knowledge-compile — Wiki Compilation Skill
 
-Compile durable insights from a source into `knowledge/wiki/`. The trigger for this skill is "I just learned something" — event-driven, not scheduled.
+Compile durable insights from a source into `wiki/`. The trigger for this skill is "I just learned something" — event-driven, not scheduled.
 
 **Three modes, selected by `$ARGUMENTS`:**
 
@@ -39,10 +52,10 @@ Review the current conversation for durable, cross-tradition insights. Ask: "If 
 If nothing in the conversation meets this bar, report: "No durable synthesis found in this conversation — nothing to compile."
 
 ### Incoming mode
-Read the file at `knowledge/$ARGUMENTS`. Identify the tradition, domain, key claims, and which existing wiki pages it would update or create.
+Read the file at `$ARGUMENTS`. Identify the tradition, domain, key claims, and which existing wiki pages it would update or create.
 
 ### Log mode
-Read `knowledge/CURATION_LOG.md`. Find entries added since the most recent `wiki/log.md` entry. For each new source document, determine which wiki pages are affected.
+Read `CURATION_LOG.md`. Find entries added since the most recent `wiki/log.md` entry. For each new source document, determine which wiki pages are affected.
 
 ---
 
@@ -50,14 +63,14 @@ Read `knowledge/CURATION_LOG.md`. Find entries added since the most recent `wiki
 
 Before creating, check whether a relevant wiki page already exists:
 
-1. Read `knowledge/wiki/index.md` to scan current articles
+1. Read `wiki/index.md` to scan current articles
 2. If a matching page exists → update it (do not create a duplicate)
 3. If no matching page exists → create a new one
 
 **Where to create new pages:**
-- A person, text, or tradition → `knowledge/wiki/entities/{slug}.md`
-- A philosophical concept, theme, or idea → `knowledge/wiki/concepts/{slug}.md`
-- An explicit comparison across two or more traditions → `knowledge/wiki/connections/{slug}.md`
+- A person, text, or tradition → `wiki/entities/{slug}.md`
+- A philosophical concept, theme, or idea → `wiki/concepts/{slug}.md`
+- An explicit comparison across two or more traditions → `wiki/connections/{slug}.md`
 
 ---
 
@@ -128,7 +141,7 @@ Merge new information:
 
 ## Step 4: Update wiki/index.md
 
-Add or update the entry for the new/modified page in the correct section of `knowledge/wiki/index.md`. Format:
+Add or update the entry for the new/modified page in the correct section of `wiki/index.md`. Format:
 
 ```
 | [filename.md](path/filename.md) | One-sentence summary — what this article synthesizes |
@@ -138,7 +151,7 @@ Add or update the entry for the new/modified page in the correct section of `kno
 
 ## Step 5: Append to wiki/log.md
 
-Append a new line to `knowledge/wiki/log.md` in this format:
+Append a new line to `wiki/log.md` in this format:
 
 ```
 YYYY-MM-DD  CREATED|UPDATED|PROMOTED  wiki/path/filename.md  (note: what changed)

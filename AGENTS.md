@@ -60,7 +60,28 @@ opencosmos/
    git log -5 --oneline
    ```
 
-4. **If working on Cosmo AI:** Read [packages/ai/COSMO_SYSTEM_PROMPT.md](packages/ai/COSMO_SYSTEM_PROMPT.md) for the voice and values, and [INCEPTION.md](docs/archive-and-deprecated/INCEPTION.md) for historical technical context.
+4. **If working on Cosmo AI:** the constitutional layer lives in [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo) now. Read [COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) for the voice and values, and [INCEPTION.md](docs/archive-and-deprecated/INCEPTION.md) for historical technical context. `pnpm --filter web content` fetches it into `apps/web/.content/cosmo`.
+
+---
+
+## Skills
+
+Before writing a procedure from scratch, check whether one already exists.
+Eleven live in [`.claude/skills/`](.claude/skills/README.md) — that directory is
+where Claude Code discovers them, so a skill is invoked by typing `/<name>`.
+
+| | |
+|---|---|
+| **Repo work** | [`/pr`](.claude/skills/pr/SKILL.md) · [`/clean`](.claude/skills/clean/SKILL.md) · [`/git-sync`](.claude/skills/git-sync/SKILL.md) |
+| **Building** | [`/create`](.claude/skills/create/SKILL.md) · [`/inference-cost`](.claude/skills/inference-cost/SKILL.md) |
+| **The corpus** | [`/groom`](.claude/skills/groom/SKILL.md) · [`/new-quote`](.claude/skills/new-quote/SKILL.md) · [`/knowledge-compile`](.claude/skills/knowledge-compile/SKILL.md) · [`/knowledge-lookup`](.claude/skills/knowledge-lookup/SKILL.md) · [`/knowledge-review`](.claude/skills/knowledge-review/SKILL.md) · [`/standardize-knowledge`](.claude/skills/standardize-knowledge/SKILL.md) |
+
+The corpus six operate on [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge)
+and expect a sibling checkout at `../knowledge`. Full index, and how to write a
+new skill: [`.claude/skills/README.md`](.claude/skills/README.md).
+
+Skills are procedures an agent follows. For programs it runs, see
+[`scripts/`](scripts/README.md).
 
 ---
 
@@ -88,11 +109,14 @@ opencosmos/
 
 ---
 
-## Cosmo AI (`packages/ai/`)
+## Cosmo AI ([opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo))
 
-The shared intelligence layer for the platform. **Read [COSMO_SYSTEM_PROMPT.md](packages/ai/COSMO_SYSTEM_PROMPT.md) for the voice and values.**
+The shared intelligence layer for the platform. It left this repository in
+September 2026 and is fetched into `apps/web/.content/cosmo` at build time by
+`apps/web/scripts/fetch-content.mjs`; edit it in its own repo, not here.
+**Read [COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) for the voice and values.**
 
-- **License:** RAIL (Responsible AI License) — not MIT like everything else
+- **License:** CC BY-SA 4.0, with a [Use Policy](https://github.com/opencosmos-ai/cosmo/blob/main/USE-POLICY.md) stating intent the licence does not bind — not MIT like the app code
 - **Status:** Phase 1a (hardware setup) + Phase 1b (package foundation) in parallel
 - **Hardware:** Dell XPS 8950, RTX 3090, 64GB RAM, solar-powered in Marin County
 - **Models:** Apertus 8B/70B via Ollama, with cloud fallback tiers
@@ -135,7 +159,7 @@ Root should contain only the files every visitor or contributor needs immediatel
 | **docs/** | Architecture, migration plans, research, narrative history (chronicle), retrospectives | No limit |
 | **docs/decisions/** | ADRs — numbered, append-only, one per load-bearing decision | No limit |
 | **docs/archive-and-deprecated/** | Historical documents superseded by current work | No limit |
-| **knowledge/** | Anything that should be RAG-indexed — organized by role. See [knowledge/README.md](knowledge/README.md) for schema | No limit |
+| **the corpus** | Anything that should be RAG-indexed. **Not in this repo** — it lives in [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge); see its [README](https://github.com/opencosmos-ai/knowledge/blob/main/README.md) for the schema | No limit |
 | **packages/\*/** | Package-specific docs that live with their code (COSMO_SYSTEM_PROMPT.md, etc.) | As needed |
 
 ### Edge cases
@@ -338,7 +362,7 @@ When in doubt, ask Shalom.
 
 - **[WELCOME.md](WELCOME.md)** — The front door to OpenCosmos
 - **[DESIGN-PHILOSOPHY.md](DESIGN-PHILOSOPHY.md)** — The North Star
-- **[packages/ai/COSMO_SYSTEM_PROMPT.md](packages/ai/COSMO_SYSTEM_PROMPT.md)** — Cosmo's voice and values
+- **[COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md)** — Cosmo's voice and values, in [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo)
 - **[docs/architecture.md](docs/architecture.md)** — Infrastructure decisions and service map
 - **[docs/decisions/](docs/decisions/)** — ADRs: why load-bearing choices were made, and what was rejected
 - **[docs/chronicle.md](docs/chronicle.md)** — The narrative story behind the work

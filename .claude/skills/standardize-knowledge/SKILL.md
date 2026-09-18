@@ -6,6 +6,19 @@ disable-model-invocation: true
 user-invocable: true
 ---
 
+> **Where this runs.** The corpus moved to
+> [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) in
+> September 2026. **Every path and command below is relative to that
+> repository, not this one**, and its scripts run with `npm`, not `pnpm`.
+>
+> ```bash
+> cd ../knowledge     # sibling of the opencosmos repo root
+> npm install         # first run only
+> ```
+>
+> `apps/web/scripts/fetch-content.mjs` uses the same `../knowledge` sibling
+> convention, so if your local dev loop already works the checkout is there.
+
 # /standardize-knowledge — Knowledge Document Standardization Skill
 
 Convert non-standard heading formats in the knowledge corpus to a consistent Markdown hierarchy, enabling reliable H2/H3 chunking by the embed pipeline.
@@ -47,7 +60,7 @@ Document (frontmatter title — never a heading in the body)
 
 Read `$ARGUMENTS`:
 - If a file path is given → **single-file mode**: process only that file
-- If `all` or empty → **corpus mode**: process all files in `knowledge/sources/` and `knowledge/collections/`
+- If `all` or empty → **corpus mode**: process all files in `sources/` and `collections/`
 
 ---
 
@@ -59,10 +72,10 @@ Before modifying any headings, verify each target file's frontmatter declares `w
 
 | Path prefix | Inferred `work_type` |
 |-------------|---------------------|
-| `knowledge/sources/` | `work` |
-| `knowledge/collections/` | `collection` |
-| `knowledge/references/` | `reference` |
-| `knowledge/wiki/` | `wiki` |
+| `sources/` | `work` |
+| `collections/` | `collection` |
+| `references/` | `reference` |
+| `wiki/` | `wiki` |
 
 For unambiguous files, insert `work_type: <inferred>` into the frontmatter directly beneath `title:`.
 
@@ -81,7 +94,7 @@ Run a grep to find files with non-standard heading patterns:
 
 ```bash
 grep -rln "^CHAPTER\|^BOOK\|^PART\|^ACT\|^SCENE\|^PROLOGUE\|^EPILOGUE\|^[A-Z][A-Z ]\{5,\}" \
-  knowledge/sources/ knowledge/collections/ knowledge/references/
+  sources/ collections/ references/
 ```
 
 For each matched file, note which pattern dominates.
@@ -109,7 +122,7 @@ Before editing, read each flagged file to understand its nesting depth:
 2. **2-level doc** (e.g. philosophical treatise with BOOK + CHAPTER): → `##` for BOOK, `###` for CHAPTER
 3. **3-level doc** (e.g. Shakespeare play): → `##` for Play, `###` for Act, `####` for Scene
 
-**Multi-work monolith special case.** If a file contains ≥2 works that a reader would cite separately (e.g. `knowledge/sources/literature-the-complete-works-of-william-shakespeare.md`, `literature-rub-iy-t-of-omar-khayy-m-and-sal-m-n-and-abs-l.md`, `philosophy-walden-and-on-the-duty-of-civil-disobedience.md`):
+**Multi-work monolith special case.** If a file contains ≥2 works that a reader would cite separately (e.g. `sources/literature-the-complete-works-of-william-shakespeare.md`, `literature-rub-iy-t-of-omar-khayy-m-and-sal-m-n-and-abs-l.md`, `philosophy-walden-and-on-the-duty-of-civil-disobedience.md`):
 
 1. Alert the user: "This file is a multi-work monolith. Invoke `/split-collection <path>` first, then re-run `/standardize-knowledge` on each per-work output. Proceed with split now? [yes/no]"
 2. On `yes`, delegate to `/split-collection`; skip further steps on the original file in this run (it will be rewritten as a slim collection index by `/split-collection`).
@@ -230,21 +243,21 @@ Output a summary:
 **Mode:** single-file | corpus
 
 ### Files Modified
-- knowledge/sources/foo.md — converted 23 CHAPTER headings to H2
-- knowledge/sources/bar.md — converted 4 BOOK (H2) + 18 CHAPTER (H3) headings
+- sources/foo.md — converted 23 CHAPTER headings to H2
+- sources/bar.md — converted 4 BOOK (H2) + 18 CHAPTER (H3) headings
 
 ### Files Skipped
-- knowledge/sources/baz.md — already uses standard Markdown headings
+- sources/baz.md — already uses standard Markdown headings
 
 ### Files Requiring Manual Review
-- knowledge/collections/literature-shakespeare-collected-works.md — needs splitting first
+- collections/literature-shakespeare-collected-works.md — needs splitting first
 
 ### Next Steps
 1. Review the diffs above for any unintended changes
-2. Run `pnpm embed` to re-index the updated files in Upstash Vector
+2. Run `npm run embed` to re-index the updated files in Upstash Vector
 3. Verify chunk counts improved (more granular chunks = better RAG retrieval)
 
-### Required environment for `pnpm embed`
+### Required environment for `npm run embed`
 The embed script exits silently if these are unset. Before invoking, confirm
 both are present in `apps/web/.env.local` (and in Vercel for production):
 - `UPSTASH_VECTOR_REST_URL`
