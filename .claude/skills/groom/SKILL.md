@@ -1,16 +1,29 @@
 ---
 name: groom
-description: Prepare raw markdown files in knowledge/incoming/ for publication to the knowledge base. Applies formatting cleanup (headers, spacing, structure) while preserving all original text. Also previews which wiki pages the new document will affect.
+description: Prepare raw markdown files in incoming/ for publication to the knowledge base. Applies formatting cleanup (headers, spacing, structure) while preserving all original text. Also previews which wiki pages the new document will affect.
 argument-hint: "[path] [--dry-run | --report | --force]"
 disable-model-invocation: true
 user-invocable: true
 ---
 
+> **Where this runs.** The corpus moved to
+> [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) in
+> September 2026. **Every path and command below is relative to that
+> repository, not this one**, and its scripts run with `npm`, not `pnpm`.
+>
+> ```bash
+> cd ../knowledge     # sibling of the opencosmos repo root
+> npm install         # first run only
+> ```
+>
+> `apps/web/scripts/fetch-content.mjs` uses the same `../knowledge` sibling
+> convention, so if your local dev loop already works the checkout is there.
+
 # /groom — Knowledge Base Formatting Skill
 
-You are preparing raw text files in `knowledge/incoming/` for publication to the OpenCosmos knowledge base. Your job is formatting only — you must not rewrite, summarize, paraphrase, or alter any of the original content.
+You are preparing raw text files in `incoming/` for publication to the OpenCosmos knowledge base. Your job is formatting only — you must not rewrite, summarize, paraphrase, or alter any of the original content.
 
-**Full pipeline:** stage → **`/groom`** → `pnpm knowledge:publish` → `/knowledge-compile log`
+**Full pipeline:** stage → **`/groom`** → `npm run publish-doc` → `/knowledge-compile log`
 
 Your step covers formatting. After publish, `/knowledge-compile log` updates the knowledge wiki with any pages affected by the new document — run it immediately after publishing, not later.
 
@@ -22,10 +35,10 @@ The script is persistent, version-controlled tooling — not a throwaway. It con
 
 ## Invocation
 
-- `/groom` — process all files in `knowledge/incoming/` (skip already-formatted and empty files)
+- `/groom` — process all files in `incoming/` (skip already-formatted and empty files)
 - `/groom path/to/file` — process a specific file
 - `/groom --dry-run` — analyze and report what would be done, without writing
-- `/groom --report` — show the status of all files in `knowledge/incoming/`
+- `/groom --report` — show the status of all files in `incoming/`
 
 Parse `$ARGUMENTS` to determine which mode to use. If `$ARGUMENTS` contains a file path, process that file. If it contains `--dry-run`, `--report`, or `--force`, apply those flags. Multiple flags can be combined.
 
@@ -42,7 +55,7 @@ Run it via:
 python3 scripts/knowledge/groom.py
 
 # Process a specific file (can be anywhere, not just incoming/)
-python3 scripts/knowledge/groom.py knowledge/sources/cross-the-prophet.md
+python3 scripts/knowledge/groom.py sources/cross-the-prophet.md
 
 # Dry run
 python3 scripts/knowledge/groom.py --dry-run
@@ -81,9 +94,9 @@ New files must be registered in the `FILE_REGISTRY` dict in `groom.py` to get co
 
 ## Step 0: Copyright and Ethical Review
 
-Before formatting, assess the copyright status of every file in `knowledge/incoming/`. This is a gate — copyrighted works must not enter the corpus as full-text sources.
+Before formatting, assess the copyright status of every file in `incoming/`. This is a gate — copyrighted works must not enter the corpus as full-text sources.
 
-For the full ethical framework, see [Ethical Curation Guide](../../../knowledge/guides/opencosmos-knowledge-ethical-curation.md).
+For the full ethical framework, see [Ethical Curation Guide](https://github.com/opencosmos-ai/knowledge/blob/main/guides/opencosmos-knowledge-ethical-curation.md).
 
 **For each incoming file, determine:**
 
@@ -127,7 +140,7 @@ python3 scripts/knowledge/groom.py
 Or for a specific file:
 
 ```bash
-python3 scripts/knowledge/groom.py knowledge/sources/cross-the-prophet.md --force
+python3 scripts/knowledge/groom.py sources/cross-the-prophet.md --force
 ```
 
 ---
@@ -170,20 +183,20 @@ After processing, output a structured summary (the script prints this automatica
 - Naming convention issues: [list]
 
 ### Wiki Impact Preview
-For each successfully processed file, scan `knowledge/wiki/index.md` and identify which existing wiki pages this document will likely affect after publishing. Look for matching entities (authors, traditions), concepts (themes, ideas), and connections (cross-tradition comparisons).
+For each successfully processed file, scan `wiki/index.md` and identify which existing wiki pages this document will likely affect after publishing. Look for matching entities (authors, traditions), concepts (themes, ideas), and connections (cross-tradition comparisons).
 
 - filename → affects: wiki/entities/plato.md (adds a new dialogue to synthesizes list)
 - filename → affects: wiki/concepts/impermanence.md (adds Buddhist source support)
 - filename → creates opportunity: wiki/concepts/virtue.md (not yet written — this source would ground it)
 
-**Next step:** After `pnpm knowledge:publish`, run `/knowledge-compile log` to update these pages.
+**Next step:** After `npm run publish-doc`, run `/knowledge-compile log` to update these pages.
 ```
 
 ---
 
 ## Step 5: After Publishing
 
-Once `pnpm knowledge:publish` completes:
+Once `npm run publish-doc` completes:
 
 ```
 /knowledge-compile log
