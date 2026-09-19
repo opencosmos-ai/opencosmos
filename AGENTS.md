@@ -99,7 +99,7 @@ holds the commons and the site that serves it, and nothing else:
 | App | Repository | URL |
 |---|---|---|
 | Portfolio | [shalomormsby/portfolio](https://github.com/shalomormsby/portfolio) | [shalomormsby.com](https://www.shalomormsby.com/) |
-| Creative Powerup | [shalomormsby/creative-powerup](https://github.com/shalomormsby/creative-powerup) | [creativepowerup.com](https://creativepowerup.com/) |
+| Creative Powerup | [shalomormsby/creative-powerup](https://github.com/shalomormsby/creative-powerup) | [ecosystem-creative-powerup.vercel.app](https://ecosystem-creative-powerup.vercel.app/) |
 | Stocks | [shalomormsby/stocks](https://github.com/shalomormsby/stocks) — **archived** | dormant since 2026-03-09 |
 
 cosmOS was a single README with no application behind it and was dropped rather
