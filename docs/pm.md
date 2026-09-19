@@ -812,7 +812,7 @@ Production at [shalomormsby.com](https://www.shalomormsby.com/).
 
 ## Creative Powerup — [shalomormsby/creative-powerup](https://github.com/shalomormsby/creative-powerup)
 
-Community platform. In development at [creativepowerup.com](https://creativepowerup.com/). This is where paid Cosmo access lives (no API key required for members). See [strategy.md § Brand Architecture](strategy.md) for the OpenCosmos / CP split.
+Creative sandbox, in development at [ecosystem-creative-powerup.vercel.app](https://ecosystem-creative-powerup.vercel.app/). **Not the same system as [creativepowerup.com](https://creativepowerup.com/)**, which is the community platform on Apache/PHP and has no Vercel project pointing at it; that is where paid Cosmo access lives (no API key required for members). See [strategy.md § Brand Architecture](strategy.md) for the OpenCosmos / CP split.
 
 **Open tasks:**
 - [ ] CP member token access on OpenCosmos — see [Phase 2](#phase-2-cp-member-token-access--top-up) above; requires Circle webhook or equivalent membership verification
