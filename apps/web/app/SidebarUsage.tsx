@@ -6,7 +6,7 @@ import { TokenGauge } from '@/components/TokenGauge'
 type UsageState =
   | { kind: 'idle' }
   | { kind: 'unlimited' }                                      // BYOK — truly unlimited
-  | { kind: 'tokens'; used: number; total: number }           // subscriber or free tier
+  | { kind: 'tokens'; used: number; total: number }           // free tier
 
 export function SidebarUsage() {
   const [state, setState] = useState<UsageState>({ kind: 'idle' })
@@ -19,25 +19,18 @@ export function SidebarUsage() {
       return
     }
 
-    fetch('/api/subscription')
+    fetch('/api/byok-status')
       .then((r) => r.json())
       .then((data) => {
         if (data.hasByok) {
           setState({ kind: 'unlimited' })
-        } else if (data.subscription) {
-          setState({
-            kind: 'tokens',
-            used: data.subscription.tokensUsed ?? 0,
-            total: data.subscription.tokensTotal ?? 0,
-          })
-        } else {
-          fetch('/api/session')
-            .then((r) => r.json())
-            .then((s: { tokensUsed: number; tokenBudget: number }) => {
-              setState({ kind: 'tokens', used: s.tokensUsed, total: s.tokenBudget })
-            })
-            .catch(() => {})
+          return
         }
+        return fetch('/api/session')
+          .then((r) => r.json())
+          .then((s: { tokensUsed: number; tokenBudget: number }) => {
+            setState({ kind: 'tokens', used: s.tokensUsed, total: s.tokenBudget })
+          })
       })
       .catch(() => {})
   }, [])

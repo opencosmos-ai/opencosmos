@@ -10,8 +10,7 @@ import { MODEL_INCEPTION as MODEL } from '@/lib/ai-models'
 // Reuses the chat route's free-tier guard pattern (Turnstile + IP limit + monthly cap
 // + per-session 100k token budget + BYOK fallback) and shares the same Redis keys, so a
 // visitor's inception + chat draw from one free allotment. Runs on Haiku to stretch it.
-// No RAG (this is guidance, not corpus Q&A). No subscriber/tier branches (legacy — see
-// lib/stripe.ts). Two modes: `chat` (streamed interview reply) and `synthesize`
+// No RAG (this is guidance, not corpus Q&A). No subscriber/tier branches — those tiers were removed 19 Sept 2026. Two modes: `chat` (streamed interview reply) and `synthesize`
 // (tool-use → structured blueprint fields + a Day-0 origin log entry).
 
 const SYSTEM_PROMPT = process.env.COSMO_SYSTEM_PROMPT ?? ''
