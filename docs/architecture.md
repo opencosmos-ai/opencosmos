@@ -846,11 +846,18 @@ Substack/Circle benefit provisioning were **removed on 19 September 2026**. Paid
 access to Cosmo lives in Creative Powerup membership, which is a separate system
 on a separate domain.
 
-Four hundred and twenty-six lines describing that machinery stood here. They are deleted rather
-than marked historical, because a reader looking up how billing works should not
-find a detailed, confident and entirely false answer. The decision to abandon the
-tiers was taken on 2026-04-16; the code survived it by five months behind a
-LEGACY comment, and this documentation survived it too.
+Four hundred and twenty-six lines describing that machinery stood here. They are
+**moved, not destroyed** — see
+[archive-and-deprecated/SUBSCRIPTIONS-AND-STRIPE.md](archive-and-deprecated/SUBSCRIPTIONS-AND-STRIPE.md),
+which keeps the tier economics, the cost model, the webhook event set and the
+price IDs. They are out of *this* document because a reader looking up how
+billing works today should not find a detailed, confident and entirely false
+answer; they are kept because **the Stripe products and price IDs still exist in
+the Stripe account** — deleting the code did not delete them — and that file is
+the only written record of what was configured.
+
+The decision to abandon the tiers was taken on 2026-04-16; the code survived it
+by five months behind a LEGACY comment, and this documentation survived it too.
 
 What remains: **admin**, **BYOK** (the user's own key, unlimited), and the **free
 tier** (shared key, token-budgeted). See the Free Tier Usage Model above.
