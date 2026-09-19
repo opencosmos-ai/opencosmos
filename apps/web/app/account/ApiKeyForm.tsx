@@ -6,25 +6,13 @@ import { TokenGauge } from '@/components/TokenGauge'
 
 const KEY_API_KEY = 'cosmo_api_key'
 
-type SubscriptionState =
-  | { status: 'loading' }
-  | { status: 'none' }
-  | {
-      status: 'active' | 'past_due'
-      tier: string
-      name: string
-      monthlyUSD: number
-      usagePercent: number
-      billingCycleAnchor: number
-      tokensTotal: number
-      tokensUsed: number
-    }
 
 export function ApiKeyForm() {
   const [apiKey, setApiKey] = useState('')
   const [draft, setDraft] = useState('')
   const [saved, setSaved] = useState(false)
-  const [subscription, setSubscription] = useState<SubscriptionState>({ status: 'loading' })
+  // Gates the cards below so they do not flash before BYOK status is known.
+  const [statusLoaded, setStatusLoaded] = useState(false)
   const [hasByok, setHasByok] = useState(false)
   const [sessionData, setSessionData] = useState<{
     tokensUsed: number
@@ -52,19 +40,10 @@ export function ApiKeyForm() {
   }, [])
 
   useEffect(() => {
-    fetch('/api/subscription')
+    fetch('/api/byok-status')
       .then((r) => r.json())
       .then((data) => {
-        if (data.subscription) {
-          setSubscription({
-            status: data.subscription.status,
-            ...data.subscription,
-            tokensTotal: data.subscription.tokensTotal ?? 0,
-            tokensUsed: data.subscription.tokensUsed ?? 0,
-          })
-        } else {
-          setSubscription({ status: 'none' })
-        }
+        setStatusLoaded(true)
         // hasByok is the server-authoritative signal that this user has used a
         // BYOK key — works regardless of which browser or device they're on.
         if (data.hasByok) {
@@ -81,7 +60,7 @@ export function ApiKeyForm() {
           }
         }
       })
-      .catch(() => setSubscription({ status: 'none' }))
+      .catch(() => setStatusLoaded(true))
   }, [])
 
   const save = () => {
@@ -178,11 +157,11 @@ export function ApiKeyForm() {
         </CardContent>
       </Card>
 
-      {/* Subscription — hidden entirely for BYOK users; top card already shows unlimited status */}
+      {/* Free quota and community handoff — hidden for BYOK users; the top card already shows unlimited status */}
       {!apiKey && !hasByok && <div className="space-y-3">
 
         {/* Free quota — shown while no API key is connected */}
-        {sessionData && subscription.status !== 'loading' && (
+        {sessionData && statusLoaded && (
           <Card>
             <CardContent className="pt-5">
               <div className="flex items-start gap-5">
@@ -214,7 +193,7 @@ export function ApiKeyForm() {
         )}
 
         {/* Community handoff */}
-        {subscription.status !== 'loading' && (
+        {statusLoaded && (
           <Card className="border-foreground/10">
             <CardHeader>
               <CardTitle className="text-base">Go deeper with Cosmo</CardTitle>
@@ -235,7 +214,7 @@ export function ApiKeyForm() {
           </Card>
         )}
 
-        {subscription.status === 'loading' && (
+        {!statusLoaded && (
           <div className="h-24 rounded-xl border border-foreground/10 animate-pulse" />
         )}
       </div>}

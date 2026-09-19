@@ -117,9 +117,6 @@ importers:
       sigma:
         specifier: ^3.0.2
         version: 3.0.2(graphology-types@0.24.8)
-      stripe:
-        specifier: ^22.0.0
-        version: 22.0.0(@types/node@20.19.27)
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.0.0
@@ -2496,15 +2493,6 @@ packages:
   strip-bom-string@1.0.0:
     resolution: {integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==}
     engines: {node: '>=0.10.0'}
-
-  stripe@22.0.0:
-    resolution: {integrity: sha512-q1UgXXpSfZCmkyzZEh3vFEWT7+ajuaFGqaP9Tsi2NMtwlkigIWNr+KBIUQqtNeNEsreDKgdn+BP5HRW9JDj22Q==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
 
   style-to-js@1.1.21:
     resolution: {integrity: sha512-RjQetxJrrUJLQPHbLku6U/ocGtzyjbJMP9lCNK7Ag0CNh690nSH8woqWH9u16nMjYBAok+i7JO1NP2pOy8IsPQ==}
@@ -5150,10 +5138,6 @@ snapshots:
       character-entities-legacy: 3.0.0
 
   strip-bom-string@1.0.0: {}
-
-  stripe@22.0.0(@types/node@20.19.27):
-    optionalDependencies:
-      '@types/node': 20.19.27
 
   style-to-js@1.1.21:
     dependencies:
