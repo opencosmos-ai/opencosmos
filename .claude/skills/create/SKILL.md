@@ -7,7 +7,7 @@ user-invocable: true
 
 # /create — Build with @opencosmos/ui
 
-<!-- Canonical source: opencosmos-ui/.claude/skills/create/SKILL.md (ships in the @opencosmos/ui npm package under .claude/). Consuming repos carry a copy for skill discovery — when you edit this file, propagate the change to those copies. -->
+<!-- Canonical source: opencosmos-ui/.claude/skills/create/SKILL.md. Consuming repos carry a copy for skill discovery — when you edit this file, propagate the change to those copies (opencosmos-ai/opencosmos/.claude/skills/create/). NOTE: this skill does NOT ship in the @opencosmos/ui npm package, despite an earlier claim here that it did. `packages/ui/package.json` lists `.claude` in `files`, but that resolves to `packages/ui/.claude/`, which holds only CLAUDE.md — verified against the 1.10.4 tarball. Editing this file therefore needs no changeset. -->
 
 You are building UI for the OpenCosmos platform. **Always reach for `@opencosmos/ui` components first.** Never write custom HTML elements, custom CSS, or bespoke JSX when a component in this library covers the use case.
 
@@ -424,3 +424,46 @@ Before writing any UI code:
 **Item 1 is the gate.** Missing or mis-ordered CSS imports produce unstyled components with no error. The `styles.css` import is what makes component classes appear — without it, layouts look broken even though the code is correct.
 
 **Items 2 and 3 fail silently too.** Skipping the font-family wiring leaves every theme colored correctly but typographically identical — nothing errors, it just never looks different. A stray `dark`/`light` class on a layout wrapper makes the Customizer look broken (its own UI updates, the page underneath doesn't) with no console warning either.
+
+---
+
+## Shipping a Component to the Library
+
+Only for work that lands in `opencosmos-ui` itself. Building *with* the library needs none of this.
+
+**Three checks already run, and will fail the build. Don't re-verify them by hand:**
+
+| Gate | Fails when |
+|---|---|
+| `registry-coverage.test.ts` | A component is exported but not described in `packages/mcp/src/registry.ts` — or described there but not exported |
+| `changeset status` (on every PR) | A published package changed with no changeset |
+| `pnpm verify:published` (on release) | A version reached `main` but never reached npm |
+
+They exist because each of these failed silently at least once. Trust them, and spend your attention on the three things no test can check.
+
+### 1. Is the changeset body written for the person reading npm?
+
+The changeset body **is** the changelog entry a consumer reads when deciding whether to upgrade. It is not a commit summary, and the two have different audiences.
+
+- ❌ *"fix: update AppSidebar width calc"* — describes the diff
+- ✅ *"Below 768px the sidebar now overlays content over a tap-dismiss scrim instead of pushing it, so content never offsets past the 60px rail."* — describes what changes for someone who installs it
+
+**The test:** would a consumer who has never seen this repository know whether this release affects them?
+
+### 2. Is the semver level right?
+
+Ask what a consumer's build does if they take the upgrade without reading anything.
+
+- **patch** — behaviour they already have gets closer to what they expected
+- **minor** — something new exists that they can opt into; nothing they wrote changes
+- **major** — code that compiles today may not, or renders differently without them asking
+
+A removed prop, a renamed export, a changed default, or a new required peer is **major**, however small the diff. Version numbers cannot be reissued on npm, so this is the one judgement with no undo.
+
+### 3. Does it belong in the library at all?
+
+The library's value is that every product gets the same thing. A component that only one app will ever use costs every consumer bundle size and every maintainer a surface to keep working.
+
+**The test:** name the second product that needs this. If you can't, it belongs in that app, and the [Missing Component](#if-a-required-component-is-missing) rule applies in reverse — say so rather than adding it quietly.
+
+Docs-only changes need no changeset. An empty release is noise on npm.
