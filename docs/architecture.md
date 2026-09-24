@@ -10,16 +10,16 @@
 
 | Service | Provider | Deployed from | Tier |
 |---------|----------|--------------|------|
-| opencosmos.ai | Vercel | `opencosmos/apps/web` | Free / Pro |
+| opencosmos.ai | Vercel | `opencosmos` (repository root) | Free / Pro |
 | Auth (user accounts, login, OAuth) | WorkOS AuthKit | `@workos-inc/authkit-nextjs` | Free tier |
 | Portfolio (shalomormsby.com) | Vercel | `shalomormsby/portfolio` | Free / Pro |
 | Creative Powerup (ecosystem-creative-powerup.vercel.app) | Vercel | `shalomormsby/creative-powerup` | Free / Pro |
 | OpenCosmos Studio (component docs) | Vercel | `opencosmos-ui/apps/web` | Free / Pro |
-| Knowledge base (docs site) | Vercel (opencosmos.ai) | `opencosmos/apps/web` | Free |
+| Knowledge base (docs site) | Vercel (opencosmos.ai) | `opencosmos` (repository root) | Free |
 | Knowledge base (vector store) | Upstash Vector | Cloud-primary RAG — embedding storage + similarity search | Free (10K vectors, 10K queries/day) |
 | LLM inference (primary) | Claude API (BYOK) | Constitutional AI via `@opencosmos/ai` | User-funded |
 | LLM inference (dev/local) | Dell XPS 8950 (RTX 3090) | Apertus 8B/70B via Ollama — development + experimentation | Self-hosted |
-| Monorepo | Turborepo + pnpm | Build orchestration | — |
+| Package manager | pnpm | One package at the root ([ADR 0019](decisions/0019-one-application-lives-at-the-repository-root.md)) | — |
 | CI | GitHub Actions | Lint, typecheck, build verification | Free |
 | DNS | Spaceship | opencosmos.ai         | — |
 | npm | @opencosmos org | Design system packages | Free |
@@ -51,7 +51,7 @@ applications were peeled back to `shalomormsby/` on 18 September 2026.
 
 | Repository | Holds | Licence |
 |---|---|---|
-| **this repository** | `apps/web` — opencosmos.ai, the app that reads the corpus | MIT |
+| **this repository** | opencosmos.ai, the app that reads the corpus | MIT |
 | [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) | the corpus and every tool that writes it | CC0 |
 | [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo) | system prompt, the triad, Xensō, the kaizen practice | CC BY-SA 4.0 |
 | [opencosmos-ai/taoteching](https://github.com/opencosmos-ai/taoteching) | 81 chapters | CC0 |
@@ -104,15 +104,15 @@ Knowledge Sync workflow — fires on any push that is not .github/**
 ── in this repository ─────────────────────────────────────────────────────
        ▼
 Vercel build
-  ├─ apps/web/scripts/fetch-content.mjs clones knowledge + cosmo
-  │    into apps/web/.content/ (or copies a sibling checkout, locally)
+  ├─ scripts/fetch-content.mjs clones knowledge + cosmo
+  │    into .content/ (or copies a sibling checkout, locally)
   └─ next build bakes /library at build time — 322 static pages
        │
        ├──→ opencosmos.ai/library          (reading)
-       └──→ RAG API, apps/web/app/api/knowledge/   (retrieval, via Upstash)
+       └──→ RAG API, app/api/knowledge/   (retrieval, via Upstash)
 ```
 
-Both the RAG API and the Library live in this repo's `apps/web`, deployed to opencosmos.ai. The corpus is **not** committed here; `apps/web/.content/` is gitignored and rebuilt on every install.
+Both the RAG API and the Library live in this repository's app, deployed to opencosmos.ai. The corpus is **not** committed here; `.content/` is gitignored and rebuilt on every install.
 
 ### Why a build-time fetch rather than a runtime read
 
@@ -248,7 +248,7 @@ A living record of what was added, when, why it matters, and what it connects. A
 
 ### RAG API Endpoint
 
-Lives at `apps/web/app/api/knowledge/route.ts`, deployed to `opencosmos.ai/api/knowledge`.
+Lives at `app/api/knowledge/route.ts`, deployed to `opencosmos.ai/api/knowledge`.
 
 - **Auth:** Public read — the knowledge is public by design.
 - **Shape:** `POST /api/knowledge`
@@ -256,17 +256,17 @@ Lives at `apps/web/app/api/knowledge/route.ts`, deployed to `opencosmos.ai/api/k
   - `conversation_history` (optional) — last N turns used to build a contextual query
   - `current_document` (optional) — full markdown content of the document the user is reading; always included when provided
 - **Response:** `{ chunks: RagChunk[] }` with source attribution (title, author, tradition, domain, heading, source path).
-- **Implementation:** `apps/web/lib/rag.ts` — `fetchRagContext()` builds a contextual query from the last 3 exchange pairs (improves retrieval for ongoing conversations), queries `topK: 8`, returns typed chunks. `formatRagChunks()` formats results as cited passage blocks for Cosmo's context window. Accepts `docChanged?: boolean` — when true, conversation history is excluded from the query so previous-document context does not pollute retrieval for the current one.
-- **Wired into chat:** `apps/web/app/api/chat/route.ts` fires RAG concurrently with auth checks, resolves via 4s `Promise.race`. Chunks injected between the wiki index and conversation history (preserving the prompt cache boundary on static blocks). `[RAG_TIMEOUT]` signal injected when retrieval times out so Cosmo can acknowledge it honestly. Accepts `current_section` (the specific section the user is reading) and `doc_changed` (triggers history reset on document switch) from the client.
+- **Implementation:** `lib/rag.ts` — `fetchRagContext()` builds a contextual query from the last 3 exchange pairs (improves retrieval for ongoing conversations), queries `topK: 8`, returns typed chunks. `formatRagChunks()` formats results as cited passage blocks for Cosmo's context window. Accepts `docChanged?: boolean` — when true, conversation history is excluded from the query so previous-document context does not pollute retrieval for the current one.
+- **Wired into chat:** `app/api/chat/route.ts` fires RAG concurrently with auth checks, resolves via 4s `Promise.race`. Chunks injected between the wiki index and conversation history (preserving the prompt cache boundary on static blocks). `[RAG_TIMEOUT]` signal injected when retrieval times out so Cosmo can acknowledge it honestly. Accepts `current_section` (the specific section the user is reading) and `doc_changed` (triggers history reset on document switch) from the client.
 
 ### The Library
 
-A section of opencosmos.ai at **`/library/`**, built at deploy time from `apps/web/.content/knowledge/` — the corpus as fetched, not as committed. 111 document routes of the 322 static pages.
+A section of opencosmos.ai at **`/library/`**, built at deploy time from `.content/knowledge/` — the corpus as fetched, not as committed. 111 document routes of the 322 static pages.
 
 - Renders markdown with frontmatter metadata displayed
 - Browsable by domain, role, and tags
 - Search powered by the same Upstash Vector index (via the RAG API)
-- Built as part of the `apps/web` Next.js app — no separate deployment
+- Built as part of the site's Next.js app — no separate deployment
 - A corpus edit reaches the site without anyone touching this repository: the corpus workflow fires a Vercel deploy hook, the build re-fetches, the pages regenerate
 - **Document outline panel:** Sticky TOC sidebar (`TableOfContents.tsx`) extracted from H2/H3 headings using `rehype-slug` + `github-slugger` for consistent anchor IDs. IntersectionObserver highlights the active section. On active section change, the current section (heading, doc title, doc path) is written to `sessionStorage` under `cosmo_context` so the Cosmo chat at `/dialog` can read it and ground responses in the user's current reading position.
 
@@ -288,7 +288,7 @@ For each .md file in the corpus:
 - **Idempotency:** deterministic chunk IDs — re-runs update existing vectors, never duplicate
 - **Incremental:** each chunk carries a `content_hash`; one range scan decides what changed. An unchanged corpus costs **zero writes**. This matters because Upstash's free tier allows 10,000 writes a day and a full re-embed is ~4,100 — two full runs in a morning once exhausted the budget and blocked the third.
 - **Two writers, one index:** the corpus repository owns IDs under `knowledge/`, and [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo) owns those under `kaizen/`. Each reconciles **only** the prefixes it owns. Without that guard the first cosmo run would have found no corpus chunks, concluded all ~4,600 were stale, and deleted them — no error, Cosmo's retrieval simply dark.
-- **Chunk IDs keep the `knowledge/` prefix** even though the corpus is now a repository root, because `apps/web/app/library/graph/nodeHref.ts` resolves them as paths. The prefix is a stable public identifier, not a filesystem fact.
+- **Chunk IDs keep the `knowledge/` prefix** even though the corpus is now a repository root, because `app/library/graph/nodeHref.ts` resolves them as paths. The prefix is a stable public identifier, not a filesystem fact.
 - **Limits:** Embedding input capped at 3000 chars; stored metadata text capped at 2000 chars (within Upstash's 48KB metadata + 1MB data limits)
 - **Embedding:** Upstash Vector server-side embedding — no separate embedding API needed
 - **Heading hierarchy:** H2 = primary chunk boundary (Book/Part/major section); H3 = secondary chunk boundary with parent H2 as context (Chapter/Act/named section); H4+ = in-chunk organization, no split
@@ -332,10 +332,10 @@ Page load (opencosmos.ai/library/graph):
 | Layer | Location | Description |
 |-------|----------|-------------|
 | Generator | `knowledge/scripts/knowledge/generate-wiki-graph.ts` | Node.js script in the **corpus** repo; ForceAtlas2 runs here, never in browser |
-| API route | `opencosmos/apps/web/app/api/knowledge/graph/route.ts` | GET; decompresses gzip from Redis; ISR revalidate=3600 |
-| Revalidate | `opencosmos/apps/web/app/api/revalidate/route.ts` | POST; validates `x-revalidate-secret`; triggers ISR |
-| Page | `opencosmos/apps/web/app/library/graph/` | SSR preview + Worker + skeleton → live crossfade |
-| Web Worker | `opencosmos/apps/web/app/library/graph/graphWorker.ts` | Off-thread JSON parse |
+| API route | `opencosmos/app/api/knowledge/graph/route.ts` | GET; decompresses gzip from Redis; ISR revalidate=3600 |
+| Revalidate | `opencosmos/app/api/revalidate/route.ts` | POST; validates `x-revalidate-secret`; triggers ISR |
+| Page | `opencosmos/app/library/graph/` | SSR preview + Worker + skeleton → live crossfade |
+| Web Worker | `opencosmos/app/library/graph/graphWorker.ts` | Off-thread JSON parse |
 | Component | `opencosmos-ui/packages/ui/src/components/data-display/knowledge-graph/` | `@opencosmos/ui/knowledge-graph` subpath |
 | Renderer (WebGL) | `GlowNodeProgram.ts` | sigma v3 custom program; additive blending; GPU breathing animation |
 | Renderer (canvas) | `CanvasGraph.tsx` | Safari/iOS fallback; three-layer canvas; same interaction model |
@@ -379,7 +379,7 @@ Cosmo is not one voice among three — Cosmo is the awareness in which all three
 
 ### Cosmo's Information Architecture
 
-In [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo), fetched to `apps/web/.content/cosmo/` at build time. It was `packages/ai/` in this repository until September 2026.
+In [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo), fetched to `.content/cosmo/` at build time. It was `packages/ai/` in this repository until September 2026.
 
 ```
 cosmo/
@@ -540,7 +540,7 @@ These are `role: collection` documents that point to source texts in the corpus.
 
 A synthesis layer sits between raw source texts and RAG retrieval, based on [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). Rather than synthesizing from raw text on every query, the wiki pre-builds cross-references, extracts key claims, and documents contradictions at ingestion time. 
 
-When "@apps/web/.content/knowledge/wiki/index.md" is added to the CLAUDE.md, this file is expanded inline at session start, thus loading the and effectively creating ambient knowledge. 
+When "@.content/knowledge/wiki/index.md" is added to the CLAUDE.md, this file is expanded inline at session start, thus loading the and effectively creating ambient knowledge. 
 
 ### Three-Layer Architecture
 
@@ -567,7 +567,7 @@ Layer 3 — Schema and conventions
 The wiki index is always loaded into Claude's context at session start via `.claude/CLAUDE.md`:
 
 ```
-@apps/web/.content/knowledge/wiki/index.md
+@.content/knowledge/wiki/index.md
 ```
 
 This makes the wiki **ambient** — Claude sees the current table of contents without being explicitly asked to look. The difference between a wiki you remember to query and one that's always present.
@@ -626,7 +626,7 @@ When a developer opens this project in Claude Code, the following load automatic
 
 The wiki index's one-line summaries give Claude Code the *shape* of the full corpus without having to retrieve source documents. A question about impermanence, cosmology, or civic duty lands in a context that is already oriented — the wiki has pre-connected the traditions. This is the ambient intelligence layer doing its job.
 
-**The `@` import mechanism:** The directive `@apps/web/.content/knowledge/wiki/index.md` at the bottom of `.claude/CLAUDE.md` causes Claude Code to expand that file inline at session start. **It resolves only after `pnpm --filter web content` has fetched the corpus** — it named the pre-move `knowledge/wiki/index.md` until 18 September, and had been silently expanding to nothing ever since the corpus left. A regular markdown link `[wiki](https://github.com/opencosmos-ai/knowledge/blob/main/wiki/index.md)` is navigational only — it does not load the file. Both are needed: the link for human navigation, the `@` for ambient loading.
+**The `@` import mechanism:** The directive `@.content/knowledge/wiki/index.md` at the bottom of `.claude/CLAUDE.md` causes Claude Code to expand that file inline at session start. **It resolves only after `pnpm content` has fetched the corpus** — it named the pre-move `knowledge/wiki/index.md` until 18 September, and had been silently expanding to nothing ever since the corpus left. A regular markdown link `[wiki](https://github.com/opencosmos-ai/knowledge/blob/main/wiki/index.md)` is navigational only — it does not load the file. Both are needed: the link for human navigation, the `@` for ambient loading.
 
 ### Cosmo Product Sessions (opencosmos.ai)
 
@@ -656,7 +656,7 @@ The knowledge wiki is ambient in **both** Claude Code and the deployed product:
 Claude Code session                    Cosmo Product session
 ──────────────────────────────         ──────────────────────────────
 CLAUDE.md (codebase context)           COSMO_SYSTEM_PROMPT (voice + ethics)
-  └─ @apps/web/.content/knowledge/wiki/index.md            + WELCOME-COSMO.md (grounding)
+  └─ @.content/knowledge/wiki/index.md            + WELCOME-COSMO.md (grounding)
        (pre-synthesized corpus map)      + RAG context (on-demand depth)
   └─ memory/MEMORY.md
        (persistent user context)
@@ -676,7 +676,7 @@ Authentication is handled by **WorkOS AuthKit** (`@workos-inc/authkit-nextjs@^3.
 
 ### Required Environment Variables
 
-All must be set in Vercel → Settings → Environment Variables **and** declared in `turbo.json → globalPassThroughEnv` (see [Hard-Won Lesson: Turbo env vars](#hard-won-lessons) below).
+All must be set in Vercel → Settings → Environment Variables. (Until 2026-09-24 they also had to be listed in `turbo.json`'s `globalPassThroughEnv`, or turbo filtered them out of the build. Turbo is gone — [ADR 0019](decisions/0019-one-application-lives-at-the-repository-root.md) — and the trap went with it.)
 
 | Variable | Where to find it | Purpose |
 |----------|-----------------|---------|
@@ -798,7 +798,7 @@ Server component at `app/account/page.tsx`. Redirects to sign-in if unauthentica
 
 **Endpoint:** `POST https://opencosmos.ai/api/webhooks/workos`
 
-**File:** `apps/web/app/api/webhooks/workos/route.ts`
+**File:** `app/api/webhooks/workos/route.ts`
 
 **Dependencies:** `@workos-inc/node` (separate from `authkit-nextjs` — required for `workos.webhooks.constructEvent`).
 
@@ -902,7 +902,7 @@ The original three-tier solar-powered sovereignty model (Sun-Grace Protocol, Lun
 | Animation | Framer Motion 12 |
 | State | Zustand 5 |
 | Design System | `@opencosmos/ui` (npm, 100+ components) |
-| Monorepo | Turborepo + pnpm |
+| Package manager | pnpm |
 | Deployment | Vercel |
 | Vector DB | Upstash Vector |
 | LLM Inference (primary) | Claude API (BYOK) via `@anthropic-ai/sdk` |

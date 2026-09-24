@@ -8,9 +8,10 @@ discovery contract, not a filing preference. A skill moved out of
 For executables, see [`scripts/`](../../scripts/README.md). The distinction is
 worth keeping: scripts are run, skills are followed.
 
-**This repository is the canonical home.** Several of these are copied into
-other OpenCosmos repos so they can be discovered there too. When you edit one,
-propagate the change to those copies.
+**One is a copy.** `/create` is canonical in
+[opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui/tree/main/.claude/skills/create),
+where the components it documents live. Edit it there and copy it here. The
+rest live only in this repository.
 
 ---
 
@@ -36,14 +37,6 @@ The six corpus skills — `/groom`, `/new-quote`, `/knowledge-compile`,
 [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge/tree/main/.claude/skills),
 next to the corpus they work on. Open a Claude Code session in that repository
 to use them.
-
----|---|
-| [`/groom`](./groom/SKILL.md) | Prepare raw markdown in `incoming/` for publication — formatting only, never rewriting. |
-| [`/new-quote`](./new-quote/SKILL.md) | Add quotes to the corpus: parse free-form input, dedupe, infer category, validate provenance, route to the right pool. |
-| [`/knowledge-compile`](./knowledge-compile/SKILL.md) | Compile durable cross-tradition insight into the wiki, and log it. |
-| [`/knowledge-lookup`](./knowledge-lookup/SKILL.md) | Search the wiki for existing synthesis before starting a domain conversation. |
-| [`/knowledge-review`](./knowledge-review/SKILL.md) | Health check the wiki — orphans, broken cross-refs, asymmetric links, staleness. |
-| [`/standardize-knowledge`](./standardize-knowledge/SKILL.md) | Normalise heading structure to H2/H3/H4 so RAG chunking stays reliable. |
 
 ---
 

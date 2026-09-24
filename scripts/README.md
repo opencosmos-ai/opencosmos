@@ -44,7 +44,7 @@ Regenerates the index of architecture decision records from
 
 Checks the I Ching cast engine — coin arithmetic, the non-uniform odds,
 moving-line resolution, and the founding cast run end to end. It tests the
-*application*, so it stays with `apps/web/lib/iching.ts`.
+*application*, so it stays with `lib/iching.ts`.
 
 The hexagram table itself — bijection, the King Wen pairs, trigram agreement —
 is checked where it is decided, by `npm run check` in
@@ -65,11 +65,11 @@ Sends one message to Cosmo with the production system prompt and prints the
 reply — a quick check that the voice is intact without opening a browser.
 
 ```bash
-pnpm --filter web content                       # fetch the prompt first
+pnpm content                       # fetch the prompt first
 pnpm tsx scripts/test-cosmo-voice.ts "your question"
 ```
 
-It reads `apps/web/.content/cosmo/COSMO_SYSTEM_PROMPT.md`, so the fetch is a
+It reads `.content/cosmo/COSMO_SYSTEM_PROMPT.md`, so the fetch is a
 prerequisite; it exits with that instruction rather than a stack trace if the
 prompt is missing.
 

@@ -35,6 +35,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-09-24 — Refactor: the one application becomes the repository (turbo, the workspace and a second package.json removed · 132 files moved with history)
+
+After the split, `apps/` held one entry, and the monorepo shell around it did nothing but add `--filter web` to every command. [ADR 0019](docs/decisions/0019-one-application-lives-at-the-repository-root.md) records the decision.
+
+- **`apps/web/*` is now at the root,** moved with `git mv`, so `git log --follow` crosses the move. `fetch-content.mjs` joins the other programs in `scripts/`, and fetched content lands in `.content/`. `pnpm dev`, `pnpm build` and `pnpm content` need no filter.
+- **Removed:** `turbo.json`, `pnpm-workspace.yaml`, the app's own `package.json` (merged into the root one), and the `pnpm lint` script, which could never run because eslint was never installed or configured. `next build` type-checks in CI. The lockfile diff is turbo's removal plus the two importers merging into one. No resolved version changed.
+- **`tsconfig.json` now excludes `.content/` and `scripts/`.** At the root, its `**/*.ts` include would otherwise have type-checked the fetched knowledge and cosmo toolchains as part of the site's build.
+- **The turbo env-var trap is gone.** A variable not listed in `turbo.json` was silently filtered from the build. [architecture.md](docs/architecture.md) now says so, instead of telling people to keep declaring them.
+- **Also removed:** `.agent/` and `.goose/`, other agent tools' relics (a three-port localhost workflow and a January design-system test log). The skills README no longer claims this repo is canonical for skills copied elsewhere. Only `/create` is a copy, and its home is opencosmos-ui. Half of an old table that #201 left behind in that README is gone too.
+- **Docs follow the paths.** The living docs, README, AGENTS, CLAUDE, DESIGN-PHILOSOPHY and architecture are rewritten. ADRs, archives and the chronicle keep the paths they were written with. The README no longer advertises the four apps that left. Broken relative links in living docs: 0, now counting `.tsx` targets, which surfaced six stale `app/knowledge/` links in pm.md.
+- **Deploy:** the Vercel project's Root Directory changes from `apps/web` to the repository root at merge. `vercel.json` drops its `buildCommand` and `installCommand`, since Vercel detects pnpm and runs `pnpm build`.
+- **Verified:** `pnpm build` green with the same route counts as before (112 Library document paths, 178 quote buckets). `pnpm adr:index --check` and `pnpm xenso:check-iching` pass.
+
 ## 2026-09-24 — Chore: clearing what the split left behind (5 repositories · 9 dead dependencies · 6 skills moved home · 0 broken links)
 
 The split into six repositories ([ADR 0018](docs/decisions/0018-the-commons-and-the-applications-live-in-separate-repositories.md)) was sound; what it left was residue — dependencies, env vars, files, links and docs still describing one monorepo. An org-wide scan found that most of the complexity was leftovers, not design, so the fix is mostly deletion.
