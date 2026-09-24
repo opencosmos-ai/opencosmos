@@ -1,17 +1,17 @@
 #!/usr/bin/env tsx
 /**
- * Verification for the cast engine and the hexagram table.
+ * Verification for the cast engine.
  *
  * The monorepo has no test runner, so this follows the scripts/test-cosmo-voice.ts
  * precedent: a script you run, that prints, and that exits non-zero when it should.
  *
  *   pnpm xenso:check-iching
  *
- * The King Wen sequence has a structural invariant that makes the table
- * self-checking: consecutive pairs (1,2), (3,4) … (63,64) are each other's
- * inversions — the same figure turned upside down — except for the eight
- * figures that are their own inversion, which pair by complement instead. A
- * single transposed row breaks it. That check is worth more than proofreading.
+ * The hexagram table is checked where it is decided — `npm run check` in
+ * opencosmos-ai/iching, which reads the frontmatter and fails if the generated
+ * file has drifted from it. What is left here is what belongs to the engine:
+ * coin arithmetic, the non-uniform odds, moving-line resolution, and the
+ * founding cast run end to end through the functions a player's cast uses.
  */
 
 import {
@@ -24,11 +24,10 @@ import {
   linesToRelatingFigure,
   movingLines,
   resolve,
-  trigramsOf,
   type CoinThrow,
   type LineValue,
 } from '../../apps/web/lib/iching'
-import { HEXAGRAMS, HEXAGRAM_BY_FIGURE, TRIGRAMS } from '../../apps/web/lib/iching-data'
+import { HEXAGRAMS } from '../../apps/web/lib/iching-data'
 
 let failures = 0
 const fail = (m: string) => {
@@ -37,55 +36,7 @@ const fail = (m: string) => {
 }
 const pass = (m: string) => console.log(`  ✓ ${m}`)
 
-const invert = (s: string) => [...s].reverse().join('')
 const complement = (s: string) => [...s].map(c => (c === '1' ? '0' : '1')).join('')
-
-console.log('\nhexagram table')
-
-// Bijection: 64 rows, all distinct, covering every six-line figure.
-{
-  const figures = new Set(HEXAGRAMS.map(h => h.figure))
-  if (HEXAGRAMS.length !== 64) fail(`expected 64 hexagrams, got ${HEXAGRAMS.length}`)
-  else if (figures.size !== 64) fail(`figures are not distinct: ${figures.size} unique`)
-  else {
-    const missing = Array.from({ length: 64 }, (_, n) => n.toString(2).padStart(6, '0')).filter(b => !figures.has(b))
-    if (missing.length) fail(`figures absent from the sequence: ${missing.join(', ')}`)
-    else pass('64 distinct figures, covering all 64 — bijection holds')
-  }
-}
-
-// The King Wen pair invariant.
-{
-  const selfInverse: number[] = []
-  for (let k = 0; k < 32; k++) {
-    const a = HEXAGRAMS[2 * k]
-    const b = HEXAGRAMS[2 * k + 1]
-    if (invert(a.figure) === a.figure) {
-      selfInverse.push(a.number, b.number)
-      if (complement(a.figure) !== b.figure)
-        fail(`pair ${a.number}/${b.number} (${a.chinese}/${b.chinese}): self-inverse but not complements`)
-    } else if (invert(a.figure) !== b.figure) {
-      fail(`pair ${a.number}/${b.number} (${a.chinese}/${b.chinese}): ${a.figure} inverts to ${invert(a.figure)}, not ${b.figure}`)
-    }
-  }
-  const expected = '1,2,27,28,29,30,61,62'
-  if (selfInverse.join() !== expected) fail(`self-inverse set is ${selfInverse.join()}, expected ${expected}`)
-  else if (!failures) pass('all 32 King Wen pairs invert or complement; the 8 self-inverse figures are the known ones')
-}
-
-// Trigram decomposition agrees with the figure.
-{
-  let bad = 0
-  for (const h of HEXAGRAMS) {
-    const { lower, upper } = trigramsOf(h.number)
-    if (lower.figure + upper.figure !== h.figure) {
-      fail(`hexagram ${h.number} ${h.chinese}: trigrams ${lower.figure}+${upper.figure} ≠ ${h.figure}`)
-      bad++
-    }
-  }
-  if (!bad) pass('every hexagram\'s trigrams concatenate to its figure, lower first')
-  if (TRIGRAMS.length !== 8) fail(`expected 8 trigrams, got ${TRIGRAMS.length}`)
-}
 
 console.log('\nengine')
 
@@ -189,16 +140,6 @@ console.log('\nfixture — the founding cast')
   const reversed = figureToNumber(linesToFigure([...lines].reverse()))
   if (reversed === 60) fail('reading the throws top-down gives the same answer — the direction guard is not testing anything')
   else pass(`read top-down it would be ${reversed} instead of 60 — bottom-up matters, and is enforced`)
-}
-
-console.log('\nrenderings')
-{
-  const drafts = HEXAGRAMS.filter(h => h.status === 'draft')
-  const locked = HEXAGRAMS.length - drafts.length
-  console.log(`  ${locked} of 64 renderings locked, ${drafts.length} still undrafted`)
-  const orphaned = HEXAGRAMS.filter(h => h.status === 'locked' && !h.render)
-  if (orphaned.length) fail(`locked but with no render: ${orphaned.map(h => h.number).join(', ')}`)
-  if (Object.keys(HEXAGRAM_BY_FIGURE).length !== 64) fail('lookup table is not 64 entries')
 }
 
 console.log(failures === 0 ? '\n✓ all checks passed\n' : `\n✗ ${failures} failure(s)\n`)
