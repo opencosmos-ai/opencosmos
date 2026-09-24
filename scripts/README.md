@@ -42,10 +42,14 @@ Regenerates the index of architecture decision records from
 
 ### `pnpm xenso:check-iching`
 
-Validates the I Ching cast engine against the compiled hexagram data. It stayed
-behind when the I Ching text moved to
-[opencosmos-ai/iching](https://github.com/opencosmos-ai/iching) because it
-imports the cast engine — it tests the *application*, not the corpus.
+Checks the I Ching cast engine — coin arithmetic, the non-uniform odds,
+moving-line resolution, and the founding cast run end to end. It tests the
+*application*, so it stays with `apps/web/lib/iching.ts`.
+
+The hexagram table itself — bijection, the King Wen pairs, trigram agreement —
+is checked where it is decided, by `npm run check` in
+[opencosmos-ai/iching](https://github.com/opencosmos-ai/iching), which also
+fails if the generated file the app copies has drifted from the frontmatter.
 
 ### `check-byok-flags.ts`
 
