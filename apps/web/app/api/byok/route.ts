@@ -1,6 +1,6 @@
 import { withAuth } from '@workos-inc/authkit-nextjs'
 import { NextResponse } from 'next/server'
-import { clearByok, markByok } from '@/lib/subscription'
+import { clearByok, markByok } from '@/lib/byok'
 
 // POST /api/byok — records that the authenticated user has a BYOK key.
 // Called by the account page when a key is detected in localStorage so the

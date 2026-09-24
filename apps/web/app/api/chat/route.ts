@@ -4,8 +4,7 @@ import { randomUUID } from 'crypto'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { withAuth } from '@workos-inc/authkit-nextjs'
-import { getSubscription, incrementUsage, isWithinBudget, markByok } from '@/lib/subscription'
-import { TIERS } from '@/lib/stripe'
+import { markByok } from '@/lib/byok'
 import { fetchRagContext, formatRagChunks, type RagResult } from '@/lib/rag'
 import { getDoc, slugFromDocPath, extractSection } from '@/lib/knowledge'
 import { getQuoteBucket } from '@/lib/quotes'
@@ -60,13 +59,11 @@ export const FREE_TOKEN_BUDGET_XENSO = 300_000
 // Set via COSMO_FREE_MONTHLY_TOKEN_CAP env var.
 const MONTHLY_TOKEN_CAP = parseInt(process.env.COSMO_FREE_MONTHLY_TOKEN_CAP ?? '50000000', 10)
 
-// Per-tier payload limits to prevent cost-inflation attacks (April 8, 2026 incident).
+// Payload limits to prevent cost-inflation attacks (April 8, 2026 incident).
 // A 40k-char limit for free tier is ~2× a Wikipedia article — generous for real
 // users, impossible to exploit at scale. Admin and BYOK are exempt.
 const MAX_MESSAGES_FREE = 10
-const MAX_MESSAGES_SUBSCRIBER = 100
 const MAX_CHARS_FREE = 40_000      // ~10k tokens
-const MAX_CHARS_SUBSCRIBER = 400_000 // ~100k tokens
 // Xensō is a guided interview, not a Q&A: defining one quest runs 15–20 minutes,
 // which the free cap of 10 messages cuts off after five player turns. /api/inception
 // raised its own cap to 60 for the same reason. Note the free caps are skipped for
@@ -560,12 +557,12 @@ export async function POST(req: NextRequest) {
     // Determine access path:
     //   1. Admin (bypass everything)
     //   2. BYOK (user-supplied key, unlimited, bypass free-tier limits)
-    //   3. Active subscriber (managed key, token-budgeted)
-    //   4. Free tier (token-budgeted, shared key)
+    //   3. Free tier (token-budgeted, shared key)
+    //
+    // A fourth path — an active subscriber on a managed key — was removed on
+    // 19 September 2026 with the Spark/Flame/Hearth tiers. Paid access to Cosmo
+    // lives in Creative Powerup membership, not here.
     // ------------------------------------------------------------------
-
-    let subscribedUserId: string | null = null
-    let subscriberTier: import('@/lib/stripe').Tier | null = null
 
     // Resolve the authenticated user up front — also used to recognize the
     // admin by email (ADMIN_EMAIL) so no separate PM-unlock secret is needed.
@@ -584,35 +581,8 @@ export async function POST(req: NextRequest) {
     }
 
     if (!apiKey && !isAdmin) {
-      // Check for an authenticated subscriber before falling to the free tier.
-      const user = authenticatedUser
-      if (user) {
-        const sub = await getSubscription(user.id)
-        if (sub && sub.status === 'active') {
-          const usage = await import('@/lib/subscription').then(m => m.getUsage(user.id))
-          if (isWithinBudget(sub.tier, usage.monthTotal, usage.weekTotal)) {
-            subscribedUserId = user.id
-            subscriberTier = sub.tier
-          } else {
-            // Budget exhausted — inform the client which limit was hit.
-            const tierConfig = TIERS[sub.tier]
-            const isWeeklyExhausted = usage.weekTotal >= tierConfig.weeklyBudgetMicrodollars
-            return NextResponse.json(
-              {
-                error: 'subscription_limit_reached',
-                period: isWeeklyExhausted ? 'weekly' : 'monthly',
-                message: isWeeklyExhausted
-                  ? 'You\'ve reached your weekly conversation limit. It resets on Monday, or you can upgrade your plan.'
-                  : 'You\'ve reached your monthly conversation limit. It resets at the start of next month, or you can upgrade your plan.',
-              },
-              { status: 429 }
-            )
-          }
-        }
-      }
-
-      // No active subscription — apply free-tier guards.
-      if (!subscribedUserId) {
+      // Free-tier guards.
+      {
         // 0. Turnstile bot prevention — runs before Redis hits.
         //    Skipped when TURNSTILE_SECRET_KEY is not configured (dev).
         const turnstileValid = await verifyTurnstile(turnstileToken ?? '', ip)
@@ -670,8 +640,8 @@ export async function POST(req: NextRequest) {
     // Admin and BYOK are exempt (admin is you; BYOK users pay their own costs).
     // ------------------------------------------------------------------
     if (!isAdmin && !apiKey) {
-      const maxMessages = subscribedUserId ? MAX_MESSAGES_SUBSCRIBER : xensoMode ? MAX_MESSAGES_XENSO : MAX_MESSAGES_FREE
-      const maxChars = subscribedUserId ? MAX_CHARS_SUBSCRIBER : xensoMode ? MAX_CHARS_XENSO : MAX_CHARS_FREE
+      const maxMessages = xensoMode ? MAX_MESSAGES_XENSO : MAX_MESSAGES_FREE
+      const maxChars = xensoMode ? MAX_CHARS_XENSO : MAX_CHARS_FREE
 
       if (messages.length > maxMessages) {
         return NextResponse.json({ error: 'too_many_messages' }, { status: 400 })
@@ -689,7 +659,7 @@ export async function POST(req: NextRequest) {
       ts: new Date().toISOString(),
       ip,
       session: req.cookies.get('cosmo_session')?.value ?? 'new',
-      accessPath: isAdmin ? 'admin' : apiKey ? 'byok' : subscribedUserId ? `subscriber:${subscriberTier}` : 'free',
+      accessPath: isAdmin ? 'admin' : apiKey ? 'byok' : 'free',
       messageCount: messages.length,
       estimatedChars: totalChars,
       estimatedTokens: tokenEstimate,
@@ -889,11 +859,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Apply conversation history caching for subscribers and admin (reduces costs
-    // ~40-50% on long conversations). Free-tier requests are short-lived sessions
-    // where caching has minimal benefit. Admin gets the 1h TTL — creative/admin
-    // sessions have real thinking gaps between turns (unlike rapid subscriber
-    // back-and-forth), well past the 5m default, so 1h captures far more reuse.
+    // Apply conversation history caching for admin (reduces costs ~40-50% on
+    // long conversations). Free-tier requests are short-lived sessions where
+    // caching has minimal benefit. Admin gets the 1h TTL — creative/admin
+    // sessions have real thinking gaps between turns, well past the 5m default,
+    // so 1h captures far more reuse.
     // Breakpoint budget check: admin now uses at most 3 (system prompt, final
     // static block, creative context) + this one = 4, the hard cap — safe.
     // Xensō adds no breakpoints of its own and forces creativeMode off, so
@@ -917,8 +887,7 @@ export async function POST(req: NextRequest) {
     //
     // Breakpoints on this path: 2 static + this one = 3, under the cap of 4.
     const cachedMessages =
-      subscribedUserId ? withHistoryCaching(messages)
-      : isAdmin ? withHistoryCaching(messages, '1h')
+      isAdmin ? withHistoryCaching(messages, '1h')
       : xensoMode ? withHistoryCaching(messages, '1h')
       : messages
 
@@ -976,13 +945,6 @@ export async function POST(req: NextRequest) {
               input: msg.usage.input_tokens,
               output: msg.usage.output_tokens,
             }))
-            if (subscribedUserId && subscriberTier) {
-              incrementUsage(
-                subscribedUserId!,
-                msg.usage.input_tokens,
-                msg.usage.output_tokens,
-              ).catch(() => {})
-            }
             if (freeTierSessionId) {
               incrementFreeTokens(
                 freeTierSessionId,
