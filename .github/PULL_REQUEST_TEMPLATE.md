@@ -14,10 +14,9 @@
 
 ## Checklist
 
-- [ ] Changes pass `pnpm lint && pnpm typecheck && pnpm build`
+- [ ] `pnpm build` passes, and UI changes were checked on localhost
 - [ ] Accessibility: keyboard navigable, screen reader friendly, motion respects `useMotionPreference()`
 - [ ] No hardcoded colors — uses CSS variables / theme tokens
-- [ ] New components follow the [register-new-component workflow](.agent/workflows/register-new-component.md)
 - [ ] CHANGELOG.md updated (if significant change)
 
 ## Test Plan

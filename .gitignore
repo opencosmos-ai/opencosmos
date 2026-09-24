@@ -58,3 +58,6 @@ apps/web/.content/
 # through the COSMO_SHALOM_CONTEXT environment variable, and kept here only as
 # an untracked local copy so `next dev` behaves the same as production.
 packages/ai/
+
+# Playwright MCP output (screenshots, snapshots, console logs)
+.playwright-mcp/

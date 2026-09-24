@@ -441,7 +441,7 @@ Phases 5, 6, and 7 can proceed in parallel with each other.
 
 - [docs/architecture.md § Knowledge Wiki Layer](architecture.md#knowledge-wiki-layer) — technical foundation
 - [docs/pm.md § Phase 1d: Knowledge Intelligence Layer](pm.md#phase-1d-knowledge-intelligence-layer) — project management checklist
-- [knowledge/guides/opencosmos-knowledge-graph.md](../knowledge/guides/opencosmos-knowledge-graph.md) — graph implementation guide
-- [knowledge/guides/opencosmos-knowledge-wiki-workflow.md](../knowledge/guides/opencosmos-knowledge-wiki-workflow.md) — wiki workflow guide
+- [knowledge/guides/opencosmos-knowledge-graph.md](https://github.com/opencosmos-ai/knowledge/blob/main/guides/opencosmos-knowledge-graph.md) — graph implementation guide
+- [knowledge/guides/opencosmos-knowledge-wiki-workflow.md](https://github.com/opencosmos-ai/knowledge/blob/main/guides/opencosmos-knowledge-wiki-workflow.md) — wiki workflow guide
 - [packages/ai/README.md § Ambient Knowledge](../packages/ai/README.md#ambient-knowledge) — how the wiki becomes ambient
 - [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — inspiration

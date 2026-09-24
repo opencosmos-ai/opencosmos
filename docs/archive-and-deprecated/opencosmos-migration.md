@@ -1,4 +1,9 @@
-# OpenCosmos Migration Plan
+# OpenCosmos Migration Plan — complete, kept for reference
+
+> **Status: ARCHIVED 2026-09-24.** The Sage → OpenCosmos migration is done and
+> the organization has since split into six repositories — see
+> [ADR 0018](../decisions/0018-the-commons-and-the-applications-live-in-separate-repositories.md).
+> Relative links below point at the monorepo as it was and may no longer resolve.
 
 > Project management doc for the transition from "Sage" to "OpenCosmos" across all repos, packages, and infrastructure.
 

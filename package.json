@@ -10,11 +10,7 @@
     "adr:index": "tsx scripts/adr-index.ts"
   },
   "devDependencies": {
-    "@inquirer/prompts": "^8.3.0",
-    "@types/js-yaml": "^4.0.9",
-    "graphology": "^0.26.0",
-    "graphology-layout-forceatlas2": "^0.10.1",
-    "js-yaml": "^4.1.1",
+    "@anthropic-ai/sdk": "^0.68.0",
     "tsx": "^4.21.0",
     "turbo": "2.11.2"
   },
@@ -31,8 +27,5 @@
       "sharp",
       "unrs-resolver"
     ]
-  },
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.68.0"
   }
 }

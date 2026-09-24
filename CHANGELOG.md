@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-24
 
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 | Changelog | Owns | Style |
 |---|---|---|
 | **`CHANGELOG.md`** ← this file | the monorepo's work history — apps, infrastructure, Cosmo, the knowledge corpus taken as a whole | dated narrative |
-| [`knowledge/iching/CHANGELOG.md`](knowledge/iching/CHANGELOG.md) | the I Ching substrate: a sub-project with its own method, admission rules and principles | dated narrative |
+| [iching](https://github.com/opencosmos-ai/iching/blob/main/CHANGELOG.md) | the I Ching substrate: its own repository since the split, with its own method, admission rules and principles | dated narrative |
 | [`shalomormsby/stocks`](https://github.com/shalomormsby/stocks) | Sage Stocks — peeled out 18 Sept 2026 and archived; its changelog went with it | Keep a Changelog · SemVer |
 | [`shalomormsby/portfolio`](https://github.com/shalomormsby/portfolio), [`shalomormsby/creative-powerup`](https://github.com/shalomormsby/creative-powerup) | **dormant.** Changesets output from a tool no longer installed, last written 2026-02-16 and still naming the retired `@thesage/ui`. Peeled out with their apps on 18 Sept 2026. | generated |
 | [opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui) | the design system — component behaviour and its releases | dated narrative |
@@ -34,6 +34,17 @@ All notable changes to this project will be documented in this file.
 **The test for whether something belongs here rather than in a sub-project's changelog: would someone not working on that sub-project need to know?** If yes, a sentence here with a link. If no, it stays there.
 
 ---
+
+## 2026-09-24 — Chore: clearing what the split left behind (5 repositories · 9 dead dependencies · 6 skills moved home · 0 broken links)
+
+The split into six repositories ([ADR 0018](docs/decisions/0018-the-commons-and-the-applications-live-in-separate-repositories.md)) was sound; what it left was residue — dependencies, env vars, files, links and docs still describing one monorepo. An org-wide scan found that most of the complexity was leftovers, not design, so the fix is mostly deletion.
+
+- **Dependencies nothing imports.** Root: `graphology`, `graphology-layout-forceatlas2`, `@inquirer/prompts`, `js-yaml`, `@types/js-yaml` (the corpus toolchain's, which left with it); `@anthropic-ai/sdk` moves to devDependencies, since only `scripts/test-cosmo-voice.ts` uses it. `apps/web`: `graphology`, `graphology-layout-forceatlas2`, `sigma`, `@react-sigma/core`. The graph renders through `@opencosmos/constellation`, which needs only `@cosmos.gl/graph`. The four stay in the lockfile as auto-installed optional peers of `@opencosmos/ui`. The lockfile diff is removals only.
+- **`turbo.json` passed through nine env vars nothing reads** (`STRIPE_*`, `CIRCLE_*`, a January cache-bust), and listed `COSMO_FREE_MONTHLY_CAP` when the code reads `COSMO_FREE_MONTHLY_TOKEN_CAP`. That was harmless, because the route reads it at runtime, where turbo's list does not apply, but it was misleading.
+- **Dead tracked files:** `templates/nextjs-app/` (unreferenced), and the `.vercel/` and `next-env.d.ts` stubs the peeled apps left under `apps/`. CI's two-at-a-time concurrency cap was for four app builds and is gone. The PR template no longer asks for a `pnpm typecheck` that does not exist or links to the design system's workflow.
+- **The corpus skills moved to the corpus.** `/groom`, `/new-quote`, `/knowledge-compile`, `/knowledge-lookup`, `/knowledge-review` and `/standardize-knowledge` now live in [knowledge](https://github.com/opencosmos-ai/knowledge/pull/8), so a contributor who clones it gets them. The move showed that the corpus layout guard exempted dot-directories and would have embedded `.claude/` as corpus. Fixed there.
+- **Docs describe the present.** AGENTS.md and CLAUDE.md name all six repositories and drop the four-app tree, `packages/ai`, the Phase 1a/1b status, and Zustand and Framer Motion (neither is a dependency). Re-pointing 35 links to the repositories that now hold their targets took broken relative links from 57 to 0 outside the archive. The migration plan is archived. Cross-repository, in one sentence each: [cosmo](https://github.com/opencosmos-ai/cosmo/pull/1) re-points 29 links, [the org profile](https://github.com/opencosmos-ai/.github/pull/1) maps all six repositories, and [knowledge](https://github.com/opencosmos-ai/knowledge/pull/7) and [iching](https://github.com/opencosmos-ai/iching/pull/4) gain pull-request checks.
+- **Verified:** `pnpm build` green; `/`, `/library`, `/library/graph`, `/xenso`, `/inception`, `/library/quotes` all 200 from `next start`; the constellation seen rendering in a Playwright browser, with no graph errors in the console.
 
 ## 2026-09-16 — Migration: OpenCosmos moves to its own organisation (opencosmos-ai · 3 Vercel projects · 0 downtime)
 

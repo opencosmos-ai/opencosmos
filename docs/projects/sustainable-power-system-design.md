@@ -2,7 +2,7 @@
 
 > **The Solar Nervous System** — A smart energy management layer that lets Cosmo AI breathe with the sun: waking when solar energy is abundant, sleeping when it's not, and always telling the truth about where its power comes from.
 
-**Last updated:** 2026-03-10 | **Phase:** 2 (see [opencosmos-todo.md](./opencosmos-todo.md)) | **Status:** Planning
+**Last updated:** 2026-03-10 | **Phase:** 2 (see [opencosmos-todo.md](../archive-and-deprecated/opencosmos-todo.md)) | **Status:** Planning
 
 ---
 
@@ -543,7 +543,7 @@ This data is not just operational — it's part of the Cosmo AI story. The Ecolo
 
 ## Implementation Checklist
 
-> Detailed task tracking is in [opencosmos-todo.md](./opencosmos-todo.md) under Phase 2.
+> Detailed task tracking is in [opencosmos-todo.md](../archive-and-deprecated/opencosmos-todo.md) under Phase 2.
 
 1. Order hardware (Pi 5 8GB, case, PSU, NVMe HAT + SSD, Shelly Plug US Gen4)
 2. Find your Powerwall Gateway IP and verify `/api/meters/aggregates` returns solar data
