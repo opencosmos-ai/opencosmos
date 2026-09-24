@@ -2,7 +2,7 @@
  * Makes the content this app builds from available on disk at build time.
  *
  * Two sources, both in their own repositories so that adding a text or editing
- * a prompt does not mean cloning a five-application monorepo:
+ * a prompt does not mean cloning the site:
  *
  *   knowledge  opencosmos-ai/knowledge  the corpus behind /library
  *   cosmo      opencosmos-ai/cosmo      Cosmo's constitutional layer
@@ -21,7 +21,7 @@
  * traverses directory references during its module graph build and rejects any
  * symlink whose target sits outside the project root:
  *
- *     Symlink apps/web/.content/knowledge/quotes/README.md is invalid,
+ *     Symlink .content/knowledge/quotes/README.md is invalid,
  *     it points out of the filesystem root
  *
  * So the content has to be real files under this app. The cost is that an edit
@@ -49,8 +49,7 @@ import { cpSync, existsSync, mkdirSync, rmSync, readdirSync, readFileSync, statS
 import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const APP_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const REPO_ROOT = resolve(APP_DIR, '..', '..')
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 const REF = process.env.CONTENT_REF || ''
 const TOKEN = process.env.CONTENT_TOKEN || ''
@@ -164,7 +163,7 @@ function clone(src, dest) {
 
 function main() {
   for (const src of SOURCES) {
-    const dest = join(APP_DIR, '.content', src.name)
+    const dest = join(REPO_ROOT, '.content', src.name)
     const local = findLocalCheckout(src)
     if (local) copyFrom(local, dest)
     else clone(src, dest)

@@ -2,7 +2,7 @@
 /**
  * Verification for the cast engine.
  *
- * The monorepo has no test runner, so this follows the scripts/test-cosmo-voice.ts
+ * This repository has no test runner, so this follows the scripts/test-cosmo-voice.ts
  * precedent: a script you run, that prints, and that exits non-zero when it should.
  *
  *   pnpm xenso:check-iching
@@ -26,8 +26,8 @@ import {
   resolve,
   type CoinThrow,
   type LineValue,
-} from '../../apps/web/lib/iching'
-import { HEXAGRAMS } from '../../apps/web/lib/iching-data'
+} from '../../lib/iching'
+import { HEXAGRAMS } from '../../lib/iching-data'
 
 let failures = 0
 const fail = (m: string) => {

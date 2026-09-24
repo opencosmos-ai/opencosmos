@@ -8,8 +8,6 @@ disable-model-invocation: true
 
 # /pr — Package Unmerged Work Into a Pull Request
 
-<!-- Canonical source: opencosmos/.claude/skills/pr/SKILL.md. Consuming repos carry a copy for skill discovery — when you edit this file, propagate the change to those copies. -->
-
 Companion to [/git-sync](../git-sync/SKILL.md), which this skill assumes as a starting posture: the current branch should already be based on a fresh default branch, not a stale one. If you haven't fetched recently, run `/git-sync` first — this skill doesn't re-derive that logic.
 
 ## What counts as "unmerged work"

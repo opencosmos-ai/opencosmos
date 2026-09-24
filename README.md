@@ -13,64 +13,36 @@ OpenCosmos is a creative platform built on a simple recognition: we are not sepa
 
 ## What This Is
 
-This platform expresses one unified vision through multiple products:
+This repository is **[opencosmos.ai](https://opencosmos.ai/)**, the site that serves the OpenCosmos commons:
 
-- **[Portfolio](https://www.shalomormsby.com/)** — Design philosophy in action. Built entirely with OpenCosmos/UI components.
-- **[Creative Powerup](https://ecosystem-creative-powerup.vercel.app/)** — Community platform and experiment gallery for purpose-driven innovators *(in development)*
-- **[Stocks](https://stocks.shalomormsby.com/)** — AI-powered investment intelligence that respects user agency
-- **cosmOS** — Personal operating system for creative work *(concept)*
+- **The Library:** a public-domain corpus of contemplative texts and verified quotations, readable and cross-linked.
+- **The constellation:** the corpus drawn as a knowledge graph.
+- **Cosmo:** an AI companion whose values are a versioned document, grounded in the Library and citing it.
+- **Inception:** bring a personal AI agent into being. Cosmo draws it out of you, and it goes home with you.
+- **Xensō:** a game you play as yourself. The challenges are the real ones of your life.
 
-**The unifying element:** All apps consume [OpenCosmos/UI](https://github.com/opencosmos-ai/opencosmos-ui) (`@opencosmos/*` packages) from npm, which embodies human-centered principles into every component, token, and interaction.
+The site **does not contain** the commons. It fetches them at build time from their own repositories, each with its own licence and invitation ([ADR 0018](docs/decisions/0018-the-commons-and-the-applications-live-in-separate-repositories.md)):
 
----
-
-## Architecture
-
-This repo is a **consumer** of OpenCosmos/UI. The design system packages (`@opencosmos/ui`, `@opencosmos/tokens`, etc.) are installed from npm, not developed here.
-
-```
-opencosmos/
-├── apps/
-│   ├── portfolio/             # Production portfolio site
-│   ├── creative-powerup/      # Community platform (in development)
-│   ├── stocks/                # AI investment intelligence
-│   └── cosmos/                # cosmOS (future)
-├── packages/
-│   └── ai/                    # @opencosmos/ai — Sovereign AI layer (WIP)
-```
-
-### Design System
-
-OpenCosmos/UI is maintained in a [separate repository](https://github.com/opencosmos-ai/opencosmos-ui) and consumed via npm:
-
-```bash
-pnpm add @opencosmos/ui
-```
-
-Available packages:
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `@opencosmos/ui` | ^1.1.1 | Components, hooks, providers, utils |
-| `@opencosmos/tokens` | ^0.0.3 | Design tokens (colors, typography, motion) |
-| `@opencosmos/mcp` | ^0.8.2 | MCP server for AI assistants |
-
-Interactive documentation: [opencosmos.ai](https://opencosmos.ai/)
+| Repository | What it holds | License |
+|---|---|---|
+| **opencosmos** (this one) | the site | MIT |
+| [knowledge](https://github.com/opencosmos-ai/knowledge) | the corpus and its tools | CC0 |
+| [cosmo](https://github.com/opencosmos-ai/cosmo) | Cosmo's constitution | CC BY-SA 4.0 |
+| [taoteching](https://github.com/opencosmos-ai/taoteching), [iching](https://github.com/opencosmos-ai/iching) | open translations | CC0 |
+| [opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui) | the design system, `@opencosmos/ui` on npm | MIT |
 
 ---
 
 ## Quick Start
 
 ```bash
-# Clone and install
 git clone https://github.com/opencosmos-ai/opencosmos.git
 cd opencosmos
 pnpm install
-
-# Start portfolio
-pnpm dev --filter web
-# Open http://localhost:3000
+pnpm dev          # fetches knowledge + cosmo into .content/, then serves http://localhost:3000
 ```
+
+If `../knowledge` or `../cosmo` exist as sibling checkouts, the fetch copies them, so local edits show up. Otherwise it clones them.
 
 ---
 
@@ -92,22 +64,18 @@ This platform is built on four principles:
 ### Prerequisites
 
 - Node.js 24+ (see `.nvmrc`)
-- pnpm 8.15.0+
+- pnpm 10 (pinned in `package.json`)
 
 ### Commands
 
 ```bash
-# Development
-pnpm dev                    # Start all apps
-pnpm dev --filter web # Start specific app
-
-# Building
-pnpm build                  # Build everything
-pnpm build --filter <app>   # Build specific app
-
-# Quality
-pnpm lint                   # Lint all
+pnpm dev          # Dev server (fetches content first)
+pnpm build        # Production build (fetches content first)
+pnpm content      # Re-fetch knowledge + cosmo into .content/
+pnpm adr:index    # Regenerate the ADR index after adding one
 ```
+
+Other scripts: [scripts/README.md](scripts/README.md).
 
 ### Updating Design System
 
@@ -127,7 +95,7 @@ When testing design system changes before publishing:
 cd packages/ui && pnpm link --global
 
 # In this repo
-cd apps/web && pnpm link --global @opencosmos/ui
+pnpm link --global @opencosmos/ui
 
 # Don't forget to unlink when done
 pnpm unlink @opencosmos/ui && pnpm install
@@ -142,11 +110,11 @@ pnpm unlink @opencosmos/ui && pnpm install
 | Framework | Next.js 16 (App Router) |
 | Language | TypeScript 5 (strict) |
 | Styling | Tailwind CSS |
-| Animation | Framer Motion 12 |
-| State | Zustand 5 + localStorage |
 | Design System | OpenCosmos/UI (`@opencosmos/*`) |
-| Monorepo | Turborepo + pnpm workspaces |
+| Package manager | pnpm |
 | Deployment | Vercel |
+| Retrieval | Upstash Vector + Redis |
+| Inference | Claude (Anthropic API), shared free tier or bring-your-own-key |
 
 ---
 

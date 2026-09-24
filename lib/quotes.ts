@@ -24,7 +24,7 @@ const QUOTES_DIR = path.join(process.cwd(), '.content/knowledge/quotes')
  * gray-matter bundles js-yaml and exposes it as `engines.yaml`, but its type
  * definitions don't declare the property. Reaching through a narrow local type
  * keeps the parse typed at the call site without adding js-yaml as a direct
- * dependency of this app — which would rewrite the shared monorepo lockfile.
+ * dependency of this app for one type.
  */
 const yamlEngine = (matter as unknown as {
   engines: { yaml: { parse(src: string): unknown } }

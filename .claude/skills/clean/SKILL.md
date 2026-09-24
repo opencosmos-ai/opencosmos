@@ -8,8 +8,6 @@ disable-model-invocation: true
 
 # /clean — Local Branch Audit and Sync
 
-<!-- Canonical source: opencosmos/.claude/skills/clean/SKILL.md. Consuming repos carry a copy for skill discovery — when you edit this file, propagate the change to those copies. -->
-
 The follow-up to [/pr](../pr/SKILL.md): once a PR has merged, this is what clears the now-stale local branch and sweeps up anything else sitting in the clone. If there's work not yet in a PR, run `/pr` first — `/clean` never packages work, it only deletes-what's-safe and flags what isn't.
 
 **This skill is local-only.** It never pushes, force-pushes, or deletes a branch on `origin` — only local branches and local remote-tracking refs. The end state it promises is: **local is synced to the default branch, with a clean working tree**, and nothing with real, unmerged work has been deleted.

@@ -1,6 +1,6 @@
 ---
 name: inference-cost
-description: View and edit which Claude model each Cosmo/Inception surface runs on. Single entry point for OpenCosmos's inference-cost knobs — reads and edits apps/web/lib/ai-models.ts so model choices never have to be hunted down across route files.
+description: View and edit which Claude model each Cosmo/Inception surface runs on. Single entry point for OpenCosmos's inference-cost knobs — reads and edits lib/ai-models.ts so model choices never have to be hunted down across route files.
 argument-hint: "[tier] [model-id]"
 disable-model-invocation: true
 user-invocable: true
@@ -9,16 +9,16 @@ user-invocable: true
 # /inference-cost — OpenCosmos model & inference-cost control panel
 
 All of OpenCosmos's Claude model selection lives in one file:
-**`apps/web/lib/ai-models.ts`**. Every API route imports its model from
+**`lib/ai-models.ts`**. Every API route imports its model from
 there — nothing should hardcode a model ID inline. This skill reads and
 edits that file so the current settings are never more than one command
 away, and stay in one place instead of drifting across route files.
 
 ## Step 1 — Read the current config
 
-Read `apps/web/lib/ai-models.ts` in full (it's short — three exports with
+Read `lib/ai-models.ts` in full (it's short — three exports with
 comments explaining the cost/quality reasoning behind each). Also skim
-`apps/web/app/api/chat/route.ts` and `apps/web/app/api/inception/route.ts`
+`app/api/chat/route.ts` and `app/api/inception/route.ts`
 for anything that imports a model constant, to confirm nothing has drifted
 back to a local hardcoded model ID (grep for `claude-` in those two files —
 should return nothing outside the `ai-models.ts` import line).
@@ -51,7 +51,7 @@ should never guess a stale one.
 
 ## Step 4 — Edit
 
-Use the Edit tool on `apps/web/lib/ai-models.ts` only. Update the constant's
+Use the Edit tool on `lib/ai-models.ts` only. Update the constant's
 value on its `export const MODEL_X = '...'` line. If the change reflects a
 deliberate cost/quality tradeoff decision (not just a typo fix), update or
 append to that export's comment block with the same brevity as the existing
@@ -64,7 +64,7 @@ no changes when a model value changes.
 
 ## Step 5 — Verify and report
 
-Run `cd apps/web && pnpm exec tsc --noEmit` to confirm the edit didn't break
+Run `pnpm exec tsc --noEmit` from the repo root to confirm the edit didn't break
 anything (a bad constant name would surface here). Report the before/after
 value and which surface(s) it affects. Remind the user this is a source
 change — it needs a deploy (PR → merge) to take effect, same as any other

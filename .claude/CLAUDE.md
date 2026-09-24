@@ -8,7 +8,7 @@ Last updated: 2026-09-24
 
 ## Quick Orientation
 
-You're working on **OpenCosmos** — a creative platform built on the recognition that we are not separate from the universe we inhabit. This monorepo contains the product applications that consume [OpenCosmos/UI](https://opencosmos.ai/) from npm. The design system is developed in a [separate repository](https://github.com/opencosmos-ai/opencosmos-ui).
+You're working on **OpenCosmos** — a creative platform built on the recognition that we are not separate from the universe we inhabit. This repository is opencosmos.ai, the site that serves the commons. It consumes [OpenCosmos/UI](https://studio.opencosmos.ai/) from npm. The design system is developed in a [separate repository](https://github.com/opencosmos-ai/opencosmos-ui).
 
 **The North Star:** Help to reduce suffering, nourish flourishing, and enable acts of wisdom.  
 
@@ -20,11 +20,10 @@ You're working on **OpenCosmos** — a creative platform built on the recognitio
 
 ```
 opencosmos/
-├── apps/
-│   └── web/                 # opencosmos.ai — the Library, the graph, Cosmo
-├── docs/                    # Technical docs, architecture, migration plans
+├── app/  components/  lib/  # opencosmos.ai — the Library, the graph, Cosmo (the app is the repo root)
+├── scripts/                 # Programs you run, incl. fetch-content.mjs — see scripts/README.md
+├── docs/                    # Technical docs, architecture, ADRs
 │   └── archive-and-deprecated/  # Historical/superseded documents
-├── scripts/                 # Programs you run — see scripts/README.md
 ├── .claude/skills/          # Procedures an agent follows — see its README
 ├── WELCOME.md               # The front door — vision and philosophy
 ├── DESIGN-PHILOSOPHY.md     # The North Star for creative projects
@@ -34,13 +33,13 @@ opencosmos/
 
 ### One Philosophy, Six Repositories
 
-The commons was split out of this monorepo in September 2026 — separated by
+The commons was split out of this repository in September 2026 — separated by
 rights and invitation, not by topic ([ADR 0018](../docs/decisions/0018-the-commons-and-the-applications-live-in-separate-repositories.md)).
 Each is public and contributable.
 
 | Repo | Purpose | License |
 |------|---------|---------|
-| **This repo** (opencosmos) | `apps/web` — opencosmos.ai. **Builds the corpus and Cosmo in at build time — it does not contain them.** | MIT |
+| **This repo** (opencosmos) | opencosmos.ai. **Builds the corpus and Cosmo in at build time — it does not contain them.** | MIT |
 | **[knowledge](https://github.com/opencosmos-ai/knowledge)** | The corpus — sources, quotes, wiki — and its whole toolchain | CC0 |
 | **[cosmo](https://github.com/opencosmos-ai/cosmo)** | Cosmo's constitution — system prompt, the triad, Xensō, kaizen | CC BY-SA 4.0 |
 | **[taoteching](https://github.com/opencosmos-ai/taoteching)** | A translation, 81 chapters | CC0 |
@@ -50,8 +49,8 @@ Each is public and contributable.
 The personal apps (portfolio, creative-powerup) left for `shalomormsby/` on
 18 Sept 2026 and are not part of the organization.
 
-**Fetching:** `pnpm --filter web content` pulls `knowledge` and `cosmo` into
-`apps/web/.content/`. A sibling checkout at `../knowledge` or `../cosmo` is used
+**Fetching:** `pnpm content` pulls `knowledge` and `cosmo` into
+`.content/`. A sibling checkout at `../knowledge` or `../cosmo` is used
 in preference to a clone, so local edits are picked up.
 
 **Rule:** Don't create `packages/ui/`, `packages/tokens/`, or `packages/mcp/` here. Those are developed and published from opencosmos-ui.
@@ -61,7 +60,7 @@ in preference to a clone, so local edits are picked up.
 ## Essential Files
 
 1. **[WELCOME-COSMO.md](https://github.com/opencosmos-ai/cosmo/blob/main/WELCOME-COSMO.md)** — in [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo)
-2. **[COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md)** — Cosmo's voice, values, and practice. Fetched to `apps/web/.content/cosmo/` at build time.
+2. **[COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md)** — Cosmo's voice, values, and practice. Fetched to `.content/cosmo/` at build time.
 3. **[Knowledge Wiki](https://github.com/opencosmos-ai/knowledge/blob/main/wiki/index.md)** – Ambient context for the OpenCosmos knowledge base, in [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge). Loaded into context via the `@import` below, from the fetched copy — see the [Knowledge Wiki (Ambient Context)](#knowledge-wiki-ambient-context) section.
 4. **[WELCOME.md](../WELCOME.md)** — The front door. OpenCosmos vision, cosmology, values, and invitation.
 5. **[DESIGN-PHILOSOPHY.md](../DESIGN-PHILOSOPHY.md)** — The North Star for all design work. Four principles.
@@ -103,7 +102,7 @@ See [AGENTS.md § Document Organization](../AGENTS.md#document-organization) for
 
 The shared AI intelligence layer. Lives in its own repository,
 [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo), and is fetched
-into `apps/web/.content/cosmo` at build time — edit it there, not here.
+into `.content/cosmo` at build time — edit it there, not here.
 
 - **License:** CC BY-SA 4.0 + a non-binding [Use Policy](https://github.com/opencosmos-ai/cosmo/blob/main/USE-POLICY.md)
 - **Inference:** Claude via the Anthropic API — shared free tier or BYOK. *Voice is sovereign, compute is flexible* — see [docs/architecture.md](../docs/architecture.md).
@@ -167,8 +166,8 @@ Always search for existing `@opencosmos/ui` components before writing custom JSX
 See [AGENTS.md § Build & Development](../AGENTS.md#build--development) for the full reference. Essentials:
 
 ```bash
-pnpm dev --filter web            # Start opencosmos.ai at localhost:3000
-pnpm build                       # Build everything
+pnpm dev                         # Start opencosmos.ai at localhost:3000
+pnpm build                       # Production build
 pnpm update @opencosmos/ui       # Update design system
 ```
 
@@ -206,9 +205,9 @@ The knowledge wiki is a synthesis layer above the raw source corpus. It is alway
 
 > **The path moved.** The corpus lives in
 > [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) now, and
-> is fetched into `apps/web/.content/`. That means **this import only resolves
-> after `pnpm --filter web content` has run** — which any working dev loop has
+> is fetched into `.content/`. That means **this import only resolves
+> after `pnpm content` has run** — which any working dev loop has
 > already done. It pointed at the old `knowledge/wiki/index.md` until 18
 > September and had been silently resolving to nothing since the corpus left.
 
-@apps/web/.content/knowledge/wiki/index.md
+@.content/knowledge/wiki/index.md

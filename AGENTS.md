@@ -12,10 +12,11 @@ This repository is **the site that serves the commons** — [opencosmos.ai](http
 
 ```
 opencosmos/
-├── apps/web/                # opencosmos.ai
-│   └── scripts/fetch-content.mjs   # pulls knowledge + cosmo into apps/web/.content/
+├── app/                     # Next.js routes — the Library, Dialog, Inception, Xensō, API
+├── components/  lib/        # Shared UI and server helpers
+├── public/  content/        # Static assets and site copy
 ├── docs/                    # Architecture, ADRs, chronicle, PM
-├── scripts/                 # Programs you run — see scripts/README.md
+├── scripts/                 # Programs you run, including fetch-content.mjs — see scripts/README.md
 ├── .claude/skills/          # Procedures an agent follows
 ├── WELCOME.md               # The front door — OpenCosmos vision and philosophy
 ├── DESIGN-PHILOSOPHY.md     # The North Star — four principles
@@ -47,7 +48,7 @@ opencosmos/
    ```bash
    pnpm install
    pnpm build
-   pnpm dev --filter web
+   pnpm dev
    ```
    The site runs at **http://localhost:3000**.
 
@@ -57,7 +58,7 @@ opencosmos/
    git log -5 --oneline
    ```
 
-4. **If working on Cosmo AI:** the constitutional layer lives in [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo) now. Read [COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) for the voice and values, and [INCEPTION.md](docs/archive-and-deprecated/INCEPTION.md) for historical technical context. `pnpm --filter web content` fetches it into `apps/web/.content/cosmo`.
+4. **If working on Cosmo AI:** the constitutional layer lives in [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo) now. Read [COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) for the voice and values, and [INCEPTION.md](docs/archive-and-deprecated/INCEPTION.md) for historical technical context. `pnpm content` fetches it into `.content/cosmo`.
 
 ---
 
@@ -83,7 +84,7 @@ Skills are procedures an agent follows. For programs it runs, see
 
 ## Applications
 
-### The Library (`apps/web/`)
+### The Library (the repository root)
 - **URL:** [opencosmos.ai](https://opencosmos.ai/)
 - **Purpose:** The site that serves the commons — the Library, the graph, Cosmo.
 - **Deps:** `@opencosmos/ui`, `@opencosmos/constellation` (npm)
@@ -106,8 +107,8 @@ than given a repository; its text is in this repository's history.
 ## Cosmo AI ([opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo))
 
 The shared intelligence layer for the platform. It left this repository in
-September 2026 and is fetched into `apps/web/.content/cosmo` at build time by
-`apps/web/scripts/fetch-content.mjs`; edit it in its own repo, not here.
+September 2026 and is fetched into `.content/cosmo` at build time by
+`scripts/fetch-content.mjs`; edit it in its own repo, not here.
 **Read [COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) for the voice and values.**
 
 - **License:** CC BY-SA 4.0, with a [Use Policy](https://github.com/opencosmos-ai/cosmo/blob/main/USE-POLICY.md) stating intent the licence does not bind — not MIT like the app code
@@ -120,8 +121,8 @@ September 2026 and is fetched into `apps/web/.content/cosmo` at build time by
 
 | If you're creating... | Put it in... |
 |----------------------|--------------|
-| Component | `apps/web/components/` |
-| Utility, server helper | `apps/web/lib/` |
+| Component | `components/` |
+| Utility, server helper | `lib/` |
 | Cosmo's voice, prompts, lessons | [cosmo](https://github.com/opencosmos-ai/cosmo) — not here |
 | Anything that should be RAG-indexed | [knowledge](https://github.com/opencosmos-ai/knowledge) — not here |
 | Documentation | See "Document Organization" below |
@@ -182,7 +183,7 @@ When testing design system changes before publishing:
 cd packages/ui && pnpm link --global
 
 # In this repo
-cd apps/web && pnpm link --global @opencosmos/ui
+pnpm link --global @opencosmos/ui
 
 # Unlink when done
 pnpm unlink @opencosmos/ui && pnpm install
@@ -202,7 +203,7 @@ pnpm unlink @opencosmos/ui && pnpm install
 ```bash
 pnpm dev                         # opencosmos.ai at localhost:3000 (fetches content first)
 pnpm build                       # Production build
-pnpm --filter web content        # Re-fetch knowledge + cosmo into apps/web/.content/
+pnpm content                     # Re-fetch knowledge + cosmo into .content/
 ```
 
 ### CI Pipeline
@@ -217,7 +218,7 @@ Node 24, pnpm 10.26.1+. Deployed to Vercel.
 ### Clear Stale Caches
 
 ```bash
-rm -rf .turbo apps/web/.next && pnpm build
+rm -rf .next .content && pnpm build
 ```
 
 ---
@@ -231,7 +232,7 @@ rm -rf .turbo apps/web/.next && pnpm build
 | Language | TypeScript 5 | Strict mode |
 | Styling | Tailwind CSS | Via CSS variables from @opencosmos/ui |
 | Design System | `@opencosmos/ui` (npm) | 100 components, 3 themes |
-| Package manager | pnpm (+ Turborepo) | |
+| Package manager | pnpm | One package at the root — [ADR 0019](docs/decisions/0019-one-application-lives-at-the-repository-root.md) |
 | Deployment | Vercel | Auto-deploys main; the knowledge repo's sync workflow also triggers a rebuild |
 
 ---

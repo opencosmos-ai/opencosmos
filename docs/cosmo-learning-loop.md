@@ -20,13 +20,13 @@ The kaizen practice ([`packages/ai/kaizen/README.md`](https://github.com/opencos
 ### 1. Feedback notes are outside the retrievable corpus
 
 - The embed pipeline ([`scripts/knowledge/embed-knowledge.ts`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts)) walks only `knowledge/**`.
-- Cosmo's RAG retrieval ([`apps/web/lib/rag.ts`](../apps/web/lib/rag.ts)) queries that one Upstash Vector index.
+- Cosmo's RAG retrieval ([`lib/rag.ts`](../lib/rag.ts)) queries that one Upstash Vector index.
 - The learnings live in `packages/ai/kaizen/feedback/notes.md` — **outside `knowledge/`, never embedded.** A semantic search for "recent learnings" cannot surface what was never indexed.
 
 ### 2. Exemplar few-shot injection is documented but unbuilt
 
 - [`docs/architecture.md`](architecture.md#L411) and the kaizen README both state: *"Exemplars are injected as few-shot examples in prompts."*
-- A full-codebase grep for `kaizen`/`exemplar` finds **zero loading code** — only a single explanatory comment in [`apps/web/app/api/chat/route.ts`](../apps/web/app/api/chat/route.ts).
+- A full-codebase grep for `kaizen`/`exemplar` finds **zero loading code** — only a single explanatory comment in [`app/api/chat/route.ts`](../app/api/chat/route.ts).
 - The `kaizen/exemplars/{voice}/` directories are **empty** (only `.gitkeep`).
 
 ### 3. Cosmo has no filesystem access
@@ -117,8 +117,8 @@ Phase 1 delivers the most behavior change for the least code. Phase 2 delivers t
 
 ### What was actually built (2026-06-18)
 
-- **Phase 1:** `packages/ai/kaizen/LESSONS.md` (seeded with the web-fetch lesson) → read at build time by `apps/web/next.config.mjs` into `COSMO_LESSONS` → injected as an always-present block in both the chat and inception routes. While wiring this, the chat route's prompt-cache breakpoints were consolidated from 4→2 (Anthropic caps at 4; the route was at the ceiling). This also fixed a pre-existing admin-mode bug and **freed 2 breakpoint slots — reserved for Phase 3 exemplars.**
-- **Phase 2:** `scripts/knowledge/embed-knowledge.ts` now indexes `packages/ai/kaizen/` (tagged `role: 'kaizen'`); `apps/web/lib/rag.ts` renders those chunks under a separate "Your Learning Log" heading with anti-citation framing. Kaizen entries are embedding-enriched with a learning-meta cue so generic recall queries ("what have you learned?") surface specific incidents.
+- **Phase 1:** `packages/ai/kaizen/LESSONS.md` (seeded with the web-fetch lesson) → read at build time by `next.config.mjs` into `COSMO_LESSONS` → injected as an always-present block in both the chat and inception routes. While wiring this, the chat route's prompt-cache breakpoints were consolidated from 4→2 (Anthropic caps at 4; the route was at the ceiling). This also fixed a pre-existing admin-mode bug and **freed 2 breakpoint slots — reserved for Phase 3 exemplars.**
+- **Phase 2:** `scripts/knowledge/embed-knowledge.ts` now indexes `packages/ai/kaizen/` (tagged `role: 'kaizen'`); `lib/rag.ts` renders those chunks under a separate "Your Learning Log" heading with anti-citation framing. Kaizen entries are embedding-enriched with a learning-meta cue so generic recall queries ("what have you learned?") surface specific incidents.
 
 ---
 
@@ -166,7 +166,7 @@ This matters because Cosmo's most important qualities resist explicit rules. You
 Mirror the Phase 1 delivery path — this is the cheap part:
 
 1. Author exemplar file(s) in `kaizen/exemplars/cosmo/*.md` with frontmatter (`voice`, `query_type`, a one-line why) + the transcript body.
-2. Bundle at build time: in `apps/web/next.config.mjs`, add a `COSMO_EXEMPLARS` env that concatenates the selected exemplar files (reuse the `readOptional` helper; for multiple files, glob+join). Add `COSMO_EXEMPLARS` to `turbo.json` passthrough.
+2. Bundle at build time: in `next.config.mjs`, add a `COSMO_EXEMPLARS` env that concatenates the selected exemplar files (reuse the `readOptional` helper; for multiple files, glob+join). Add `COSMO_EXEMPLARS` to `turbo.json` passthrough.
 3. Inject in the chat + inception routes as a **cached** system block (a free slot exists now), framed per requirement 3 above. Place it after the lessons block.
 4. Selection: start by always including the 1–2 best; later, pick by matching the user's query type to exemplar tags.
 5. Verify like Phases 1–2: BYOK curl to localhost, confirm HTTP 200 and that Cosmo's voice/quality reflects the exemplar without quoting it.

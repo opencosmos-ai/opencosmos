@@ -134,7 +134,7 @@ For AI agents working in this repo: the [`/create` skill](.claude/skills/create/
 
 ### The Expressions (Current)
 
-**The Library** (`apps/web/` — [opencosmos.ai](https://opencosmos.ai/))
+**The Library** ([opencosmos.ai](https://opencosmos.ai/))
 The commons made readable. The corpus, the constellation graph, and Cosmo.
 
 **Portfolio** ([shalomormsby/portfolio](https://github.com/shalomormsby/portfolio))
@@ -179,9 +179,9 @@ What would delight the human, create joy, or expand their degrees of freedom?
 
 ## Technical Architecture
 
-### Two Repos, One Philosophy
+### The Design System and the Site
 
-The ecosystem is split across two repositories:
+The design system and the site that uses it live in two repositories:
 
 **[opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui)** — Source of truth for the design system:
 ```
@@ -190,18 +190,17 @@ opencosmos-ui/
 │   ├── ui/                   ← @opencosmos/ui - Component library (100 components)
 │   ├── tokens/               ← @opencosmos/tokens - Design tokens
 │   └── mcp/                  ← @opencosmos/mcp - AI assistant tools
-└── apps/web/                 ← OpenCosmos Studio (opencosmos.ai)
+└── apps/web/                 ← OpenCosmos Studio (studio.opencosmos.ai)
 ```
 
-**opencosmos** (this repo) — Consumer applications:
+**opencosmos** (this repo) — the site, opencosmos.ai:
 ```
 opencosmos/
-├── apps/                     ← Portfolio, Stocks, Creative Powerup, cosmOS
-├── packages/
-│   └── ai/                   ← @opencosmos/ai - Sovereign AI layer (WIP)
+├── app/  lib/  components/   ← the Next.js app, at the repository root
+└── scripts/                  ← fetches the corpus and Cosmo in at build time
 ```
 
-Apps consume `@opencosmos/ui` from npm. The design philosophy flows from tokens → components → products.
+The site consumes `@opencosmos/ui` from npm. The corpus, Cosmo and the translations each have their own repository; see [ADR 0018](docs/decisions/0018-the-commons-and-the-applications-live-in-separate-repositories.md). The design philosophy flows from tokens → components → products.
 
 **Why functional organization?**
 - **Developer clarity** — Components organized by what they *do*, not abstract hierarchy

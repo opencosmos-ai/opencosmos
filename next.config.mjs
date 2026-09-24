@@ -74,7 +74,7 @@ const nextConfig = {
     // variable and admin sessions would go quietly generic — no error, nothing
     // in a log, just Cosmo not knowing who it is talking to.
     COSMO_SHALOM_CONTEXT:
-      readOptional('../../packages/ai/COSMO_SHALOM_CONTEXT.md') ||
+      readOptional('packages/ai/COSMO_SHALOM_CONTEXT.md') ||
       process.env.COSMO_SHALOM_CONTEXT ||
       '',
     // Xensō quest-guide module — injected only when a request arrives with

@@ -8,8 +8,6 @@ disable-model-invocation: true
 
 # /git-sync — Cross-Device Git Lifecycle Skill
 
-<!-- Canonical source: opencosmos/.claude/skills/git-sync/SKILL.md. Consuming repos carry a copy for skill discovery — when you edit this file, propagate the change to those copies. -->
-
 ## The mental model
 
 GitHub is the one shared source of truth. Every clone — your laptop, a Claude Code cloud session's ephemeral container, a CI runner — is an **independent local copy** that only stays in sync when it explicitly talks to GitHub via `fetch`/`pull`/`push`. Nothing pushes state *at* a clone; every clone has to go ask.

@@ -18,7 +18,7 @@
 - Raw learning log (Phase 2 indexed) — [packages/ai/kaizen/feedback/notes.md](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/feedback/notes.md)
 - First exemplar (Phase 3 input) — [packages/ai/kaizen/exemplars/cosmo/01-alignment-and-play.md](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/exemplars/cosmo/01-alignment-and-play.md) · [exemplars README](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/exemplars/cosmo/README.md)
 - Member-facing guide — [knowledge/guides/teaching-your-agent-a-learning-loop.md](https://github.com/opencosmos-ai/knowledge/blob/main/guides/teaching-your-agent-a-learning-loop.md)
-- Code — [next.config.mjs](../apps/web/next.config.mjs) · [chat route](../apps/web/app/api/chat/route.ts) · [inception route](../apps/web/app/api/inception/route.ts) · [lib/rag.ts](../apps/web/lib/rag.ts) · [embed-knowledge.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts) · [turbo.json](../turbo.json)
+- Code — [next.config.mjs](../next.config.mjs) · [chat route](../app/api/chat/route.ts) · [inception route](../app/api/inception/route.ts) · [lib/rag.ts](../lib/rag.ts) · [embed-knowledge.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts)
 
 ---
 
@@ -43,8 +43,8 @@
 
 | Area | Phase / Task | Status | Priority | Next step |
 |------|--------------|--------|----------|-----------|
-| **Cosmo** (`apps/web` + `packages/ai`) | [Cosmo Learning Loop](cosmo-learning-loop.md) — Phases 1–3 (lessons · recall · exemplars) | ✅ Done | P1 | Loop complete end-to-end; nice-to-have follow-up: exemplar diversity (a practical + a challenging exemplar) |
-| **Cosmo** (`apps/web`) | [Phase 2: CP Member Token Access & Top-up](#phase-2-cp-member-token-access--top-up) | 🔵 Blocked | P0 | Needs Shalom decisions Q1–Q4 |
+| **Cosmo** (site + [cosmo](https://github.com/opencosmos-ai/cosmo)) | [Cosmo Learning Loop](cosmo-learning-loop.md) — Phases 1–3 (lessons · recall · exemplars) | ✅ Done | P1 | Loop complete end-to-end; nice-to-have follow-up: exemplar diversity (a practical + a challenging exemplar) |
+| **Cosmo** | [Phase 2: CP Member Token Access & Top-up](#phase-2-cp-member-token-access--top-up) | 🔵 Blocked | P0 | Needs Shalom decisions Q1–Q4 |
 | Cosmo | [Phase 1.3: Quote substrate + provenance pipeline](#phase-13--quote-substrate--provenance-pipeline-57-days-wall-mostly-background-api-active) | 🟡 Awaiting review | P1 | Stages 1–3 ✅ — all 1,509 validated, 349 embeddable and live. Library unified + renamed to `/library`. Next: 197-row review CSV (Shalom) |
 | Cosmo | [Phase 1.4: Re-embed + initial graph](#phase-14--re-embed-and-generate-initial-graph-30-min-planned) | ⚪ Planned | P1 | Picks up when Stage 3 resumes |
 | Cosmo | [Phase 1.5: Build `@opencosmos/constellation`](#phase-15--build-opencosmosconstellation-35-days-in-opencosmos-ui-repo-planned) | ✅ Done | P1 | `@opencosmos/constellation@0.1.0` published to npm; Studio demo live at `/constellation` |
@@ -68,7 +68,7 @@
 
 ---
 
-## Cosmo — `apps/web`
+## Cosmo — the site
 
 Conversation interface at opencosmos.ai. Organized by phase.
 
@@ -127,7 +127,7 @@ Corpus
 
 ##### 3. Frontmatter schema additions
 
-Extend `Frontmatter` in [scripts/knowledge/shared.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/shared.ts) and [apps/web/lib/knowledge.ts](../apps/web/lib/knowledge.ts):
+Extend `Frontmatter` in [scripts/knowledge/shared.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/shared.ts) and [lib/knowledge.ts](../lib/knowledge.ts):
 
 ```typescript
 type Frontmatter = {
@@ -277,7 +277,7 @@ This is the *infrastructure* work — landing it before validation runs lets Sta
   - Chunk id: `knowledge/quotes/{file}.yaml#{quote.id}` (e.g. `knowledge/quotes/albert-einstein.yaml#q_0159`).
   - Chunk metadata: `chunk_type: 'quote'`, `author`, `author_normalized_key`, `tradition`, `era`, `category`, `keywords`, `source_work`, `source_section`, `provenance.status`, `provenance.confidence`.
   - Skip embedding for `provenance.status: 'rejected'` — tombstoned, not indexed.
-- [apps/web/lib/rag.ts](../apps/web/lib/rag.ts) — when retriever returns `chunk_type: 'quote'`, format with provenance line so Cosmo can self-caveat:
+- [lib/rag.ts](../lib/rag.ts) — when retriever returns `chunk_type: 'quote'`, format with provenance line so Cosmo can self-caveat:
   ```
   > "{text}"
   > — {author}{ source_work ? ', ' + source_work + '#' + source_section : '' }
@@ -285,7 +285,7 @@ This is the *infrastructure* work — landing it before validation runs lets Sta
   ```
 - [packages/ai/COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) — add quote citation rule:
   > Cite quotes as `[quote: knowledge/quotes/{author-key}.yaml#{quote-id}]` (distinct from work citations, which use `[ref: …]`). When the chunk's `provenance.status` is anything other than `verified`, soften attribution: prefer "attributed to X" or "popularly attributed to X" over a bare "X said". Never present a quote whose status is `likely_misattributed` or `apocryphal` without flagging the doubt.
-- [apps/web/app/dialog/CosmoChat.tsx](../apps/web/app/dialog/CosmoChat.tsx) — extend the existing `[ref: …]` token parser to also recognize `[quote: …]`; render as a `<blockquote>` linking to the quote's `source_work` (if any) or the author's yaml file.
+- [app/dialog/CosmoChat.tsx](../app/dialog/CosmoChat.tsx) — extend the existing `[ref: …]` token parser to also recognize `[quote: …]`; render as a `<blockquote>` linking to the quote's `source_work` (if any) or the author's yaml file.
 - **Acceptance:** `pnpm embed` completes; Upstash shows new chunks with `chunk_type: 'quote'` matching the current embeddable yaml count (46 initially, growing as Stage 3 promotes records); ask Cosmo "give me a quote on impermanence" via `/dialog` and verify it returns a quote with a correct `[quote: …]` token. (Until Stage 3 runs, the verified pool is small — Cosmo may have to say "I don't have a verified quote on that yet.")
 
 **Stage 3 — Automated provenance validation (background, ~2 days wall, ~$50–150 API)**
@@ -351,9 +351,9 @@ Modified (✅ shipped 2026-05-07):
 
 Modified (planned, Stage 2):
 - [scripts/knowledge/embed-knowledge.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts) — YAML branch for `knowledge/quotes/*.yaml` (reuse `parseYamlFile` from scripts/normalize-quotes/shared.ts)
-- [apps/web/lib/rag.ts](../apps/web/lib/rag.ts) — quote-aware formatting with provenance line
+- [lib/rag.ts](../lib/rag.ts) — quote-aware formatting with provenance line
 - [packages/ai/COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) — `[quote: …]` citation rule + provenance-aware language
-- [apps/web/app/dialog/CosmoChat.tsx](../apps/web/app/dialog/CosmoChat.tsx) — `[quote: …]` token parser
+- [app/dialog/CosmoChat.tsx](../app/dialog/CosmoChat.tsx) — `[quote: …]` token parser
 
 ---
 
@@ -380,7 +380,7 @@ curl localhost:3000/api/knowledge/graph
 - v0.1.0-alpha minimal renderer: `<KnowledgeGraph>` mounts `@cosmos.gl/graph@3.0.0-beta.9`, prepares Float32 arrays, tier-aware default colors + sizes, `onNodeClick(id)`, `fitView()` after ready.
 - Label overlay + tier-aware LOD: HTML `LabelLayer` driven by `getSampledPoints()`, default thresholds `tradition: 0`, `work: 1.5×`, `section: 3×`, `quote: 6×`.
 - Focus targeting: `focus`/`focusRadius`/`focusDuration` props; BFS in JS to expand multi-hop neighborhoods (cosmos.gl's `getNeighboringPointIndices` is single-hop).
-- Studio demo at `apps/web/app/constellation/page.tsx` consuming a snapshot of the live `/api/knowledge/constellation` payload (670 nodes, 644 edges).
+- Studio demo at `apps/web/app/constellation/page.tsx` in opencosmos-ui consuming a snapshot of the live `/api/knowledge/constellation` payload (670 nodes, 644 edges).
 
 **🐛 Known issue — Ambient drift not visible (P2, deferred).**
 - Symptom: with `ambientDrift={true}` and the checkbox on, the field doesn't visibly breathe even after a hard refresh. Two structural fixes already applied (set `transitionDuration: 0` so per-frame `setPointPositions` doesn't queue 800ms tweens that get clobbered; call `graph.create()` after each position write to flush WebGL; switch to bbox-relative amplitude so it survives cosmos's auto-rescale) — and it still isn't moving.
@@ -472,10 +472,10 @@ This "gentle starfield that zooms into your corner" feel is also the pattern any
 
 **Files:**
 - ✅ New: [scripts/knowledge/generate-constellation-graph.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/generate-constellation-graph.ts) — emits hierarchical node set (tradition + work + section + quote) with `tier` field. Run via `pnpm graph:constellation`. Writes `knowledge:constellation` (gzipped, full payload) and `knowledge:constellation:preview` (top 40 by degree) to Upstash Redis. Initial run: 26 traditions, 84 works, 514 sections, 46 quotes — 670 nodes, 644 edges, 49 KB compressed.
-- ✅ New: [apps/web/app/api/knowledge/constellation/route.ts](../apps/web/app/api/knowledge/constellation/route.ts) — mirrors the existing graph route, reads `knowledge:constellation`. ISR revalidate=3600.
-- Modify (later): [apps/web/app/knowledge/graph/GraphPageClient.tsx](../apps/web/app/knowledge/graph/GraphPageClient.tsx) — replace sigma.js with `<KnowledgeGraph>` from `@opencosmos/constellation`. Wire landing-page intro: read `sessionStorage['cosmo_context']`, honor `?focus=`, fall back to "today's invitation". Pass `ambientMotion={{ enabled: true }}`, `focus={resolvedFocusId}`. Entire corpus always rendered.
+- ✅ New: [app/api/knowledge/constellation/route.ts](../app/api/knowledge/constellation/route.ts) — mirrors the existing graph route, reads `knowledge:constellation`. ISR revalidate=3600.
+- Modify (later): [app/knowledge/graph/GraphPageClient.tsx](../app/library/graph/GraphPageClient.tsx) — replace sigma.js with `<KnowledgeGraph>` from `@opencosmos/constellation`. Wire landing-page intro: read `sessionStorage['cosmo_context']`, honor `?focus=`, fall back to "today's invitation". Pass `ambientMotion={{ enabled: true }}`, `focus={resolvedFocusId}`. Entire corpus always rendered.
 - Delete (opencosmos-ui historical location): `packages/ui/src/components/data-display/knowledge-graph/` (retire sigma.js).
-- Retire (later): [scripts/knowledge/generate-wiki-graph.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/generate-wiki-graph.ts) and [apps/web/app/api/knowledge/graph/route.ts](../apps/web/app/api/knowledge/graph/route.ts) — once consumers point at `knowledge:constellation`, the wiki-only graph + endpoint go away. **Performance note:** verify payload ≤ ~2MB gzipped with full corpus (~3k nodes + 10k edges). At 670 nodes / 644 edges the constellation payload is 49 KB — comfortably under budget; quote-tier growth post-Stage-3 will push toward ~1,500 quotes.
+- Retire (later): [scripts/knowledge/generate-wiki-graph.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/generate-wiki-graph.ts) and [app/api/knowledge/graph/route.ts](../app/api/knowledge/graph/route.ts) — once consumers point at `knowledge:constellation`, the wiki-only graph + endpoint go away. **Performance note:** verify payload ≤ ~2MB gzipped with full corpus (~3k nodes + 10k edges). At 670 nodes / 644 edges the constellation payload is 49 KB — comfortably under budget; quote-tier growth post-Stage-3 will push toward ~1,500 quotes.
 
 **Known gaps to fix in flight (not blocking the visualizer):**
 - Section IDs use indexed disambiguation (`slug-2`, `slug-3`) for collisions; embed-knowledge.ts uses content-hash disambiguation (`slug-{8-char-hash}`). Sync these in Phase 1.7 so semantic edges can join.
@@ -515,28 +515,28 @@ This "gentle starfield that zooms into your corner" feel is also the pattern any
 
 **Files:**
 - [packages/ai/COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) — citation format: "Cite sources as `[ref: path/to/file.md#section-slug]` for works or `[quote: path/to/file.yaml#quote-id]` for quotes. Inline within your sentence." Note: `section-slug` matches the chunk ID emitted by `scripts/knowledge/embed-knowledge.ts` — usually `slugify(heading)`, but may include an 8-char hash suffix (`#slug-a1b2c3d4`) when multiple sections within the same file share a heading (e.g. seven poems titled "Thought" in Leaves of Grass). The citation parser must accept both forms.
-- [apps/web/app/dialog/CosmoChat.tsx](../apps/web/app/dialog/CosmoChat.tsx) — post-process message text, replace citation tokens with clickable `<Link>` components that navigate to `/knowledge/{slug}` + emit `window.postMessage({type:'highlight-node', id:X})` for any open graph tab.
-- [apps/web/app/knowledge/[...slug]/TableOfContents.tsx](../apps/web/app/knowledge/[...slug]/TableOfContents.tsx) — add "See in graph →" link under the active section, linking to `/knowledge/graph?focus={slug}`.
-- [apps/web/app/knowledge/graph/GraphPageClient.tsx](../apps/web/app/knowledge/graph/GraphPageClient.tsx) — read `?focus=` query param, center graph + highlight 1-hop neighbors on mount.
+- [app/dialog/CosmoChat.tsx](../app/dialog/CosmoChat.tsx) — post-process message text, replace citation tokens with clickable `<Link>` components that navigate to `/knowledge/{slug}` + emit `window.postMessage({type:'highlight-node', id:X})` for any open graph tab.
+- [app/knowledge/[...slug]/TableOfContents.tsx](../app/library/(library)/[...slug]/TableOfContents.tsx) — add "See in graph →" link under the active section, linking to `/knowledge/graph?focus={slug}`.
+- [app/knowledge/graph/GraphPageClient.tsx](../app/library/graph/GraphPageClient.tsx) — read `?focus=` query param, center graph + highlight 1-hop neighbors on mount.
 
 **Cosmo's "visible reasoning":** when Cosmo emits a citation mid-response, the passage viewer (if open) briefly pulses the active section; the graph (if open) pulses the cited node. User sees Cosmo's journey, not just its destination.
 
 ##### Phase 1.9 — Cosmo-in-Knowledge-sidebar (2–3 days) ⚪ Planned
 
 **Files:**
-- New: `apps/web/app/dialog/useCosmoSession.ts` — hook that owns messages/apiKey/tokens/PM state.
-- Modify: [apps/web/app/dialog/CosmoChat.tsx](../apps/web/app/dialog/CosmoChat.tsx) — extract `CosmoChatPanel`, wrap with `useCosmoSession()`.
-- Modify: [apps/web/app/AppShell.tsx](../apps/web/app/AppShell.tsx) — add `sidebarContent?: ReactNode` prop.
-- Modify: [apps/web/app/knowledge/[...slug]/page.tsx](../apps/web/app/knowledge/[...slug]/page.tsx) — pass `<CosmoChatPanel variant="sidebar" />` as `sidebarContent`.
-- Modify: [apps/web/app/knowledge/page.tsx](../apps/web/app/knowledge/page.tsx) — same for the library index.
+- New: `app/dialog/useCosmoSession.ts` — hook that owns messages/apiKey/tokens/PM state.
+- Modify: [app/dialog/CosmoChat.tsx](../app/dialog/CosmoChat.tsx) — extract `CosmoChatPanel`, wrap with `useCosmoSession()`.
+- Modify: [app/AppShell.tsx](../app/AppShell.tsx) — add `sidebarContent?: ReactNode` prop.
+- Modify: [app/knowledge/[...slug]/page.tsx](../app/library/(library)/[...slug]/page.tsx) — pass `<CosmoChatPanel variant="sidebar" />` as `sidebarContent`.
+- Modify: [app/knowledge/page.tsx](../app/library/(library)/page.tsx) — same for the library index.
 - Mobile: below `lg`, revert to current nav; floating action button planned for Phase 1.11.
 
 ##### Phase 1.10 — Community contribution pathway ⚪ Planned
 
 Absorbed from the former Phase 1d §6. Opens a path for the community to add to the corpus — human-curated, not auto-accepted.
 
-- [ ] `apps/web/app/knowledge/contribute/page.tsx` — simple submission form (domain, title, body, source citation)
-- [ ] `apps/web/app/api/knowledge/contribute/route.ts` — creates a GitHub issue via `GITHUB_ISSUES_PAT`; labels `knowledge-contribution`; returns issue URL
+- [ ] `app/knowledge/contribute/page.tsx` — simple submission form (domain, title, body, source citation)
+- [ ] `app/api/knowledge/contribute/route.ts` — creates a GitHub issue via `GITHUB_ISSUES_PAT`; labels `knowledge-contribution`; returns issue URL
 - [ ] Contribution UI also calls `detectTentativeEdges()` client-side, passing the pending node + tentative links into `<KnowledgeGraph pendingNodes>` for optimistic injection (dashed ring, `confidence: "pending"`). After merge + revalidation the canonical node replaces it.
 
 ##### Phase 1.11 — Wiki lint + graph metadata unification ⚪ Planned
@@ -550,22 +550,22 @@ Absorbed from the former Phase 1d §§5, 7.
 
 #### Files touched (planned, by sub-phase)
 
-**Phase 1.3:** New `knowledge/quotes/{_source,_review,_archive,README.md,*.yaml}` and `scripts/normalize-quotes/{01-jsonl-to-yaml,02-validate-provenance,03-merge-validation,04-export-review-csv,05-apply-review,lint}.ts`. Modify `scripts/knowledge/{shared,embed-knowledge}.ts`, `apps/web/lib/rag.ts`, `packages/ai/COSMO_SYSTEM_PROMPT.md`, `apps/web/app/dialog/CosmoChat.tsx`. Full breakdown lives in the Phase 1.3 Files block above.
+**Phase 1.3:** New `knowledge/quotes/{_source,_review,_archive,README.md,*.yaml}` and `scripts/normalize-quotes/{01-jsonl-to-yaml,02-validate-provenance,03-merge-validation,04-export-review-csv,05-apply-review,lint}.ts`. Modify `scripts/knowledge/{shared,embed-knowledge}.ts`, `lib/rag.ts`, `packages/ai/COSMO_SYSTEM_PROMPT.md`, `app/dialog/CosmoChat.tsx`. Full breakdown lives in the Phase 1.3 Files block above.
 
 **Phase 1.5 (opencosmos-ui repo):** New `packages/constellation/*`.
 
-**Phases 1.6–1.10 (opencosmos repo):** `scripts/knowledge/generate-wiki-graph.ts`, `apps/web/app/knowledge/graph/GraphPageClient.tsx`, `packages/ai/COSMO_SYSTEM_PROMPT.md`, `apps/web/app/dialog/CosmoChat.tsx`, `apps/web/app/AppShell.tsx`, `apps/web/app/knowledge/[...slug]/*`.
+**Phases 1.6–1.10 (opencosmos repo):** `scripts/knowledge/generate-wiki-graph.ts`, `app/knowledge/graph/GraphPageClient.tsx`, `packages/ai/COSMO_SYSTEM_PROMPT.md`, `app/dialog/CosmoChat.tsx`, `app/AppShell.tsx`, `app/knowledge/[...slug]/*`.
 
 For shipped sub-phase file lists (1.0–1.2), see [Done § Phase 1.0–1.2](#phase-1-constellation--shipped-sub-phases).
 
 #### Existing utilities to reuse (do not re-invent)
 
 - **Heading chunker:** [scripts/knowledge/embed-knowledge.ts:82-157 `chunkAtHeadings()`](../scripts/knowledge/embed-knowledge.ts#L82-L157) — already handles H2/H3 + legacy CHAPTER. Extend for quotes.
-- **TOC extractor:** [apps/web/app/knowledge/[...slug]/page.tsx:16-24 `extractToc()`](../apps/web/app/knowledge/[...slug]/page.tsx#L16-L24) — uses `github-slugger`; slug IDs match `rehype-slug` output.
-- **Frontmatter parser:** `gray-matter` via [apps/web/lib/knowledge.ts](../apps/web/lib/knowledge.ts).
-- **Graph data cache:** Upstash Redis, gzipped JSON, ISR revalidate=3600 at [apps/web/app/api/knowledge/graph/route.ts](../apps/web/app/api/knowledge/graph/route.ts). Keep as-is.
-- **Vector retrieval:** [apps/web/lib/rag.ts](../apps/web/lib/rag.ts). Keep.
-- **Sidebar slot pattern:** [apps/web/app/AppShell.tsx](../apps/web/app/AppShell.tsx) already accepts `bottomItems` + `footer` — add `sidebarContent` in the same spirit.
+- **TOC extractor:** [app/knowledge/[...slug]/page.tsx:16-24 `extractToc()`](../app/knowledge/[...slug]/page.tsx#L16-L24) — uses `github-slugger`; slug IDs match `rehype-slug` output.
+- **Frontmatter parser:** `gray-matter` via [lib/knowledge.ts](../lib/knowledge.ts).
+- **Graph data cache:** Upstash Redis, gzipped JSON, ISR revalidate=3600 at [app/api/knowledge/graph/route.ts](../app/api/knowledge/graph/route.ts). Keep as-is.
+- **Vector retrieval:** [lib/rag.ts](../lib/rag.ts). Keep.
+- **Sidebar slot pattern:** [app/AppShell.tsx](../app/AppShell.tsx) already accepts `bottomItems` + `footer` — add `sidebarContent` in the same spirit.
 - **Cosmo context transmission:** `sessionStorage['cosmo_context']` + `current_section` payload — already end-to-end; the new `current_passage` field rides the same channel.
 
 #### Verification (end-to-end, by upcoming sub-phase)
@@ -650,12 +650,12 @@ CP members should receive a token allotment per tier, tracked against their usag
 
 | File | What it does |
 |------|-------------|
-| `apps/web/lib/subscription.ts` | `getSubscription()`, `incrementUsage()`, `isWithinBudget()`, `monthlyUsagePercent()`, `getByokFlag()`, `markByok()` — all Redis-backed. Needs a `bonusTokens` counter added. |
-| `apps/web/lib/stripe.ts` | `TIERS` config with `monthlyBudgetMicrodollars` per tier; checkout and portal session creation. TIERS config needs updating for CP allotments; checkout needs a `token_pack` product type. |
-| `apps/web/lib/benefits.ts` | Circle member provisioning for Hearth tier — the Circle API connection pattern already exists here. **Invert it:** instead of provisioning Circle from Cosmo, receive Circle events to provision Cosmo from CP. |
-| `apps/web/app/api/subscription/route.ts` | Returns `hasByok` + subscription usage data. Already the source of truth for sidebar and account page usage display. |
-| `apps/web/app/api/stripe/checkout/route.ts` | Stripe checkout session creation. Intact and UI-hidden. Re-expose for token top-up purchases. |
-| `apps/web/app/api/webhooks/stripe/route.ts` | Handles `checkout.session.completed`, `customer.subscription.updated/deleted`. Extend to handle token pack purchases. |
+| `lib/subscription.ts` | `getSubscription()`, `incrementUsage()`, `isWithinBudget()`, `monthlyUsagePercent()`, `getByokFlag()`, `markByok()` — all Redis-backed. Needs a `bonusTokens` counter added. |
+| `lib/stripe.ts` | `TIERS` config with `monthlyBudgetMicrodollars` per tier; checkout and portal session creation. TIERS config needs updating for CP allotments; checkout needs a `token_pack` product type. |
+| `lib/benefits.ts` | Circle member provisioning for Hearth tier — the Circle API connection pattern already exists here. **Invert it:** instead of provisioning Circle from Cosmo, receive Circle events to provision Cosmo from CP. |
+| `app/api/subscription/route.ts` | Returns `hasByok` + subscription usage data. Already the source of truth for sidebar and account page usage display. |
+| `app/api/stripe/checkout/route.ts` | Stripe checkout session creation. Intact and UI-hidden. Re-expose for token top-up purchases. |
+| `app/api/webhooks/stripe/route.ts` | Handles `checkout.session.completed`, `customer.subscription.updated/deleted`. Extend to handle token pack purchases. |
 
 **Token economics reference:**
 - Input: 3 µ$/token · Output: 15 µ$/token
@@ -833,7 +833,7 @@ resuscitate by un-archiving rather than by starting again.
 
 All set up in `.env.local` / Vercel / GitHub Secrets:
 
-- ✅ **`REVALIDATE_SECRET`** — Add to `apps/web/.env.local`, Vercel (opencosmos.ai), and GitHub Actions secrets. Used by `POST /api/revalidate` to authorize on-demand ISR revalidation after knowledge graph sync.
+- ✅ **`REVALIDATE_SECRET`** — Add to `.env.local`, Vercel (opencosmos.ai), and GitHub Actions secrets. Used by `POST /api/revalidate` to authorize on-demand ISR revalidation after knowledge graph sync.
 - ✅ **`NEXT_PUBLIC_APP_URL=https://opencosmos.ai`** — Add to GitHub Actions secrets (used by `knowledge-sync.yml` to POST revalidation after graph update).
 - ✅ Cloudflare Turnstile keys — added (`NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`)
 - ✅ Anthropic spend limit — confirmed active on `opencosmos-main` (Fix 5)
@@ -923,10 +923,10 @@ All set up in `.env.local` / Vercel / GitHub Secrets:
 #### What's been built (shipped)
 
 - `scripts/knowledge/generate-wiki-graph.ts` — reads `knowledge/wiki/**`, runs ForceAtlas2, writes gzip+Base64 to Upstash Redis
-- `apps/web/app/api/knowledge/graph/route.ts` — decompresses and serves graph JSON
-- `apps/web/app/knowledge/graph/graphWorker.ts` — Web Worker fetches + parses JSON off main thread
-- `apps/web/app/knowledge/graph/GraphPageClient.tsx` — orchestrates skeleton → live crossfade
-- `apps/web/app/knowledge/graph/domain-colors.ts` — local DOMAIN_COLORS copy to break Turbopack's SSR import chain to sigma
+- `app/api/knowledge/graph/route.ts` — decompresses and serves graph JSON
+- `app/knowledge/graph/graphWorker.ts` — Web Worker fetches + parses JSON off main thread
+- `app/knowledge/graph/GraphPageClient.tsx` — orchestrates skeleton → live crossfade
+- `app/knowledge/graph/domain-colors.ts` — local DOMAIN_COLORS copy to break Turbopack's SSR import chain to sigma
 - `@opencosmos/ui@1.4.2` — KnowledgeGraph component with custom `GlowNodeProgram` WebGL renderer
 - `knowledge/guides/opencosmos-knowledge-graph.md` — complete technical guide
 
@@ -938,7 +938,7 @@ All set up in `.env.local` / Vercel / GitHub Secrets:
 | Sigma crash: "Container has no height" | `allowInvalidContainer: true` in SigmaContainer settings (`@opencosmos/ui@1.4.1`) |
 | Build crash: `WebGL2RenderingContext is not defined` (SSR) | Create local `domain-colors.ts` to break Turbopack's static import trace to sigma |
 | npm publish E404 (release workflow) | Add `NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}` to release workflow; user created Granular Access Token |
-| Lockfile pinned to old version despite `^` range | `pnpm update @opencosmos/ui --filter web` + commit lockfile |
+| Lockfile pinned to old version despite `^` range | `pnpm update @opencosmos/ui` + commit lockfile |
 
 #### The remaining blocker — nodes don't render
 
@@ -1019,13 +1019,13 @@ Reads all `knowledge/wiki/**/*.md`, extracts frontmatter and `synthesizes` cross
 
 **The "instant reward" problem — and why a static file is the wrong target:**
 
-The UX promise is that every contribution makes the graph visibly grow. A static `apps/web/public/wiki-graph.json` file cannot fulfill this — it only updates on deployment, which may lag by hours or days. The architecture must reconcile the promise with the data layer. Two distinct scenarios require two distinct solutions:
+The UX promise is that every contribution makes the graph visibly grow. A static `public/wiki-graph.json` file cannot fulfill this — it only updates on deployment, which may lag by hours or days. The architecture must reconcile the promise with the data layer. Two distinct scenarios require two distinct solutions:
 
 *After a contribution merges to `main` (all users):*
 The generator writes to **Upstash Redis** (already in the stack from Phase 1b) rather than to a committed file. The GitHub Action that runs on `knowledge/**` changes (Phase 1c) calls `pnpm graph` and writes the result to a `knowledge:graph` Redis key. A Next.js API route serves this data with ISR:
 
 ```ts
-// apps/web/app/api/knowledge/graph/route.ts
+// app/api/knowledge/graph/route.ts
 export const revalidate = 3600  // fallback: refresh every hour
 
 export async function GET() {
@@ -1076,7 +1076,7 @@ await redis.set('knowledge:graph:preview', JSON.stringify({
 The API route decompresses before serving:
 
 ```ts
-// apps/web/app/api/knowledge/graph/route.ts
+// app/api/knowledge/graph/route.ts
 import { gunzipSync } from 'zlib'
 export const revalidate = 3600
 
@@ -1256,7 +1256,7 @@ A 2,500-node, 10,000-edge JSON payload is 2.5–3MB uncompressed. Brotli compres
 Fix: fetch and parse in a Web Worker. The main thread receives already-parsed plain objects and builds the Graphology instance from them — zero parse cost on the UI thread.
 
 ```ts
-// apps/web/app/knowledge/graph/graphWorker.ts
+// app/knowledge/graph/graphWorker.ts
 self.onmessage = async () => {
   const res  = await fetch('/api/knowledge/graph')
   const text = await res.text()
@@ -1468,7 +1468,7 @@ export type { KnowledgeGraphData, KnowledgeNode, KnowledgeLink } from './compone
 }
 ```
 
-*Layer 3: Route/consumer* (`apps/web/app/knowledge/graph/page.tsx` — this repo)
+*Layer 3: Route/consumer* (`app/knowledge/graph/page.tsx` — this repo)
 
 New Next.js App Router page at `opencosmos.ai/library/graph`.
 
@@ -1655,7 +1655,7 @@ This gives screen reader users full traversal parity: they walk the graph from n
 | **Do not hide edges on move** | `hideEdgesOnMove: true` kills the breathing effect — the graph goes dead during zoom/pan and flickers back. This is a canvas-renderer crutch. | Never use it. sigma.js WebGL renders edges per-frame without CPU degradation. If extreme corpus sizes (50k+ edges) ever require a performance escape valve, revisit then — not before. |
 | **Custom glow program complexity** | Writing a custom `NodeProgram` requires WebGL knowledge (GLSL, attribute buffers, blend modes). | The codebase already has this in `lib/webgl/Program.ts`. Pattern the `GlowNodeProgram` directly after it. Write a prototype with just additive blending before adding the two-pass bloom — ship something beautiful early, refine iteratively. |
 | **Safari/iOS WebGL** | WebGL degrades on Safari 14.1+ / iOS 15.4+ (missing extension). Sigma's layout may not run. Creatives, designers, and system-thinkers — the core OpenCosmos audience — skew heavily toward macOS and iOS. A static image fallback means the majority of the community never experiences the graph. | Canvas fallback — see below. Detect WebGL availability on mount inside the component; route to sigma renderer or canvas renderer transparently. The consumer sees one component. |
-| **Static file = no instant reward** | `apps/web/public/wiki-graph.json` only updates on deployment. Contributors see nothing change until the next CI/CD run. | Graph data lives in Redis, served via ISR API route. GitHub Action triggers on-demand revalidation on merge. For the contributing user before merge: optimistic injection via `pendingNodes` prop. |
+| **Static file = no instant reward** | `public/wiki-graph.json` only updates on deployment. Contributors see nothing change until the next CI/CD run. | Graph data lives in Redis, served via ISR API route. GitHub Action triggers on-demand revalidation on merge. For the contributing user before merge: optimistic injection via `pendingNodes` prop. |
 | **Optimistic node has no edges** | A pending node can't have edges — cross-references are computed by the generator, which hasn't run yet. | Tentative edges via `detectTentativeEdges()` — word-boundary regex, min title length 4, max 8 matches (above which render none). Edges appear after merge + revalidation. |
 | **Layout instability across generator runs** | ForceAtlas2 is sensitive to initial conditions. Each fresh run can rotate, invert, or globally rearrange the topology — destroying spatial memory. | Seed the generator with existing Redis positions. Existing nodes anchor at current x/y. New nodes initialize at neighbors' centroid. Run ~100 iterations, not 500. The established topology resists global rearrangement. |
 | **Canvas context thrashing** | Per-node `ctx.fillStyle` changes (2,500/frame) tank canvas framerate. Common error when implementing the opacity pulse. | Batch by domain: one `ctx.fillStyle` per domain (~9 calls/frame). Apply the pulse via `ctx.globalAlpha` once per frame — not per-node RGBA string. |
@@ -1677,13 +1677,13 @@ This gives screen reader users full traversal parity: they walk the graph from n
 **Tasks:**
 
 *Blockers — resolve before writing any component code:*
-- [x] **[BLOCKER — routing]** Verified: `apps/web/app/knowledge/[...slug]/page.tsx` handles nested IDs via `getDoc(slug)` which constructs `knowledge/wiki/concepts/impermanence.md` correctly. No ID encoding needed.
+- [x] **[BLOCKER — routing]** Verified: `app/knowledge/[...slug]/page.tsx` handles nested IDs via `getDoc(slug)` which constructs `knowledge/wiki/concepts/impermanence.md` correctly. No ID encoding needed.
 - [x] **[BLOCKER — opencosmos-ui setup]** `knowledge-graph.ts` subpath added to `tsup.config.ts`. sigma@^3.0.2, graphology@^0.26.0, @react-sigma/core@^5.0.0 added as optional peer deps. Size-limit entry (100 KB) added. Build succeeds.
 
 *Data generator (opencosmos repo):*
 - [x] Write `scripts/knowledge/generate-wiki-graph.ts`; scans `knowledge/wiki/entities|concepts|connections/*.md`; edges from shared `synthesizes` sources; `.trim()` on all node IDs; seeds from Redis on subsequent runs; 25 nodes + 62 edges at first run; 7.3 KB gzipped
 - [x] Generator writes full graph to Redis (`knowledge:graph` — gzip+Base64) and preview key (`knowledge:graph:preview` — top 40 nodes by connectionCount, < 5KB)
-- [x] API route `apps/web/app/api/knowledge/graph/route.ts` — `gunzipSync` before serving, `export const revalidate = 3600`
+- [x] API route `app/api/knowledge/graph/route.ts` — `gunzipSync` before serving, `export const revalidate = 3600`
 - [x] Generator computes `vibrancy`: recencyScore + referenceBonus + log-normalized connectivityBonus; foundational floor at 0.75
 - [x] `pnpm graph` added to root `package.json`
 - [x] `/api/revalidate` route built — validates `x-revalidate-secret` header, calls `revalidatePath`
@@ -1693,7 +1693,7 @@ This gives screen reader users full traversal parity: they walk the graph from n
 *Design system component (opencosmos-ui repo):*
 - [x] Install sigma@^3.0.2, graphology@^0.26.0, @react-sigma/core@^5.0.0 as optional peer deps
 - [x] `<KnowledgeGraph />` built: `SigmaContainer` + `<GraphLoader />` + `<ShaderAnimator />` + `<EventController />` + `<FocusController />` + `<ZoomAdaptiveLabels />` + `<ClusterLabels />`
-- [x] Route page `apps/web/app/knowledge/graph/page.tsx` wired with `dynamic(..., { ssr: false })` in `GraphPageClient.tsx` (moved there to avoid server→client component boundary violation)
+- [x] Route page `app/knowledge/graph/page.tsx` wired with `dynamic(..., { ssr: false })` in `GraphPageClient.tsx` (moved there to avoid server→client component boundary violation)
 - [x] `GlowNodeProgram` written: `createGlowNodeProgram(control)` factory; additive blending (`gl.SRC_ALPHA, gl.ONE`); `u_time` breathing animation; `a_vibrancy` scales amplitude + core brightness
 - [x] Ambient state: `ClusterLabels` at zoom-out; `labelRenderedSizeThreshold` zoom-adaptive labels; `ShaderAnimator` drives rAF refresh loop
 - [x] Focus state: `nodeReducer`/`edgeReducer` ego-network isolation; camera `animate()` to target; degree-1 at full brightness, others dimmed to ~4%
@@ -1714,7 +1714,7 @@ This gives screen reader users full traversal parity: they walk the graph from n
 - [ ] In `opencosmos-ui`: run `pnpm changeset` → select `@opencosmos/ui` → minor bump → describe the KnowledgeGraph component addition
 - [ ] Run `pnpm version-packages` to apply the bump (this will produce `@opencosmos/ui@1.4.0`)
 - [ ] Run `pnpm release` to build + publish to npm
-- [ ] In `apps/web/package.json`: change `"@opencosmos/ui": "file:/Users/shalomormsby/Developer/opencosmos-ui/packages/ui"` back to `"@opencosmos/ui": "^1.4.0"` (the file: reference is local dev only)
+- [ ] In `package.json`: change `"@opencosmos/ui": "file:/Users/shalomormsby/Developer/opencosmos-ui/packages/ui"` back to `"@opencosmos/ui": "^1.4.0"` (the file: reference is local dev only)
 - [ ] Run `pnpm install` in the opencosmos repo to install the published version
 
 *Consumer wiring (opencosmos repo, after npm publish):*
@@ -1764,7 +1764,7 @@ The work separates into three PRs with clear dependency ordering. The only share
 - Can merge and run independently; the graph data is in Redis even before the route page exists
 
 *PR 3 — opencosmos: route + consumer wiring* (depends on PR 1 npm publish + PR 2 merged)
-- `apps/web/app/knowledge/graph/page.tsx`
+- `app/knowledge/graph/page.tsx`
 - `graphWorker.ts`, SVG skeleton preview, View Transitions
 - Contribution UI wiring (`pendingNodes`, `detectTentativeEdges`)
 - `pnpm update @opencosmos/ui` to pull published component

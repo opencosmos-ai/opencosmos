@@ -5,7 +5,7 @@
  * Scans Upstash Redis for all cosmo_byok:v1:* keys and prints their values.
  *
  * Run from the repo root:
- *   dotenv -e apps/web/.env.local -- pnpm tsx scripts/check-byok-flags.ts
+ *   dotenv -e .env.local -- pnpm tsx scripts/check-byok-flags.ts
  */
 
 const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL
@@ -13,7 +13,7 @@ const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN
 
 if (!REDIS_URL || !REDIS_TOKEN) {
   console.error('Missing UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN.')
-  console.error('Run with: dotenv -e apps/web/.env.local -- pnpm tsx scripts/check-byok-flags.ts')
+  console.error('Run with: dotenv -e .env.local -- pnpm tsx scripts/check-byok-flags.ts')
   process.exit(1)
 }
 

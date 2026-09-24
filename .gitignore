@@ -8,7 +8,6 @@ node_modules/
 out/
 dist/
 build/
-.turbo/
 
 # Environment variables
 .env
@@ -49,11 +48,14 @@ knowledge/quotes/_source/validation-batches/*.input.json
 # Vendored source material — the fetched wikitext and OCR the importer ran from.
 knowledge/iching/sources/.cache/
 
-# Corpus fetched from opencosmos-ai/knowledge at build time
-apps/web/.content/
+# Corpus and Cosmo, fetched from their repositories at build time
+.content/
+
+# Vercel CLI project link
+.vercel/
 
 # Cosmo's constitutional layer lives in opencosmos-ai/cosmo and is fetched into
-# apps/web/.content/cosmo at build time. The one file deliberately NOT published
+# .content/cosmo at build time. The one file deliberately NOT published
 # there is Shalom's personal relational context: it is supplied to deployments
 # through the COSMO_SHALOM_CONTEXT environment variable, and kept here only as
 # an untracked local copy so `next dev` behaves the same as production.

@@ -29,10 +29,10 @@ if (existsSync(envPath)) {
 
 // Read system prompt. It lives in opencosmos-ai/cosmo now and is fetched into
 // .content/cosmo by `pnpm content`, so run that first if this throws.
-const systemPromptPath = join(root, 'apps/web/.content/cosmo/COSMO_SYSTEM_PROMPT.md')
+const systemPromptPath = join(root, '.content/cosmo/COSMO_SYSTEM_PROMPT.md')
 if (!existsSync(systemPromptPath)) {
   console.error(`No system prompt at ${systemPromptPath}`)
-  console.error('Run `pnpm content` (or `pnpm --filter web content`) to fetch it first.')
+  console.error('Run `pnpm content` (or `pnpm content`) to fetch it first.')
   process.exit(1)
 }
 const systemPrompt = readFileSync(systemPromptPath, 'utf-8')

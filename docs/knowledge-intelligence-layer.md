@@ -118,12 +118,12 @@ Layer 4 — Dynamic retrieval (new)
 
 Before any RAG work can begin:
 1. Create an Upstash Vector index at [console.upstash.com](https://console.upstash.com)
-2. Add to `apps/web/.env.local` and Vercel:
+2. Add to `.env.local` and Vercel:
    ```
    UPSTASH_VECTOR_REST_URL=...
    UPSTASH_VECTOR_REST_TOKEN=...
    ```
-3. Install the client: `pnpm add @upstash/vector --filter web`
+3. Install the client: `pnpm add @upstash/vector`
 
 ### Phase 0: Fix graph WebGL rendering
 
@@ -153,7 +153,7 @@ render(params: RenderParams) {
 **Publishing cadence:**
 - Nodes render with `NodePointProgram` → publish `@opencosmos/ui@1.4.3` (interim)
 - `GlowNodeProgram` fixed → publish `@opencosmos/ui@1.4.4` (final)
-- Update: `pnpm update @opencosmos/ui --filter web`
+- Update: `pnpm update @opencosmos/ui`
 
 ### Phase 1: Embedding pipeline
 
@@ -180,9 +180,9 @@ for each .md file in knowledge/**:
 
 ### Phase 2: RAG API endpoint
 
-**New file:** `apps/web/app/api/knowledge/route.ts`
+**New file:** `app/api/knowledge/route.ts`
 
-**New helper:** `apps/web/lib/rag.ts` — `fetchRagContext(query, history, currentDoc?)`
+**New helper:** `lib/rag.ts` — `fetchRagContext(query, history, currentDoc?)`
 
 **Request shape:**
 ```ts
@@ -219,11 +219,11 @@ POST /api/knowledge
 
 ### Phase 3: Wire RAG into Cosmo chat flow
 
-**Modified file:** `apps/web/app/api/chat/route.ts`
+**Modified file:** `app/api/chat/route.ts`
 
 **Non-blocking pattern with timeout fallback:**
 ```ts
-// apps/web/lib/rag.ts
+// lib/rag.ts
 export interface RagResult {
   chunks: RagChunk[]
   timedOut?: boolean
@@ -231,7 +231,7 @@ export interface RagResult {
 // Timeout shape: { chunks: [], timedOut: true }
 // Error shape:   { chunks: [], timedOut: false }
 
-// apps/web/app/api/chat/route.ts
+// app/api/chat/route.ts
 const ragPromise = fetchRagContext(lastUserMessage, messages.slice(-6))
   .catch(() => ({ chunks: [], timedOut: false } satisfies RagResult))
 
@@ -269,11 +269,11 @@ Source: knowledge/sources/buddhism-dhammapada.md
 ### Phase 4: Sidebar companion for `/knowledge` pages
 
 **New files:**
-- `apps/web/app/knowledge/[...slug]/CosmoChatSidebar.tsx`
-- `apps/web/app/knowledge/[...slug]/useSectionInView.ts`
-- `apps/web/app/api/knowledge/chat/route.ts`
+- `app/knowledge/[...slug]/CosmoChatSidebar.tsx`
+- `app/knowledge/[...slug]/useSectionInView.ts`
+- `app/api/knowledge/chat/route.ts`
 
-**Modified:** `apps/web/app/knowledge/[...slug]/page.tsx`
+**Modified:** `app/knowledge/[...slug]/page.tsx`
 
 **Sidebar behaviors:**
 
@@ -320,7 +320,7 @@ free to draw connections across the corpus. If they are in section
 
 Edge `type` vocabulary: `similar | extends | contrasts | critiques`.
 
-In the RAG API (`apps/web/lib/rag.ts`): after retrieving top-k chunks, look up each chunk's source document in the manifest to find degree-1 graph neighbors. Append neighbor summaries as a lower-priority context block — but **only after passing the neighbor injection rules below**.
+In the RAG API (`lib/rag.ts`): after retrieving top-k chunks, look up each chunk's source document in the manifest to find degree-1 graph neighbors. Append neighbor summaries as a lower-priority context block — but **only after passing the neighbor injection rules below**.
 
 **Neighbor injection rules (strictly enforced):**
 1. **Semantic gate:** Only inject a degree-1 neighbor if its pre-computed embedding's cosine distance to the *user's original query* is within threshold 0.4. This filters neighbors that are graph-connected but topically irrelevant to this particular question.
@@ -353,13 +353,13 @@ The echo chamber is not solved by the graph. It is solved by encoding *disagreem
 **Files:**
 - `scripts/knowledge/generate-wiki-graph.ts` ← add manifest.json write step
 - `knowledge/graph/manifest.json` ← new (auto-generated, committed)
-- `apps/web/lib/rag.ts` ← extend to load manifest and surface neighbors
+- `lib/rag.ts` ← extend to load manifest and surface neighbors
 
 ### Phase 6: Community contribution pathway
 
 **Files:**
-- `apps/web/app/knowledge/contribute/page.tsx` — form: title, body, suggested domain/role, optional author/source
-- `apps/web/app/api/knowledge/contribute/route.ts` — submits as GitHub issue via `GITHUB_ISSUES_PAT` env var; issue labeled `knowledge-contribution`
+- `app/knowledge/contribute/page.tsx` — form: title, body, suggested domain/role, optional author/source
+- `app/api/knowledge/contribute/route.ts` — submits as GitHub issue via `GITHUB_ISSUES_PAT` env var; issue labeled `knowledge-contribution`
 
 Cosmo is not involved in curation. This is a human editorial function. The form is intentionally simple — the barrier to contribution should be a thoughtful choice, not a bureaucratic form.
 
