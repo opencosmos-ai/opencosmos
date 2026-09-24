@@ -156,7 +156,7 @@ Tracked here for visibility. Not blocking current work unless noted.
 - **Federated Triad customization:** In a tradition-specific Cosmo, the three cognitive modes may have different expressions — a Buddhist Cosmo might replace Socrates with a Nagarjuna-inspired dialectician. How customizable should the Triad be?
 - **~~Triad voice naming:~~** Resolved. Sol, Socrates, Optimus, moderated by Cosmo.
 - **~~Tier economics & margin modeling:~~** Resolved. ~$0.30/session, ~50% margin. See [architecture.md § Token Economics](architecture.md#token-economics).
-- **Migration completion:** Phases 2–4 of [projects/opencosmos-migration.md](projects/opencosmos-migration.md) (design system repo rename, npm publish under @opencosmos, legacy cleanup) can proceed in parallel with Three Futures work.
+- **Migration completion:** Phases 2–4 of [projects/opencosmos-migration.md](archive-and-deprecated/opencosmos-migration.md) (design system repo rename, npm publish under @opencosmos, legacy cleanup) can proceed in parallel with Three Futures work.
 - **M5 Ultra decision:** If Apple announces M5 Ultra at WWDC 2026 (mid-year), does 256GB unified memory + ~25–30 tok/s on 70B change the sovereignty calculus? See [projects/tech-research.md](projects/tech-research.md).
 
 ---
@@ -168,4 +168,4 @@ Tracked here for visibility. Not blocking current work unless noted.
 - [chronicle.md](chronicle.md) — The story behind the decisions (Chapters 3 & 4 cover Three Futures)
 - [WELCOME.md](../WELCOME.md) — The front door
 - [DESIGN-PHILOSOPHY.md](../DESIGN-PHILOSOPHY.md) — The four principles
-- [packages/ai/WELCOME-COSMO.md](../packages/ai/WELCOME-COSMO.md) — Cosmo's origin story and foundational philosophy
+- [packages/ai/WELCOME-COSMO.md](https://github.com/opencosmos-ai/cosmo/blob/main/WELCOME-COSMO.md) — Cosmo's origin story and foundational philosophy

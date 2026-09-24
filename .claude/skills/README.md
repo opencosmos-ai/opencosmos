@@ -31,14 +31,13 @@ propagate the change to those copies.
 
 ## The corpus
 
-> These six operate on the knowledge corpus, which lives in
-> [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge). Each
-> one opens with a note saying so. The convention is a **sibling checkout** at
-> `../knowledge` — the same one `apps/web/scripts/fetch-content.mjs` uses, so
-> if your local dev loop works, the checkout is already there.
+The six corpus skills — `/groom`, `/new-quote`, `/knowledge-compile`,
+`/knowledge-lookup`, `/knowledge-review`, `/standardize-knowledge` — live in
+[opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge/tree/main/.claude/skills),
+next to the corpus they work on. Open a Claude Code session in that repository
+to use them.
 
-| Skill | What it does |
-|---|---|
+---|---|
 | [`/groom`](./groom/SKILL.md) | Prepare raw markdown in `incoming/` for publication — formatting only, never rewriting. |
 | [`/new-quote`](./new-quote/SKILL.md) | Add quotes to the corpus: parse free-form input, dedupe, infer category, validate provenance, route to the right pool. |
 | [`/knowledge-compile`](./knowledge-compile/SKILL.md) | Compile durable cross-tradition insight into the wiki, and log it. |

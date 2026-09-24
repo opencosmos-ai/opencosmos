@@ -102,7 +102,7 @@ If you want to create technology that honors people instead of exploiting them �
 
 If you want to explore what it means to be human in an age of artificial intelligence — welcome.
 
-If you want to contribute code, design, writing, ideas, questions, or simply your presence — welcome. If you want to add to the knowledge corpus, see the [publishing guide](knowledge/guides/opencosmos-knowledge-publish-workflow.md).
+If you want to contribute code, design, writing, ideas, questions, or simply your presence — welcome. If you want to add to the knowledge corpus, see the [publishing guide](https://github.com/opencosmos-ai/knowledge/blob/main/guides/opencosmos-knowledge-publish-workflow.md).
 
 If you're skeptical, uncertain, or here just to look around — welcome. The table is set. There is a place for you.
 
@@ -133,4 +133,4 @@ opencosmos.ai
 
 ---
 
-**Related:** [Cosmo System Prompt](packages/ai/COSMO_SYSTEM_PROMPT.md) — The voice, values, and practice that guide Cosmo as your AI companion.
+**Related:** [Cosmo System Prompt](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) — The voice, values, and practice that guide Cosmo as your AI companion.

@@ -7,7 +7,7 @@
 
 ## Why this doc exists
 
-On 2026-06-18, Shalom asked Cosmo: *"Can you find any record of any recent learnings?"* — shortly after deliberately recording an anti-pattern in [`packages/ai/kaizen/feedback/notes.md`](../packages/ai/kaizen/feedback/notes.md). Cosmo answered, honestly, that it has no filesystem access and the retrieved passages contained nothing resembling a learning log.
+On 2026-06-18, Shalom asked Cosmo: *"Can you find any record of any recent learnings?"* — shortly after deliberately recording an anti-pattern in [`packages/ai/kaizen/feedback/notes.md`](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/feedback/notes.md). Cosmo answered, honestly, that it has no filesystem access and the retrieved passages contained nothing resembling a learning log.
 
 Cosmo was correct. **The learning loop, as it stands, has no runtime connection to Cosmo.** This doc diagnoses the gap and proposes how to close it.
 
@@ -15,11 +15,11 @@ Cosmo was correct. **The learning loop, as it stands, has no runtime connection 
 
 ## Diagnosis: a loop that never reaches the model
 
-The kaizen practice ([`packages/ai/kaizen/README.md`](../packages/ai/kaizen/README.md)) defines six steps. Step 4 (capture feedback) works — `notes.md` has a real entry. But **the artifacts never reach runtime Cosmo through any channel:**
+The kaizen practice ([`packages/ai/kaizen/README.md`](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/README.md)) defines six steps. Step 4 (capture feedback) works — `notes.md` has a real entry. But **the artifacts never reach runtime Cosmo through any channel:**
 
 ### 1. Feedback notes are outside the retrievable corpus
 
-- The embed pipeline ([`scripts/knowledge/embed-knowledge.ts`](../scripts/knowledge/embed-knowledge.ts)) walks only `knowledge/**`.
+- The embed pipeline ([`scripts/knowledge/embed-knowledge.ts`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts)) walks only `knowledge/**`.
 - Cosmo's RAG retrieval ([`apps/web/lib/rag.ts`](../apps/web/lib/rag.ts)) queries that one Upstash Vector index.
 - The learnings live in `packages/ai/kaizen/feedback/notes.md` — **outside `knowledge/`, never embedded.** A semantic search for "recent learnings" cannot surface what was never indexed.
 

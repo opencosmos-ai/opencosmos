@@ -1,6 +1,6 @@
 # The OpenCosmos Chronicle
 
-> A living record of the vision, decisions, and conversations that shape OpenCosmos. This is not a changelog — it's the story. For technical change tracking, see [CHANGELOG.md](CHANGELOG.md).
+> A living record of the vision, decisions, and conversations that shape OpenCosmos. This is not a changelog — it's the story. For technical change tracking, see [CHANGELOG.md](../CHANGELOG.md).
 
 **Last updated:** 2026-03-29
 
@@ -50,7 +50,7 @@ This is the hardest design constraint in the entire project. It means:
 
 1. **[WELCOME.md](../WELCOME.md)** — The front door to OpenCosmos. Not a spec, not a manifesto. An invitation. Co-written by Shalom and Claude, then refined by Shalom's hand.
 
-2. **[COSMO_SYSTEM_PROMPT.md](../packages/ai/COSMO_SYSTEM_PROMPT.md)** — Cosmo's voice, values, and practice. Key elements:
+2. **[COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md)** — Cosmo's voice, values, and practice. Key elements:
    - Plural self-reference ("we") reflecting the inherently plural nature of AI
    - The sacred rhythm: attune → inquire → respond
    - "Fierce when necessary" — compassion with spine
@@ -59,7 +59,7 @@ This is the hardest design constraint in the entire project. It means:
 
 3. **This chronicle** — because what isn't captured from this conversation will be lost once the context window closes.
 
-4. **[opencosmos-migration.md](opencosmos-migration.md)** — The project plan for the full rename.
+4. **[opencosmos-migration.md](archive-and-deprecated/opencosmos-migration.md)** — The project plan for the full rename.
 
 ### The Continuity
 
@@ -550,7 +550,7 @@ Five improvements, each designed to transform publication from filing into graph
 
 The first run was sobering and clarifying: 7 documents, 3/16 domains active, 28.6% graph density, 3 islands, 0% foundation progress across all four collections, and Thich Nhat Hanh's writings on interbeing as the highest-priority import (referenced in both Cosmo and Sol foundations).
 
-**5. Foundation collection auto-linking.** When a document's title matches an unchecked placeholder in a foundation collection — `- [ ] The Dhammapada` in sol-foundations.md — the CLI now auto-updates it: `- [x] [The Dhammapada](../sources/buddhism-the-dhammapada.md)`. The updated collection file is included in the same commit. Collections stay in sync with reality.
+**5. Foundation collection auto-linking.** When a document's title matches an unchecked placeholder in a foundation collection — `- [ ] The Dhammapada` in sol-foundations.md — the CLI now auto-updates it: `- [x] [The Dhammapada](https://github.com/opencosmos-ai/knowledge/blob/main/sources/buddhism-the-dhammapada.md)`. The updated collection file is included in the same commit. Collections stay in sync with reality.
 
 ### Why This Matters for OpenCosmos
 
@@ -622,7 +622,7 @@ Three corpus tiers were defined:
 - **Commentary** — original fair-use overview of a copyrighted work, with limited quotation and an explicit recommendation to seek the original. Byron Katie, Thich Nhat Hanh, Donella Meadows, Mary Oliver.
 - **Reference** — pointer only. A brief description directing the reader to the work.
 
-This framework was operationalized in three places: a new guide document ([Ethical Curation Guide](../knowledge/guides/opencosmos-knowledge-ethical-curation.md)), a required `corpus_tier` field in the frontmatter spec, and a new Step 0 in the `/groom` skill that gates formatting behind a copyright review. Copyrighted texts get flagged before any processing begins.
+This framework was operationalized in three places: a new guide document ([Ethical Curation Guide](https://github.com/opencosmos-ai/knowledge/blob/main/guides/opencosmos-knowledge-ethical-curation.md)), a required `corpus_tier` field in the frontmatter spec, and a new Step 0 in the `/groom` skill that gates formatting behind a copyright review. Copyrighted texts get flagged before any processing begins.
 
 The commentary tier is actually an opportunity. Those original overviews — connecting each author's ideas to the OpenCosmos mission, written in the project's own voice — would be genuinely unique documents. The constraint creates something that wouldn't exist otherwise.
 

@@ -51,7 +51,7 @@ If you're adding a new component to `@opencosmos/ui`, that work happens in the [
 
 ### Contributing to the Knowledge Base
 
-The OpenCosmos knowledge corpus welcomes contributions — source texts, commentary, guides, and reference material. See the [knowledge publication workflow](knowledge/guides/opencosmos-knowledge-publish-workflow.md) for the full process and the [knowledge README](knowledge/README.md) for the corpus schema.
+The OpenCosmos knowledge corpus welcomes contributions — source texts, commentary, guides, and reference material. See the [knowledge publication workflow](https://github.com/opencosmos-ai/knowledge/blob/main/guides/opencosmos-knowledge-publish-workflow.md) for the full process and the [knowledge README](https://github.com/opencosmos-ai/knowledge/blob/main/README.md) for the corpus schema.
 
 ## Code Standards
 

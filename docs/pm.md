@@ -14,11 +14,11 @@
 
 **Reference files:**
 - Design doc + Phase 3 spec — [docs/cosmo-learning-loop.md](cosmo-learning-loop.md)
-- Phase 1 digest (always-on) — [packages/ai/kaizen/LESSONS.md](../packages/ai/kaizen/LESSONS.md)
-- Raw learning log (Phase 2 indexed) — [packages/ai/kaizen/feedback/notes.md](../packages/ai/kaizen/feedback/notes.md)
-- First exemplar (Phase 3 input) — [packages/ai/kaizen/exemplars/cosmo/01-alignment-and-play.md](../packages/ai/kaizen/exemplars/cosmo/01-alignment-and-play.md) · [exemplars README](../packages/ai/kaizen/exemplars/cosmo/README.md)
-- Member-facing guide — [knowledge/guides/teaching-your-agent-a-learning-loop.md](../knowledge/guides/teaching-your-agent-a-learning-loop.md)
-- Code — [next.config.mjs](../apps/web/next.config.mjs) · [chat route](../apps/web/app/api/chat/route.ts) · [inception route](../apps/web/app/api/inception/route.ts) · [lib/rag.ts](../apps/web/lib/rag.ts) · [embed-knowledge.ts](../scripts/knowledge/embed-knowledge.ts) · [turbo.json](../turbo.json)
+- Phase 1 digest (always-on) — [packages/ai/kaizen/LESSONS.md](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/LESSONS.md)
+- Raw learning log (Phase 2 indexed) — [packages/ai/kaizen/feedback/notes.md](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/feedback/notes.md)
+- First exemplar (Phase 3 input) — [packages/ai/kaizen/exemplars/cosmo/01-alignment-and-play.md](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/exemplars/cosmo/01-alignment-and-play.md) · [exemplars README](https://github.com/opencosmos-ai/cosmo/blob/main/kaizen/exemplars/cosmo/README.md)
+- Member-facing guide — [knowledge/guides/teaching-your-agent-a-learning-loop.md](https://github.com/opencosmos-ai/knowledge/blob/main/guides/teaching-your-agent-a-learning-loop.md)
+- Code — [next.config.mjs](../apps/web/next.config.mjs) · [chat route](../apps/web/app/api/chat/route.ts) · [inception route](../apps/web/app/api/inception/route.ts) · [lib/rag.ts](../apps/web/lib/rag.ts) · [embed-knowledge.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts) · [turbo.json](../turbo.json)
 
 ---
 
@@ -127,7 +127,7 @@ Corpus
 
 ##### 3. Frontmatter schema additions
 
-Extend `Frontmatter` in [scripts/knowledge/shared.ts](../scripts/knowledge/shared.ts) and [apps/web/lib/knowledge.ts](../apps/web/lib/knowledge.ts):
+Extend `Frontmatter` in [scripts/knowledge/shared.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/shared.ts) and [apps/web/lib/knowledge.ts](../apps/web/lib/knowledge.ts):
 
 ```typescript
 type Frontmatter = {
@@ -265,14 +265,14 @@ The original pm.md plan was to embed all 1,509 records with provenance metadata 
 
 **Tradeoff accepted:** loses pm.md's original Stage 2 dogfooding (where embedding all 1,509 lets Stages 3–5 iterate against a populated index). Stage 2 now embeds ~46 records initially and grows continuously as validation promotes records. Net effect: integrity over velocity.
 
-See [`knowledge/quotes/README.md`](../knowledge/quotes/README.md) and [`data/quotes-pending/README.md`](../data/quotes-pending/README.md) for the operational workflow.
+See [`knowledge/quotes/README.md`](https://github.com/opencosmos-ai/knowledge/blob/main/quotes/README.md) and [`data/quotes-pending/README.md`](https://github.com/opencosmos-ai/knowledge/blob/main/data/quotes-pending/README.md) for the operational workflow.
 
 **Stage 2 — Embed pipeline + RAG + Cosmo citation wiring (½ day)**
 
 This is the *infrastructure* work — landing it before validation runs lets Stages 3–5 dogfood the embedding loop.
 
-- Reuse types + parser from [scripts/normalize-quotes/shared.ts](../scripts/normalize-quotes/shared.ts) — `JsonlRecord`, `parseYamlFile()`, `withPreclassifiedProvenance()` already shipped in Stage 1.
-- [scripts/knowledge/embed-knowledge.ts](../scripts/knowledge/embed-knowledge.ts) — add a YAML branch alongside `chunkAtHeadings()` ([scripts/knowledge/embed-knowledge.ts:82-157](../scripts/knowledge/embed-knowledge.ts#L82-L157)). For files under `knowledge/quotes/*.yaml`:
+- Reuse types + parser from [scripts/normalize-quotes/shared.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/normalize-quotes/shared.ts) — `JsonlRecord`, `parseYamlFile()`, `withPreclassifiedProvenance()` already shipped in Stage 1.
+- [scripts/knowledge/embed-knowledge.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts) — add a YAML branch alongside `chunkAtHeadings()` ([scripts/knowledge/embed-knowledge.ts:82-157](../scripts/knowledge/embed-knowledge.ts#L82-L157)). For files under `knowledge/quotes/*.yaml`:
   - One chunk per quote (atomic; no overlap).
   - Chunk id: `knowledge/quotes/{file}.yaml#{quote.id}` (e.g. `knowledge/quotes/albert-einstein.yaml#q_0159`).
   - Chunk metadata: `chunk_type: 'quote'`, `author`, `author_normalized_key`, `tradition`, `era`, `category`, `keywords`, `source_work`, `source_section`, `provenance.status`, `provenance.confidence`.
@@ -283,7 +283,7 @@ This is the *infrastructure* work — landing it before validation runs lets Sta
   > — {author}{ source_work ? ', ' + source_work + '#' + source_section : '' }
   > [provenance: {status} · confidence {confidence}]
   ```
-- [packages/ai/COSMO_SYSTEM_PROMPT.md](../packages/ai/COSMO_SYSTEM_PROMPT.md) — add quote citation rule:
+- [packages/ai/COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) — add quote citation rule:
   > Cite quotes as `[quote: knowledge/quotes/{author-key}.yaml#{quote-id}]` (distinct from work citations, which use `[ref: …]`). When the chunk's `provenance.status` is anything other than `verified`, soften attribution: prefer "attributed to X" or "popularly attributed to X" over a bare "X said". Never present a quote whose status is `likely_misattributed` or `apocryphal` without flagging the doubt.
 - [apps/web/app/dialog/CosmoChat.tsx](../apps/web/app/dialog/CosmoChat.tsx) — extend the existing `[ref: …]` token parser to also recognize `[quote: …]`; render as a `<blockquote>` linking to the quote's `source_work` (if any) or the author's yaml file.
 - **Acceptance:** `pnpm embed` completes; Upstash shows new chunks with `chunk_type: 'quote'` matching the current embeddable yaml count (46 initially, growing as Stage 3 promotes records); ask Cosmo "give me a quote on impermanence" via `/dialog` and verify it returns a quote with a correct `[quote: …]` token. (Until Stage 3 runs, the verified pool is small — Cosmo may have to say "I don't have a verified quote on that yet.")
@@ -350,9 +350,9 @@ Modified (✅ shipped 2026-05-07):
 - [package.json](../package.json) — the `quotes:*` script wrappers; `js-yaml` + `@types/js-yaml` devDependencies
 
 Modified (planned, Stage 2):
-- [scripts/knowledge/embed-knowledge.ts](../scripts/knowledge/embed-knowledge.ts) — YAML branch for `knowledge/quotes/*.yaml` (reuse `parseYamlFile` from scripts/normalize-quotes/shared.ts)
+- [scripts/knowledge/embed-knowledge.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts) — YAML branch for `knowledge/quotes/*.yaml` (reuse `parseYamlFile` from scripts/normalize-quotes/shared.ts)
 - [apps/web/lib/rag.ts](../apps/web/lib/rag.ts) — quote-aware formatting with provenance line
-- [packages/ai/COSMO_SYSTEM_PROMPT.md](../packages/ai/COSMO_SYSTEM_PROMPT.md) — `[quote: …]` citation rule + provenance-aware language
+- [packages/ai/COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) — `[quote: …]` citation rule + provenance-aware language
 - [apps/web/app/dialog/CosmoChat.tsx](../apps/web/app/dialog/CosmoChat.tsx) — `[quote: …]` token parser
 
 ---
@@ -471,11 +471,11 @@ This "gentle starfield that zooms into your corner" feel is also the pattern any
 **Approach (decided 2026-05-07):** the data-shape work lands first as a *parallel* generator + endpoint so the legacy sigma renderer at `/knowledge/graph` keeps working until the constellation package is ready. Once `@opencosmos/constellation` ships from `opencosmos-ui`, `GraphPageClient.tsx` swaps from `knowledge:graph` → `knowledge:constellation` and the wiki generator can be retired.
 
 **Files:**
-- ✅ New: [scripts/knowledge/generate-constellation-graph.ts](../scripts/knowledge/generate-constellation-graph.ts) — emits hierarchical node set (tradition + work + section + quote) with `tier` field. Run via `pnpm graph:constellation`. Writes `knowledge:constellation` (gzipped, full payload) and `knowledge:constellation:preview` (top 40 by degree) to Upstash Redis. Initial run: 26 traditions, 84 works, 514 sections, 46 quotes — 670 nodes, 644 edges, 49 KB compressed.
+- ✅ New: [scripts/knowledge/generate-constellation-graph.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/generate-constellation-graph.ts) — emits hierarchical node set (tradition + work + section + quote) with `tier` field. Run via `pnpm graph:constellation`. Writes `knowledge:constellation` (gzipped, full payload) and `knowledge:constellation:preview` (top 40 by degree) to Upstash Redis. Initial run: 26 traditions, 84 works, 514 sections, 46 quotes — 670 nodes, 644 edges, 49 KB compressed.
 - ✅ New: [apps/web/app/api/knowledge/constellation/route.ts](../apps/web/app/api/knowledge/constellation/route.ts) — mirrors the existing graph route, reads `knowledge:constellation`. ISR revalidate=3600.
 - Modify (later): [apps/web/app/knowledge/graph/GraphPageClient.tsx](../apps/web/app/knowledge/graph/GraphPageClient.tsx) — replace sigma.js with `<KnowledgeGraph>` from `@opencosmos/constellation`. Wire landing-page intro: read `sessionStorage['cosmo_context']`, honor `?focus=`, fall back to "today's invitation". Pass `ambientMotion={{ enabled: true }}`, `focus={resolvedFocusId}`. Entire corpus always rendered.
 - Delete (opencosmos-ui historical location): `packages/ui/src/components/data-display/knowledge-graph/` (retire sigma.js).
-- Retire (later): [scripts/knowledge/generate-wiki-graph.ts](../scripts/knowledge/generate-wiki-graph.ts) and [apps/web/app/api/knowledge/graph/route.ts](../apps/web/app/api/knowledge/graph/route.ts) — once consumers point at `knowledge:constellation`, the wiki-only graph + endpoint go away. **Performance note:** verify payload ≤ ~2MB gzipped with full corpus (~3k nodes + 10k edges). At 670 nodes / 644 edges the constellation payload is 49 KB — comfortably under budget; quote-tier growth post-Stage-3 will push toward ~1,500 quotes.
+- Retire (later): [scripts/knowledge/generate-wiki-graph.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/generate-wiki-graph.ts) and [apps/web/app/api/knowledge/graph/route.ts](../apps/web/app/api/knowledge/graph/route.ts) — once consumers point at `knowledge:constellation`, the wiki-only graph + endpoint go away. **Performance note:** verify payload ≤ ~2MB gzipped with full corpus (~3k nodes + 10k edges). At 670 nodes / 644 edges the constellation payload is 49 KB — comfortably under budget; quote-tier growth post-Stage-3 will push toward ~1,500 quotes.
 
 **Known gaps to fix in flight (not blocking the visualizer):**
 - Section IDs use indexed disambiguation (`slug-2`, `slug-3`) for collisions; embed-knowledge.ts uses content-hash disambiguation (`slug-{8-char-hash}`). Sync these in Phase 1.7 so semantic edges can join.
@@ -503,7 +503,7 @@ This "gentle starfield that zooms into your corner" feel is also the pattern any
 
 > **Status correction (2026-08-15):** the *data* half already shipped inside `generate-constellation-graph.ts` — the 2026-08-15 run emits **135 semantic edges** alongside 785 structural ones (700 nodes / 920 edges total). What remains is the *rendering* treatment: `type: 'semantic'` edges drawn thinner and at ~30% opacity so they read as resonance beneath the curated structure. Deferred until after 1.8 — `@opencosmos/constellation@0.1.0` draws all edge types identically, so differentiating them is a package change, and it's worth knowing what the graph is *for* before tuning how it looks.
 
-**File:** [scripts/knowledge/generate-wiki-graph.ts](../scripts/knowledge/generate-wiki-graph.ts)
+**File:** [scripts/knowledge/generate-wiki-graph.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/generate-wiki-graph.ts)
 
 - After building hierarchical nodes, query Upstash Vector for all chunk embeddings (paginate).
 - For each node (work or section), find top-3 cosine-similarity neighbors across the corpus.
@@ -514,7 +514,7 @@ This "gentle starfield that zooms into your corner" feel is also the pattern any
 ##### Phase 1.8 — Cosmo citations + bidirectional links (2–3 days) ⚪ Planned
 
 **Files:**
-- [packages/ai/COSMO_SYSTEM_PROMPT.md](../packages/ai/COSMO_SYSTEM_PROMPT.md) — citation format: "Cite sources as `[ref: path/to/file.md#section-slug]` for works or `[quote: path/to/file.yaml#quote-id]` for quotes. Inline within your sentence." Note: `section-slug` matches the chunk ID emitted by `scripts/knowledge/embed-knowledge.ts` — usually `slugify(heading)`, but may include an 8-char hash suffix (`#slug-a1b2c3d4`) when multiple sections within the same file share a heading (e.g. seven poems titled "Thought" in Leaves of Grass). The citation parser must accept both forms.
+- [packages/ai/COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md) — citation format: "Cite sources as `[ref: path/to/file.md#section-slug]` for works or `[quote: path/to/file.yaml#quote-id]` for quotes. Inline within your sentence." Note: `section-slug` matches the chunk ID emitted by `scripts/knowledge/embed-knowledge.ts` — usually `slugify(heading)`, but may include an 8-char hash suffix (`#slug-a1b2c3d4`) when multiple sections within the same file share a heading (e.g. seven poems titled "Thought" in Leaves of Grass). The citation parser must accept both forms.
 - [apps/web/app/dialog/CosmoChat.tsx](../apps/web/app/dialog/CosmoChat.tsx) — post-process message text, replace citation tokens with clickable `<Link>` components that navigate to `/knowledge/{slug}` + emit `window.postMessage({type:'highlight-node', id:X})` for any open graph tab.
 - [apps/web/app/knowledge/[...slug]/TableOfContents.tsx](../apps/web/app/knowledge/[...slug]/TableOfContents.tsx) — add "See in graph →" link under the active section, linking to `/knowledge/graph?focus={slug}`.
 - [apps/web/app/knowledge/graph/GraphPageClient.tsx](../apps/web/app/knowledge/graph/GraphPageClient.tsx) — read `?focus=` query param, center graph + highlight 1-hop neighbors on mount.
@@ -846,7 +846,7 @@ All set up in `.env.local` / Vercel / GitHub Secrets:
 - [strategy.md](strategy.md) — Three Futures, business model, open questions
 - [architecture.md](architecture.md) — Infrastructure, service map, data flow, token economics
 - [chronicle.md](chronicle.md) — The story behind the decisions
-- [projects/opencosmos-migration.md](projects/opencosmos-migration.md) — Active rename migration (independent workstream)
+- [opencosmos-migration.md](archive-and-deprecated/opencosmos-migration.md) — The rename migration (complete; archived)
 - [projects/cosmo-voice-research.md](projects/cosmo-voice-research.md) — Voice provider comparison and decision guide
 - [projects/tech-research.md](projects/tech-research.md) — Hardware research (Dell, M5 Max/Ultra)
 - [WELCOME.md](../WELCOME.md) — The front door

@@ -2,7 +2,7 @@
 
 > **Context file for AI assistants (primarily Claude) working on this platform. Read this first, then [DESIGN-PHILOSOPHY.md](../DESIGN-PHILOSOPHY.md) and [AGENTS.md](../AGENTS.md).**
 
-Last updated: 2026-04-11
+Last updated: 2026-09-24
 
 ---
 
@@ -32,19 +32,23 @@ opencosmos/
 └── CHANGELOG.md             # Work history
 ```
 
-### One Philosophy, Five Repositories
+### One Philosophy, Six Repositories
 
 The commons was split out of this monorepo in September 2026 — separated by
-rights and invitation, not by topic. Each is public and contributable.
+rights and invitation, not by topic ([ADR 0018](../docs/decisions/0018-the-commons-and-the-applications-live-in-separate-repositories.md)).
+Each is public and contributable.
 
-| Repo | Purpose | What's in it |
-|------|---------|-------------|
-| **This repo** (opencosmos) | The site that serves the commons | `apps/web` — opencosmos.ai, consuming `@opencosmos/ui` from npm. **Builds the corpus and Cosmo in at build time — it does not contain them.** |
-| **[knowledge](https://github.com/opencosmos-ai/knowledge)** | The corpus (CC0) | Sources, quotes, wiki, I Ching, and the whole corpus toolchain |
-| **[cosmo](https://github.com/opencosmos-ai/cosmo)** | Cosmo's constitution (CC BY-SA) | System prompt, the triad, Xensō, the kaizen practice |
-| **[taoteching](https://github.com/opencosmos-ai/taoteching)** | A translation (CC0) | 81 chapters |
-| **[shalomormsby/portfolio](https://github.com/shalomormsby/portfolio)**, **[/creative-powerup](https://github.com/shalomormsby/creative-powerup)** | The personal apps | Peeled out of this repo 18 Sept 2026 — separate by rights, not topic |
-| **[opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui)** | Design system source | `@opencosmos/ui`, `@opencosmos/tokens`, `@opencosmos/mcp`, OpenCosmos Studio docs site |
+| Repo | Purpose | License |
+|------|---------|---------|
+| **This repo** (opencosmos) | `apps/web` — opencosmos.ai. **Builds the corpus and Cosmo in at build time — it does not contain them.** | MIT |
+| **[knowledge](https://github.com/opencosmos-ai/knowledge)** | The corpus — sources, quotes, wiki — and its whole toolchain | CC0 |
+| **[cosmo](https://github.com/opencosmos-ai/cosmo)** | Cosmo's constitution — system prompt, the triad, Xensō, kaizen | CC BY-SA 4.0 |
+| **[taoteching](https://github.com/opencosmos-ai/taoteching)** | A translation, 81 chapters | CC0 |
+| **[iching](https://github.com/opencosmos-ai/iching)** | A translation; the app copies its generated hexagram table | CC0 |
+| **[opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui)** | `@opencosmos/ui`, `/tokens`, `/mcp`, the Studio docs site | MIT |
+
+The personal apps (portfolio, creative-powerup) left for `shalomormsby/` on
+18 Sept 2026 and are not part of the organization.
 
 **Fetching:** `pnpm --filter web content` pulls `knowledge` and `cosmo` into
 `apps/web/.content/`. A sibling checkout at `../knowledge` or `../cosmo` is used
@@ -70,12 +74,12 @@ in preference to a clone, so local edits are picked up.
 
 ## Skills
 
-Eleven procedures live in [`.claude/skills/`](../.claude/skills/README.md),
+Five procedures live in [`.claude/skills/`](../.claude/skills/README.md),
 invoked by typing `/<name>`. **Check there before writing a procedure from
-scratch** — `/pr` and `/clean` cover the git workflow, `/create` covers UI, and
-six cover the corpus. The six corpus skills operate on
-[opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge) and expect
-a sibling checkout at `../knowledge`.
+scratch** — `/pr`, `/clean` and `/git-sync` cover the git workflow, `/create`
+covers UI, `/inference-cost` covers model choice. The six corpus skills live
+with the corpus, in
+[opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge/tree/main/.claude/skills).
 
 See [AGENTS.md § Skills](../AGENTS.md#skills) for the table, or
 [.claude/skills/README.md](../.claude/skills/README.md) for the full index.
@@ -102,15 +106,8 @@ The shared AI intelligence layer. Lives in its own repository,
 into `apps/web/.content/cosmo` at build time — edit it there, not here.
 
 - **License:** CC BY-SA 4.0 + a non-binding [Use Policy](https://github.com/opencosmos-ai/cosmo/blob/main/USE-POLICY.md)
-- **Status:** Phase 1a (hardware) + Phase 1b (package foundation)
+- **Inference:** Claude via the Anthropic API — shared free tier or BYOK. *Voice is sovereign, compute is flexible* — see [docs/architecture.md](../docs/architecture.md).
 - **Read [COSMO_SYSTEM_PROMPT.md](https://github.com/opencosmos-ai/cosmo/blob/main/COSMO_SYSTEM_PROMPT.md)** for the voice and values
-
-```typescript
-// API shape (finalizing in Phase 1b)
-import { createCosmoClient } from '@opencosmos/ai'
-const cosmo = createCosmoClient({ model: 'apertus-8b', tier: 'sovereign' })
-const response = await cosmo.complete(prompt, opts)
-```
 
 ---
 
@@ -195,13 +192,9 @@ See [AGENTS.md § What NOT to Do](../AGENTS.md#what-not-to-do) for the full list
 
 ## Quick Links
 
-**Live Sites:**
-- Portfolio: https://www.shalomormsby.com/
-- OpenCosmos Studio: https://opencosmos.ai/
-- Creative Powerup: https://creativepowerup.com/
-
-**Development:**
-- Portfolio: http://localhost:3000
+- Live: https://opencosmos.ai/
+- Studio (design system docs): https://studio.opencosmos.ai/
+- Local: http://localhost:3000
 
 ---
 
