@@ -2,6 +2,19 @@
 
 Thank you for your interest in contributing! This project is built on the belief that human-centered design can be proven through architecture, not just claimed — and contributions that share that vision are welcome.
 
+## First: is this the right repository?
+
+This repository is the **site**, opencosmos.ai. Most of what a reader wants to
+improve lives next door:
+
+| You want to… | Go to |
+|---|---|
+| Fix a typo or transcription error in a Library text, or contest a quote | [knowledge](https://github.com/opencosmos-ai/knowledge). Every Library page ends with **Suggest an edit**, which opens the right file |
+| Report something Cosmo said, or propose a change to its voice | [cosmo](https://github.com/opencosmos-ai/cosmo) |
+| Argue with a line of the Tao Te Ching or I Ching | [taoteching](https://github.com/opencosmos-ai/taoteching), [iching](https://github.com/opencosmos-ai/iching) |
+| Change a UI component | [opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui) |
+| Fix or improve the site itself | here |
+
 ## Getting Started
 
 1. **Read the philosophy first:** [WELCOME.md](WELCOME.md) is the front door. [DESIGN-PHILOSOPHY.md](DESIGN-PHILOSOPHY.md) outlines the four principles that guide every decision.
@@ -12,13 +25,13 @@ Thank you for your interest in contributing! This project is built on the belief
 git clone https://github.com/opencosmos-ai/opencosmos.git
 cd opencosmos
 pnpm install
-pnpm build
+pnpm dev      # fetches the corpus and Cosmo, then serves localhost:3000
 ```
 
 ### Prerequisites
 
 - Node.js 24+ (see `.nvmrc`)
-- pnpm 8.15.0+
+- pnpm 10 (pinned in `package.json`)
 
 ## How to Contribute
 
@@ -37,7 +50,7 @@ pnpm build
 
 1. Fork the repository and create a branch: `type/brief-description` (e.g., `feat/motion-slider`, `fix/button-focus`)
 2. Follow the coding standards in [AGENTS.md](AGENTS.md)
-3. Ensure your changes pass: `pnpm lint && pnpm typecheck && pnpm build`
+3. Ensure `pnpm build` passes (it type-checks), and check UI changes in a browser
 4. Write a clear commit message following conventional commits:
    ```
    type(scope): description
@@ -48,10 +61,6 @@ pnpm build
 ### Adding Components
 
 If you're adding a new component to `@opencosmos/ui`, that work happens in the [opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui) repository, not here.
-
-### Contributing to the Knowledge Base
-
-The OpenCosmos knowledge corpus welcomes contributions — source texts, commentary, guides, and reference material. See the [knowledge publication workflow](https://github.com/opencosmos-ai/knowledge/blob/main/guides/opencosmos-knowledge-publish-workflow.md) for the full process and the [knowledge README](https://github.com/opencosmos-ai/knowledge/blob/main/README.md) for the corpus schema.
 
 ## Code Standards
 
