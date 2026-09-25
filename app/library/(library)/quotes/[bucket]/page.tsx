@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Badge, Separator } from '@opencosmos/ui'
 import { getQuoteBucket, getQuoteBuckets, type QuoteRecord } from '@/lib/quotes'
 import QuoteContext from './QuoteContext'
+import SourceLinks from '../../../SourceLinks'
 
 type Props = {
   params: Promise<{ bucket: string }>
@@ -154,6 +155,11 @@ export default async function QuoteBucketPage({ params }: Props) {
           </article>
         ))}
       </div>
+
+      <SourceLinks
+        docPath={`knowledge/quotes/${detail.bucket}.yaml`}
+        prompt="Found a misattribution, a wrong source, or a quote that belongs here?"
+      />
     </div>
   )
 }

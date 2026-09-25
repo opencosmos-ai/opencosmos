@@ -10,6 +10,8 @@
 //   library URL   /library/quotes/mary-oliver#q_0003
 //                 where a reader goes. Free to change.
 //
+// A third namespace, the file in the knowledge repository, is `sourceHrefs()`.
+//
 // Three callers must agree on this translation — the chat renderer
 // (`app/dialog/citations.tsx`), the constellation (`app/library/graph/nodeHref.ts`),
 // and the index (`lib/library.ts`) — so it lives in exactly one place.
@@ -83,4 +85,28 @@ export function quoteBucketFromDocPath(docPath: string): string | null {
   if (!path.startsWith(QUOTE_PREFIX) || path.includes('..')) return null
   const bucket = path.slice(QUOTE_PREFIX.length).replace(/\.yaml$/, '')
   return BUCKET_RE.test(bucket) ? bucket : null
+}
+
+/** Where the corpus is maintained, and so where a reader can correct it. */
+export const KNOWLEDGE_REPO_URL = 'https://github.com/opencosmos-ai/knowledge'
+
+/**
+ * `knowledge/sources/x.md` → the file in the knowledge repository.
+ *
+ * The third namespace. The `knowledge/` prefix is where the corpus is fetched
+ * to, not part of the repository's own paths, so it is stripped. `edit` opens
+ * GitHub's editor, which forks and opens a pull request for any signed-in
+ * reader, with no clone. Both point at `main`, where corrections land, even
+ * when a build pinned `CONTENT_REF` to something else.
+ */
+export function sourceHrefs(ref: string): { view: string; edit: string } | null {
+  const { path } = splitAnchor(ref)
+  if (!path.startsWith(CORPUS_PREFIX) || path.includes('..')) return null
+  if (!/\.(md|yaml)$/.test(path)) return null
+  const inner = path.slice(CORPUS_PREFIX.length)
+  if (inner.split('/').filter(Boolean).length < 2) return null
+  return {
+    view: `${KNOWLEDGE_REPO_URL}/blob/main/${inner}`,
+    edit: `${KNOWLEDGE_REPO_URL}/edit/main/${inner}`,
+  }
 }

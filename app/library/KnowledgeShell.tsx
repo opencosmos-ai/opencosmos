@@ -23,6 +23,7 @@ import {
   type HeaderNavLink,
 } from '@opencosmos/ui'
 import { PanelLeftClose } from 'lucide-react'
+import { KNOWLEDGE_REPO_URL } from '@/lib/corpus-href'
 import { CosmoSidebarContent } from './CosmoSidebarContent'
 import { SidebarFooterContent } from '../dialog/SidebarFooterContent'
 
@@ -332,7 +333,7 @@ export function KnowledgeShell({ children }: { children: React.ReactNode }) {
   const headerActions = (
     <Button variant="outline" size="sm" asChild className="gap-2">
       <a
-        href="https://github.com/opencosmos-ai/opencosmos"
+        href={KNOWLEDGE_REPO_URL}
         target="_blank"
         rel="noopener noreferrer"
       >

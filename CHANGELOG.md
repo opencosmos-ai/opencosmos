@@ -35,6 +35,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-09-24 — Feature: every Library page links to its source in the commons (144 documents · 178 quote pages)
+
+The org was split so that "a contributor's `git clone` is an answer" ([ADR 0018](docs/decisions/0018-the-commons-and-the-applications-live-in-separate-repositories.md)), but the site never told a reader where that clone was. Its only GitHub links pointed at this repository, the MIT app code, which is the one place a reader who spots an error in the Dhammapada cannot fix it. Every pull request in the org so far has been Shalom's.
+
+- **Each document and quote page ends with "This text lives in the commons":** *Suggest an edit* opens GitHub's editor on the exact file in [knowledge](https://github.com/opencosmos-ai/knowledge), which forks and opens a pull request for any signed-in reader with no clone. *View source* opens the file.
+- **The Library header's "Star on GitHub" points at the corpus,** not the app.
+- **One resolver:** `sourceHrefs()` joins `docHref()` and `quoteHref()` in [`lib/corpus-href.ts`](lib/corpus-href.ts) as the third namespace, the file in the repository. An unresolvable path renders no link, never a dead one.
+- **Verified:** all 144 document pages link to their exact file, and the rendered links return 200 on GitHub. Checked by eye on desktop and at 390px, with no horizontal overflow.
+- **The measure:** the first pull request to knowledge from someone other than Shalom.
+
 ## 2026-09-24 — Refactor: the one application becomes the repository (turbo, the workspace and a second package.json removed · 132 files moved with history)
 
 After the split, `apps/` held one entry, and the monorepo shell around it did nothing but add `--filter web` to every command. [ADR 0019](docs/decisions/0019-one-application-lives-at-the-repository-root.md) records the decision.
