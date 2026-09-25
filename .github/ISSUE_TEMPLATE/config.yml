@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: An error in a Library text or quote
+    url: https://github.com/opencosmos-ai/knowledge/issues/new/choose
+    about: The texts live in the knowledge repository. Every Library page also has a "Suggest an edit" link that opens the exact file.
+  - name: Something Cosmo said
+    url: https://github.com/opencosmos-ai/cosmo/issues/new/choose
+    about: Cosmo's voice and values live in the cosmo repository — no prompt knowledge needed to report drift.
+  - name: A line of the Tao Te Ching or I Ching
+    url: https://github.com/opencosmos-ai/taoteching/issues/new/choose
+    about: The translations have their own repositories (the I Ching is at opencosmos-ai/iching).
