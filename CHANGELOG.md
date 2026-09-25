@@ -35,6 +35,12 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-09-24 — Decision: the I Ching is read through the Wings, and says so (ADR 0016 accepted)
+
+[ADR 0016](docs/decisions/0016-the-i-ching-is-read-through-the-wings-and-the-lens-is-declared.md) had been `Proposed` since 12 September, while the trigram renderings already assumed it. Shalom accepted it today. The full account is in [iching's changelog](https://github.com/opencosmos-ai/iching/blob/main/CHANGELOG.md), where the lens is now declared in its README.
+
+- **For this app:** iching's generated table now carries `spectrum`, `pole` and `oddLine` on each trigram. These describe the four pairs the eight trigrams form, and they are checked by code there. The fields are additive; `lib/iching-data.ts` picks them up when it is next refreshed from iching.
+
 ## 2026-09-24 — Feature: every Library page links to its source in the commons (144 documents · 178 quote pages)
 
 The org was split so that "a contributor's `git clone` is an answer" ([ADR 0018](docs/decisions/0018-the-commons-and-the-applications-live-in-separate-repositories.md)), but the site never told a reader where that clone was. Its only GitHub links pointed at this repository, the MIT app code, which is the one place a reader who spots an error in the Dhammapada cannot fix it. Every pull request in the org so far has been Shalom's.

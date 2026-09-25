@@ -1,6 +1,6 @@
 # 0016 — The I Ching is read through the Wings, and the lens is declared
 
-**Date:** 2026-09-12 · **Status:** Proposed · **Relates to** [0003](0003-verification-first-only-verified-provenance-enters-the-corpus.md)
+**Date:** 2026-09-12 · **Status:** Accepted · **Relates to** [0003](0003-verification-first-only-verified-provenance-enters-the-corpus.md)
 
 _Fixes which book `iching/` is translating, and requires the interpretive lens to be stated in the front matter rather than operating invisibly._
 
