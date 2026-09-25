@@ -7,6 +7,7 @@ import { getDoc, getAllDocs } from '@/lib/knowledge'
 import { CATEGORY_LABELS } from '@/lib/knowledge-meta'
 import DocViewer from './DocViewer'
 import TableOfContents, { type TocEntry } from './TableOfContents'
+import SourceLinks from '../../SourceLinks'
 
 /**
  * Extract H2 and H3 headings from raw markdown for the TOC sidebar.
@@ -174,6 +175,11 @@ export default async function DocPage({ params }: Props) {
                 </div>
               </div>
             )}
+
+            <SourceLinks
+              docPath={docPath}
+              prompt="Spotted a typo, an error, or something missing?"
+            />
           </div>
 
           {/* TOC sidebar — sticky, hidden on mobile */}
