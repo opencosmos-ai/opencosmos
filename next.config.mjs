@@ -14,6 +14,15 @@ function readOptional(relPath) {
   }
 }
 
+// Required file → string at build time. Throws if the file is missing or
+// empty, so a lost module fails the build instead of shipping without it
+// (fail closed). A bare readFileSync would still accept an empty file.
+function readRequired(relPath) {
+  const text = readFileSync(join(__dirname, relPath), 'utf-8')
+  if (!text.trim()) throw new Error(`${relPath} is empty — refusing to build without it`)
+  return text
+}
+
 // Strip a leading YAML frontmatter block (--- … ---) so only the prose body of
 // an exemplar is injected into the prompt — not its curation metadata.
 function stripFrontmatter(md) {
@@ -79,8 +88,9 @@ const nextConfig = {
       '',
     // Xensō quest-guide module — injected only when a request arrives with
     // xensoMode: true. Adds the authorship rule, the five-question spine, the
-    // three safety tiers, and the xenso-state protocol. Optional: absent → ''.
-    XENSO_MODULE: readOptional('.content/cosmo/modules/XENSO_MODULE.md'),
+    // three safety tiers, and the xenso-state protocol. Required: without it,
+    // xenso mode would run as plain Cosmo with no error, so the build fails.
+    XENSO_MODULE: readRequired('.content/cosmo/modules/XENSO_MODULE.md'),
   },
   async headers() {
     return [
