@@ -80,11 +80,7 @@ const nextConfig = {
     // Xensō quest-guide module — injected only when a request arrives with
     // xensoMode: true. Adds the authorship rule, the five-question spine, the
     // three safety tiers, and the xenso-state protocol. Optional: absent → ''.
-    // Lives at cosmo/modules/ since 2026-09-25; the old cosmo/xenso/ path is
-    // read as a fallback so a build between the two repos' merges still finds it.
-    XENSO_MODULE:
-      readOptional('.content/cosmo/modules/XENSO_MODULE.md') ||
-      readOptional('.content/cosmo/xenso/XENSO_MODULE.md'),
+    XENSO_MODULE: readOptional('.content/cosmo/modules/XENSO_MODULE.md'),
   },
   async headers() {
     return [

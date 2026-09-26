@@ -40,7 +40,7 @@ All notable changes to this project will be documented in this file.
 Shalom's call: Xensō is now built as an iOS app, in [shalomormsby/xenso](https://github.com/shalomormsby/xenso) alongside its canon — the full account is in [its changelog](https://github.com/shalomormsby/xenso/blob/main/CHANGELOG.md). [opencosmos.ai/xenso](https://opencosmos.ai/xenso) stays live, unchanged, as the web reference.
 
 - **`app/xenso/` is the one Xensō folder in this repo.** The cast-engine check moved from `scripts/xenso/iching-check.ts` to [`scripts/iching-check.ts`](scripts/iching-check.ts); `pnpm xenso:check-iching` is unchanged.
-- **Cosmo's Xensō module moves to `cosmo/modules/XENSO_MODULE.md`.** [`next.config.mjs`](next.config.mjs) reads the new path first and the old one as a fallback, so the live module is never absent — this repo's change has to merge before cosmo's.
+- **Cosmo's Xensō module moves to `cosmo/modules/XENSO_MODULE.md`.** [`next.config.mjs`](next.config.mjs) read the new path first and the old one as a fallback, so the live module was never absent while the two repos merged; the fallback was removed once both had.
 
 ## 2026-09-24 — Decision: the I Ching is read through the Wings, and says so (ADR 0016 accepted)
 
