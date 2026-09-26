@@ -44,7 +44,9 @@ Regenerates the index of architecture decision records from
 
 Checks the I Ching cast engine — coin arithmetic, the non-uniform odds,
 moving-line resolution, and the founding cast run end to end. It tests the
-*application*, so it stays with `lib/iching.ts`.
+*application*, so it stays with `lib/iching.ts`. The script is
+`scripts/iching-check.ts`; the `xenso:` prefix on the command is kept
+because the iching repository's README names it.
 
 The hexagram table itself — bijection, the King Wen pairs, trigram agreement —
 is checked where it is decided, by `npm run check` in
