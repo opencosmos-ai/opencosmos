@@ -26,8 +26,8 @@ import {
   resolve,
   type CoinThrow,
   type LineValue,
-} from '../../lib/iching'
-import { HEXAGRAMS } from '../../lib/iching-data'
+} from '../lib/iching'
+import { HEXAGRAMS } from '../lib/iching-data'
 
 let failures = 0
 const fail = (m: string) => {

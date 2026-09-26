@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-09-24
+**Last updated:** 2026-09-25
 
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
@@ -19,7 +19,7 @@ All notable changes to this project will be documented in this file.
 | [`shalomormsby/stocks`](https://github.com/shalomormsby/stocks) | Sage Stocks — peeled out 18 Sept 2026 and archived; its changelog went with it | Keep a Changelog · SemVer |
 | [`shalomormsby/portfolio`](https://github.com/shalomormsby/portfolio), [`shalomormsby/creative-powerup`](https://github.com/shalomormsby/creative-powerup) | **dormant.** Changesets output from a tool no longer installed, last written 2026-02-16 and still naming the retired `@thesage/ui`. Peeled out with their apps on 18 Sept 2026. | generated |
 | [opencosmos-ui](https://github.com/opencosmos-ai/opencosmos-ui) | the design system — component behaviour and its releases | dated narrative |
-| [xenso](https://github.com/shalomormsby/xenso) | the game's canon and design decisions. Its code ships from **this** repo, so its entries link across | dated narrative |
+| [xenso](https://github.com/shalomormsby/xenso) | the game's canon, design decisions and — since 25 Sept 2026 — the iOS app. The web reference at /xenso still ships from **this** repo, so its entries link across | dated narrative |
 | [taoteching](https://github.com/opencosmos-ai/taoteching) | the translation manuscript's milestones | dated narrative |
 
 **The rules, in order of how often they bite:**
@@ -34,6 +34,13 @@ All notable changes to this project will be documented in this file.
 **The test for whether something belongs here rather than in a sub-project's changelog: would someone not working on that sub-project need to know?** If yes, a sentence here with a link. If no, it stays there.
 
 ---
+
+## 2026-09-25 — Xensō goes native; its folders consolidate to two
+
+Shalom's call: Xensō is now built as an iOS app, in [shalomormsby/xenso](https://github.com/shalomormsby/xenso) alongside its canon — the full account is in [its changelog](https://github.com/shalomormsby/xenso/blob/main/CHANGELOG.md). [opencosmos.ai/xenso](https://opencosmos.ai/xenso) stays live, unchanged, as the web reference.
+
+- **`app/xenso/` is the one Xensō folder in this repo.** The cast-engine check moved from `scripts/xenso/iching-check.ts` to [`scripts/iching-check.ts`](scripts/iching-check.ts); `pnpm xenso:check-iching` is unchanged.
+- **Cosmo's Xensō module moves to `cosmo/modules/XENSO_MODULE.md`.** [`next.config.mjs`](next.config.mjs) reads the new path first and the old one as a fallback, so the live module is never absent — this repo's change has to merge before cosmo's.
 
 ## 2026-09-24 — Decision: the I Ching is read through the Wings, and says so (ADR 0016 accepted)
 
