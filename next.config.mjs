@@ -19,7 +19,7 @@ function readOptional(relPath) {
 // (fail closed). A bare readFileSync would still accept an empty file.
 function readRequired(relPath) {
   const text = readFileSync(join(__dirname, relPath), 'utf-8')
-  if (!text.trim()) throw new Error(`${relPath} is empty — refusing to build without it`)
+  if (!text.trim()) throw new Error(`${relPath} is empty — refusing to build without it. If it was removed on purpose, remove its line from next.config.mjs too.`)
   return text
 }
 
@@ -90,6 +90,8 @@ const nextConfig = {
     // xensoMode: true. Adds the authorship rule, the five-question spine, the
     // three safety tiers, and the xenso-state protocol. Required: without it,
     // xenso mode would run as plain Cosmo with no error, so the build fails.
+    // WHEN XENSŌ LEAVES THIS REPO: delete this line AND the matching check in
+    // scripts/fetch-content.mjs (cosmo's verify), or every build will fail.
     XENSO_MODULE: readRequired('.content/cosmo/modules/XENSO_MODULE.md'),
   },
   async headers() {

@@ -93,9 +93,14 @@ const SOURCES = [
       }
       // The same failure, one surface over: without the Xensō module, xenso
       // mode runs as plain Cosmo and nobody is told.
+      // WHEN XENSŌ LEAVES THIS REPO: delete this check AND the XENSO_MODULE line
+      // in next.config.mjs, or every build will fail.
       const xenso = join(dest, 'modules', 'XENSO_MODULE.md')
       if (!existsSync(xenso) || statSync(xenso).size === 0) {
-        throw new Error(`cosmo at ${dest} has no modules/XENSO_MODULE.md — refusing to build Xensō without its module`)
+        throw new Error(
+          `cosmo at ${dest} has no modules/XENSO_MODULE.md — refusing to build Xensō without its module. ` +
+          `If Xensō has been removed from opencosmos on purpose, delete the module check in scripts/fetch-content.mjs and the XENSO_MODULE line in next.config.mjs.`
+        )
       }
       const triad = readdirSync(join(dest, 'triad')).filter((f) => f.endsWith('_SYSTEM_PROMPT.md'))
       return `${(readFileSync(prompt, 'utf-8').length / 1024).toFixed(1)} kB system prompt, ${triad.length} triad prompts, ${(readFileSync(xenso, 'utf-8').length / 1024).toFixed(1)} kB Xensō module`
