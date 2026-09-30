@@ -4,6 +4,7 @@ import { randomUUID } from 'crypto'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { withAuth } from '@workos-inc/authkit-nextjs'
+import { ADMIN_COOKIE_NAME, isAdminCookie } from '@/lib/admin-cookie'
 import { markByok } from '@/lib/byok'
 import { fetchRagContext, formatRagChunks, type RagResult } from '@/lib/rag'
 import { getDoc, slugFromDocPath, extractSection } from '@/lib/knowledge'
@@ -571,7 +572,7 @@ export async function POST(req: NextRequest) {
     const authenticatedUser = await withAuth({ ensureSignedIn: false }).then(a => a.user).catch(() => null)
 
     const isAdmin =
-      req.cookies.get('cosmo_admin')?.value === '1' ||
+      isAdminCookie(req.cookies.get(ADMIN_COOKIE_NAME)?.value) ||
       (!!ADMIN_EMAIL && authenticatedUser?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase())
 
     // BYOK + logged-in user: mark them server-side so the account page knows.

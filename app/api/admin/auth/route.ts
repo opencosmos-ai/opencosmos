@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { withAuth } from '@workos-inc/authkit-nextjs'
+import { ADMIN_COOKIE_NAME, adminCookieValue, isAdminCookie } from '@/lib/admin-cookie'
 
 const ADMIN_SECRET = process.env.COSMO_ADMIN_SECRET!
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? ''
-const COOKIE = 'cosmo_admin=1; HttpOnly; SameSite=Strict; Secure; Max-Age=604800; Path=/'
 const CLEAR_COOKIE = 'cosmo_admin=; HttpOnly; SameSite=Strict; Secure; Max-Age=0; Path=/'
 
 export async function GET(req: NextRequest) {
-  if (req.cookies.get('cosmo_admin')?.value === '1') {
+  if (isAdminCookie(req.cookies.get(ADMIN_COOKIE_NAME)?.value)) {
     return NextResponse.json({ active: true })
   }
   if (ADMIN_EMAIL) {
@@ -21,11 +21,12 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const { secret } = await req.json()
-  if (!ADMIN_SECRET || secret !== ADMIN_SECRET) {
+  const value = adminCookieValue()
+  if (!ADMIN_SECRET || secret !== ADMIN_SECRET || !value) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
   const res = NextResponse.json({ ok: true })
-  res.headers.set('Set-Cookie', COOKIE)
+  res.headers.set('Set-Cookie', `${ADMIN_COOKIE_NAME}=${value}; HttpOnly; SameSite=Strict; Secure; Max-Age=604800; Path=/`)
   return res
 }
 
