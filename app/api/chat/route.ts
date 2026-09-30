@@ -412,6 +412,19 @@ type XensoContext = {
   gems?: Array<{ text: string; context?: string; questObjective?: string | null }>
   openQuests?: Array<{ objective: string; status: string; nextAct?: string }>
   keeps?: Array<{ excerpt: string; title?: string }>
+  // From the iOS app: the player's I Ching casts, newest first, each with the
+  // reading as they were shown it (recent casts only) and any voice logs about
+  // it they have offered to Cosmo.
+  casts?: Array<{
+    date: string
+    cast: string
+    becoming?: string | null
+    changingLines?: number[]
+    reading?: string
+    voiceLogs?: Array<{ date: string; transcript: string }>
+  }>
+  // Offered voice logs about anything other than a cast.
+  voiceLogs?: Array<{ date: string; about: string; transcript: string }>
 }
 
 /**
@@ -459,7 +472,9 @@ function formatXensoContext(ctx: XensoContext): string | null {
   const gems = (ctx.gems ?? []).slice(0, 60)
   const quests = (ctx.openQuests ?? []).slice(0, 20)
   const keeps = (ctx.keeps ?? []).slice(0, 40)
-  if (!gems.length && !quests.length && !keeps.length) return null
+  const casts = (ctx.casts ?? []).slice(0, 20)
+  const voiceLogs = (ctx.voiceLogs ?? []).slice(0, 20)
+  if (!gems.length && !quests.length && !keeps.length && !casts.length && !voiceLogs.length) return null
 
   const clip = (s: unknown, n = 500) => String(s ?? '').slice(0, n)
   const parts: string[] = [
@@ -480,6 +495,29 @@ function formatXensoContext(ctx: XensoContext): string | null {
   if (keeps.length) {
     parts.push(`## Passages they've kept (${keeps.length})\n\n` + keeps.map(k =>
       `- "${clip(k.excerpt, 400)}"${k.title ? ` — ${clip(k.title, 120)}` : ''}`
+    ).join('\n'))
+  }
+  if (casts.length) {
+    parts.push(
+      `## Their I Ching casts (${casts.length}, newest first)\n\n` +
+      'Cast in the app with the yarrow-stalk odds. The readings are the Open I Ching\'s, as the player was shown them. Their voice logs are their own words about a cast, offered to you: meet what they said, and let them find the meaning; never read the cast for them.\n\n' +
+      casts.map(c => {
+        const lines = (c.changingLines ?? []).filter(n => Number.isInteger(n) && n >= 1 && n <= 6).slice(0, 6)
+        const movement = c.becoming
+          ? ` → ${clip(c.becoming, 80)} (changing ${lines.length === 1 ? 'line' : 'lines'} ${lines.join(', ')})`
+          : ' (no changing lines)'
+        const out = [`### ${clip(c.date, 40)}: ${clip(c.cast, 80)}${movement}`]
+        if (c.reading) out.push(clip(c.reading, 4000))
+        for (const log of (c.voiceLogs ?? []).slice(0, 10)) {
+          out.push(`Their voice log, ${clip(log.date, 40)}:\n> ${clip(log.transcript, 4000).replace(/\n/g, '\n> ')}`)
+        }
+        return out.join('\n\n')
+      }).join('\n\n')
+    )
+  }
+  if (voiceLogs.length) {
+    parts.push(`## Other voice logs they've offered (${voiceLogs.length})\n\n` + voiceLogs.map(v =>
+      `- ${clip(v.date, 40)}, about ${clip(v.about, 120)}:\n  > ${clip(v.transcript, 4000).replace(/\n/g, '\n  > ')}`
     ).join('\n'))
   }
   return parts.join('\n\n')
