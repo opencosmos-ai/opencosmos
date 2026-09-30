@@ -906,10 +906,40 @@ export async function POST(req: NextRequest) {
       betas: ['web-fetch-2025-09-10', 'extended-cache-ttl-2025-04-11'],
     })
 
+    // Wait for Anthropic's first event before answering. Until it arrives, a
+    // rejected request (bad or unfunded BYOK key, a tool the key's workspace
+    // doesn't allow, an overloaded model) can still be answered honestly, with
+    // a status and a reason. Once the stream below has started, an error has
+    // nowhere to go: Next.js turns it into a bare HTML 500, which is all the
+    // iOS app ever saw of a rejected key.
+    const events = stream[Symbol.asyncIterator]()
+    let first: Awaited<ReturnType<typeof events.next>>
+    try {
+      first = await events.next()
+    } catch (err) {
+      const upstream = err instanceof Anthropic.APIError ? err : null
+      console.error(JSON.stringify({
+        event: 'chat_upstream_error',
+        ts: new Date().toISOString(),
+        accessPath: isAdmin ? 'admin' : apiKey ? 'byok' : 'free',
+        status: upstream?.status ?? null,
+        message: upstream?.message ?? String(err),
+      }))
+      // A BYOK caller is told what Anthropic said about their own key; the
+      // shared key's account details stay private.
+      if (apiKey && upstream?.status && upstream.status < 500) {
+        const said = (upstream.error as { error?: { message?: string } } | undefined)?.error?.message
+        return NextResponse.json({ error: 'upstream_rejected', message: said ?? upstream.message }, { status: upstream.status })
+      }
+      return NextResponse.json({ error: 'upstream_unavailable', message: 'Cosmo could not start a reply. Please try again.' }, { status: 502 })
+    }
+
     const readable = new ReadableStream({
       async start(controller) {
+        let failed = false
         try {
-          for await (const event of stream) {
+          for (let next = first; !next.done; next = await events.next()) {
+            const event = next.value
             if (
               event.type === 'content_block_delta' &&
               event.delta.type === 'text_delta'
@@ -955,9 +985,11 @@ export async function POST(req: NextRequest) {
             }
           }).catch(() => {})
         } catch (err) {
+          failed = true
           controller.error(err)
         } finally {
-          controller.close()
+          // Closing an errored stream throws; only close a clean one.
+          if (!failed) controller.close()
         }
       },
       cancel() {
