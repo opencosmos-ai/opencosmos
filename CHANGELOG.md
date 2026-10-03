@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-02
 
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
@@ -34,6 +34,13 @@ All notable changes to this project will be documented in this file.
 **The test for whether something belongs here rather than in a sub-project's changelog: would someone not working on that sub-project need to know?** If yes, a sentence here with a link. If no, it stays there.
 
 ---
+
+## 2026-10-02 — Cosmo runs on Sonnet 5.5
+
+Shalom's call: every Cosmo surface that ran on Sonnet 5 (`/dialog`, admin and creative sessions, Xensō on the web and in the iOS app, which reach Cosmo through `/api/chat`) now runs on Claude Sonnet 5.5, at the same price. One line in [`lib/ai-models.ts`](lib/ai-models.ts) covers all of them; `/inception` stays on Haiku 4.5.
+
+- **Declines fall back instead of going silent.** Sonnet 5.5 declines in more safety categories than Sonnet 5. The chat route opts into server-side fallback (`fallbacks: "default"`): a cyber or frontier-LLM decline is re-run on Sonnet 5, so the person still gets an answer. A decline that has no fallback streams nothing, so it is now logged as `chat_refusal` with its category.
+- **Nothing else in the request changes.** The route sends no `thinking` setting, no sampling parameters, and no forced `tool_choice`, the settings Sonnet 5.5 rejects, so the switch needs no other edits. Longer notes Cosmo writes between tool calls now arrive as hidden progress updates rather than text, so they no longer reach the person.
 
 ## 2026-09-25 — Xensō goes native; its folders consolidate to two
 

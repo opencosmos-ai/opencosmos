@@ -941,7 +941,13 @@ export async function POST(req: NextRequest) {
       // Server-side web fetch so Cosmo can actually open a link someone shares,
       // rather than confabulating its contents (see kaizen/feedback 2026-06-17).
       tools: [WEB_FETCH_TOOL],
-      betas: ['web-fetch-2025-09-10', 'extended-cache-ttl-2025-04-11'],
+      betas: ['web-fetch-2025-09-10', 'extended-cache-ttl-2025-04-11', 'server-side-fallback-2026-07-01'],
+      // Sonnet 5.5 declines in more safety categories than Sonnet 5. With
+      // "default", a declined request is re-run server-side on the model
+      // Anthropic recommends for that category (cyber and frontier_llm go to
+      // Sonnet 5), instead of the person getting an empty reply. Untyped in
+      // SDK 0.68, hence the spread.
+      ...({ fallbacks: 'default' } as Record<string, unknown>),
     })
 
     // Wait for Anthropic's first event before answering. Until it arrives, a
@@ -992,6 +998,17 @@ export async function POST(req: NextRequest) {
             // the trailing xenso-state block mid-JSON, and on the client that is
             // indistinguishable from a turn that legitimately emitted no state.
             // Logging it here is the only way that failure is ever visible.
+            // A decline the fallback didn't take (bio, reasoning_extraction,
+            // general_harms) streams no text: log it, or it looks like silence.
+            if (msg.stop_reason === 'refusal') {
+              const details = (msg as { stop_details?: { category?: string | null } }).stop_details
+              console.log(JSON.stringify({
+                event: 'chat_refusal',
+                ts: new Date().toISOString(),
+                xensoMode: Boolean(xensoMode),
+                category: details?.category ?? null,
+              }))
+            }
             if (msg.stop_reason === 'max_tokens') {
               console.log(JSON.stringify({
                 event: 'chat_truncated',
