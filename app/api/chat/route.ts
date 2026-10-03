@@ -47,7 +47,7 @@ export const FREE_TOKEN_BUDGET = 100_000
 // 7-day session budget, not a per-conversation one. At the general ceiling a
 // first-time player gets roughly a dozen turns for the entire week and then
 // meets the bring-your-own-key dock, which is exactly the paywall between a
-// stuck person and the Catch that the design forbids.
+// stuck person and the invitation that the design forbids.
 //
 // The bigger win is not this number but history caching below: cached reads do
 // not count here at all, so the two together move a session from "cut off
@@ -718,7 +718,7 @@ export async function POST(req: NextRequest) {
     // inspiration, which is lovely on /dialog and is the precise opposite of
     // what Xensō asks: the player leads, always, and Cosmo is mirror and light,
     // never author. With it loaded, an open prompt like "where do we start?"
-    // produced a riff about records spinning instead of the Catch — the module
+    // produced a riff about records spinning instead of the invitation — the module
     // was not being ignored, it was being outvoted by a later, louder block.
     // In Xensō, Shalom is a player, not a collaborator.
     if (isAdmin && !xensoMode && SHALOM_CONTEXT.trim()) {
