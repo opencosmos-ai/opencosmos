@@ -994,7 +994,13 @@ export async function POST(req: NextRequest) {
         // again. Changing tool_choice invalidates the messages cache for that
         // one request, which is why it is not sent otherwise.
         ...(forceAnswer ? { tool_choice: { type: 'none' as const } } : {}),
-        betas: ['web-fetch-2025-09-10', 'extended-cache-ttl-2025-04-11'],
+        betas: ['web-fetch-2025-09-10', 'extended-cache-ttl-2025-04-11', 'server-side-fallback-2026-07-01'],
+        // Sonnet 5.5 declines in more safety categories than Sonnet 5. With
+        // "default", a declined request is re-run server-side on the model
+        // Anthropic recommends for that category (cyber and frontier_llm go to
+        // Sonnet 5), instead of the person getting an empty reply. Every round
+        // of a search turn carries it. Untyped in SDK 0.68, hence the spread.
+        ...({ fallbacks: 'default' } as Record<string, unknown>),
       })
 
     let turnMessages: Anthropic.Beta.Messages.BetaMessageParam[] = cachedMessages
@@ -1090,6 +1096,18 @@ export async function POST(req: NextRequest) {
                 ts: new Date().toISOString(),
                 xensoMode: Boolean(xensoMode),
                 outputTokens: msg.usage.output_tokens,
+                round: rounds,
+              }))
+            }
+            // A decline the fallback didn't take (bio, reasoning_extraction,
+            // general_harms) streams no text: log it, or it looks like silence.
+            if (msg.stop_reason === 'refusal') {
+              const details = (msg as { stop_details?: { category?: string | null } }).stop_details
+              console.log(JSON.stringify({
+                event: 'chat_refusal',
+                ts: new Date().toISOString(),
+                xensoMode: Boolean(xensoMode),
+                category: details?.category ?? null,
                 round: rounds,
               }))
             }

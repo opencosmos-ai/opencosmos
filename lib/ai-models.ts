@@ -4,13 +4,13 @@
 // reads and edits.
 //
 // Model family reference (bare aliases, no date suffixes, per this repo's
-// convention): claude-opus-4-8, claude-sonnet-5, claude-haiku-4-5, claude-fable-5.
+// convention): claude-opus-5-5, claude-sonnet-5-5, claude-haiku-4-5, claude-fable-5-1.
 
 /**
  * `/dialog` — general-audience sessions (free tier, subscribers, BYOK).
  * Highest volume surface — cost-sensitive by default.
  */
-export const MODEL_GENERAL = 'claude-sonnet-5'
+export const MODEL_GENERAL = 'claude-sonnet-5-5'
 
 /**
  * `/dialog` — Shalom's admin sessions (identified via ADMIN_EMAIL), including
@@ -19,9 +19,10 @@ export const MODEL_GENERAL = 'claude-sonnet-5'
  *
  * History: Fable 5 → Opus 4.8 (Fable cost ~2x a full evening's Sonnet 4.6
  * usage per prompt with no perceptible quality gain) → Sonnet 5 (Opus 4.8's
- * cost premium over Sonnet 5 wasn't worth it either).
+ * cost premium over Sonnet 5 wasn't worth it either) → Sonnet 5.5 (same
+ * price as Sonnet 5; Shalom's call, 2026-10-02).
  */
-export const MODEL_ADMIN = 'claude-sonnet-5'
+export const MODEL_ADMIN = 'claude-sonnet-5-5'
 
 /**
  * `/inception` — the personal-agent-brief interview flow (chat + synthesize
