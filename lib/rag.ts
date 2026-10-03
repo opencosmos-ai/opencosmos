@@ -3,6 +3,7 @@
  *
  * Queries Upstash Vector for semantically relevant knowledge chunks.
  * Called by the /api/knowledge endpoint and injected into the Cosmo chat flow.
+ * searchLibrary() is the deliberate, tool-driven counterpart used by Xensō.
  *
  * Design contract:
  * - Always returns a RagResult (never throws)
@@ -237,6 +238,37 @@ function isSelfReferentialLearningQuery(query: string): boolean {
 }
 
 const KAIZEN_BOOST_TOPK = 3
+
+// ─── Deliberate library search ────────────────────────────────────────────────
+
+export const LIBRARY_SEARCH_DEFAULT_TOPK = 4
+export const LIBRARY_SEARCH_MAX_TOPK = 8
+const LIBRARY_QUERY_MAX_CHARS = 500
+
+/**
+ * One deliberate search of the OpenCosmos Library, for a query Cosmo wrote
+ * itself (the Xensō `search_library` tool) rather than the player's raw turn.
+ *
+ * Unlike fetchRagContext there is no history blending — the model already
+ * distilled the conversation into the query — and Cosmo's own kaizen entries
+ * are dropped: this is the library, not its learning log. They are filtered
+ * client-side rather than with an Upstash `role != 'kaizen'` filter because
+ * corpus vectors carry no `role` at all, and how a negated filter treats a
+ * missing field is not something to bet retrieval on. Over-fetching by the
+ * kaizen boost size keeps the result count whole when a few are dropped.
+ *
+ * Errors propagate (missing env, Upstash down); the caller fails soft.
+ */
+export async function searchLibrary(
+  query: string,
+  topK: number = LIBRARY_SEARCH_DEFAULT_TOPK,
+): Promise<RagChunk[]> {
+  const q = query.trim().slice(0, LIBRARY_QUERY_MAX_CHARS)
+  if (!q) return []
+  const k = Math.min(Math.max(Math.round(topK) || LIBRARY_SEARCH_DEFAULT_TOPK, 1), LIBRARY_SEARCH_MAX_TOPK)
+  const chunks = await queryChunks(q, k + KAIZEN_BOOST_TOPK)
+  return chunks.filter(c => c.role !== 'kaizen').slice(0, k)
+}
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 

@@ -11,6 +11,13 @@ import { getDoc, slugFromDocPath, extractSection } from '@/lib/knowledge'
 import { getQuoteBucket } from '@/lib/quotes'
 import { quoteBucketFromDocPath } from '@/lib/corpus-href'
 import { MODEL_GENERAL, MODEL_ADMIN } from '@/lib/ai-models'
+import {
+  LIBRARY_TOOL,
+  LIBRARY_TOOL_GUIDANCE,
+  LIBRARY_TOOL_NAME,
+  MAX_LIBRARY_SEARCHES_PER_TURN,
+  runLibrarySearch,
+} from '@/lib/library-tool'
 
 const SYSTEM_PROMPT = process.env.COSMO_SYSTEM_PROMPT!
 const WIKI_INDEX = process.env.COSMO_WIKI_INDEX ?? ''
@@ -137,6 +144,26 @@ const WEB_FETCH_TOOL = {
   max_uses: 3,
   max_content_tokens: 10_000,
 }
+
+// Tool lists, built once at module scope so each is byte-identical across
+// requests — the tools array is the very start of the cached prefix (render
+// order is tools → system → messages), so any change to it invalidates every
+// system breakpoint after it.
+//
+// /dialog keeps exactly the list it always had, so its warm cache is untouched.
+// Xensō adds search_library, which gives xenso a prefix of its own from the
+// first byte: it no longer reads /dialog's warm static-system entry and instead
+// writes and reads its own copy (1h TTL, shared by every xenso player). The cost
+// is one extra cache write of the static prefix per hour of xenso traffic —
+// small next to /dialog's volume, and the price of not touching /dialog's
+// prefix. WEB_FETCH_TOOL stays first so the shared part of the list is a prefix.
+const DIALOG_TOOLS: Anthropic.Beta.Messages.BetaToolUnion[] = [WEB_FETCH_TOOL]
+const XENSO_TOOLS: Anthropic.Beta.Messages.BetaToolUnion[] = [WEB_FETCH_TOOL, LIBRARY_TOOL]
+
+// Ceiling on API requests per player turn: one opening request, one
+// continuation per answered library search, and slack for pause_turn
+// continuations from server-side web_fetch.
+const MAX_ROUNDS_PER_TURN = MAX_LIBRARY_SEARCHES_PER_TURN + 3
 
 // Default client uses server-side ANTHROPIC_API_KEY (shared free-tier key)
 const defaultClient = new Anthropic()
@@ -570,8 +597,9 @@ export async function POST(req: NextRequest) {
     // moment of relevance, never a list — and it would drop Tao Te Ching passages
     // into a conversation about someone's mother. Cosmo still knows the corpus's
     // shape from the wiki index in the static prefix, and the Knowledge Retrieval
-    // block already handles the no-passages case. Deliberate retrieval returns
-    // later as a tool the module can call when a resource is actually called for.
+    // block already handles the no-passages case. Deliberate retrieval is the
+    // search_library tool instead (lib/library-tool.ts), offered only in xenso
+    // mode and run inside the stream loop below when a resource is called for.
     const ragPromise: Promise<RagResult> = lastUserText && !xensoMode
       ? fetchRagContext(lastUserText, messages.slice(-6), undefined, doc_changed).catch((err) => {
           console.error('[rag] fetchRagContext failed:', err?.message ?? err)
@@ -882,11 +910,21 @@ export async function POST(req: NextRequest) {
     // a breakpoint to build a "xenso variant" would mutate the blocks /dialog is
     // still using and break its caching for the life of the serverless instance —
     // a ~10x input-cost regression on the highest-volume surface, silently. The
-    // caching forgone is worth ~$0.15 per 20-turn session; the shared prefix is
+    // caching forgone is worth ~$0.15 per 20-turn session; the static prefix is
     // still read in full (cacheRead stays at its usual figure), because appending
     // after the last static block leaves that prefix byte-identical.
+    //
+    // Since search_library, xenso's tools array differs from /dialog's (see
+    // XENSO_TOOLS), so "the static prefix" here is xenso's own cached copy, not
+    // /dialog's warm entry. Same reasoning, separate entry.
     if (xensoMode && XENSO_MODULE.trim()) {
       systemContent.push({ type: 'text' as const, text: XENSO_MODULE })
+    }
+    // How to use search_library. Static text, no cache_control, so it adds no
+    // breakpoint; it sits after the module it serves and before the volatile
+    // treasury. Only present when the tool is (xenso mode).
+    if (xensoMode) {
+      systemContent.push({ type: 'text' as const, text: LIBRARY_TOOL_GUIDANCE })
     }
 
     // The player's treasury goes last: it is the most volatile block in the stack,
@@ -930,19 +968,37 @@ export async function POST(req: NextRequest) {
       : xensoMode ? withHistoryCaching(messages, '1h')
       : messages
 
-    const stream = client.beta.messages.stream({
-      model: isAdmin ? MODEL_ADMIN : MODEL_GENERAL,
-      // Per-response output cap. 1024 was truncating Cosmo mid-thought on long
-      // dialogues. 8192 ≈ ~6k words — comfortably above the longest considered
-      // responses we've observed, still well under the model's hard limit.
-      max_tokens: 8192,
-      system: systemContent,
-      messages: cachedMessages,
-      // Server-side web fetch so Cosmo can actually open a link someone shares,
-      // rather than confabulating its contents (see kaizen/feedback 2026-06-17).
-      tools: [WEB_FETCH_TOOL],
-      betas: ['web-fetch-2025-09-10', 'extended-cache-ttl-2025-04-11'],
-    })
+    // Every request this turn shares one shape; only `messages` (and, on a
+    // capped final round, tool_choice) varies. Nothing here adds a cache
+    // breakpoint: continuation rounds append the assistant's tool_use turn and
+    // our tool_result after the history breakpoint, so they read the same
+    // cached prefix the opening request wrote and pay plain input for the tail.
+    const tools = xensoMode ? XENSO_TOOLS : DIALOG_TOOLS
+    const openStream = (
+      turnMessages: Anthropic.Beta.Messages.BetaMessageParam[],
+      forceAnswer = false,
+    ) =>
+      client.beta.messages.stream({
+        model: isAdmin ? MODEL_ADMIN : MODEL_GENERAL,
+        // Per-response output cap. 1024 was truncating Cosmo mid-thought on long
+        // dialogues. 8192 ≈ ~6k words — comfortably above the longest considered
+        // responses we've observed, still well under the model's hard limit.
+        max_tokens: 8192,
+        system: systemContent,
+        messages: turnMessages,
+        // Server-side web fetch so Cosmo can actually open a link someone shares,
+        // rather than confabulating its contents (see kaizen/feedback 2026-06-17).
+        // Xensō also gets search_library — see XENSO_TOOLS.
+        tools,
+        // Only on the last round we will pay for: Cosmo must answer, not search
+        // again. Changing tool_choice invalidates the messages cache for that
+        // one request, which is why it is not sent otherwise.
+        ...(forceAnswer ? { tool_choice: { type: 'none' as const } } : {}),
+        betas: ['web-fetch-2025-09-10', 'extended-cache-ttl-2025-04-11'],
+      })
+
+    let turnMessages: Anthropic.Beta.Messages.BetaMessageParam[] = cachedMessages
+    let stream = openStream(turnMessages)
 
     // Wait for Anthropic's first event before answering. Until it arrives, a
     // rejected request (bad or unfunded BYOK key, a tool the key's workspace
@@ -950,7 +1006,11 @@ export async function POST(req: NextRequest) {
     // a status and a reason. Once the stream below has started, an error has
     // nowhere to go: Next.js turns it into a bare HTML 500, which is all the
     // iOS app ever saw of a rejected key.
-    const events = stream[Symbol.asyncIterator]()
+    //
+    // Only the opening request gets this. Continuation requests (after a
+    // library search or a pause_turn) start after text may already have
+    // reached the client, so their errors take the in-stream path below.
+    let events = stream[Symbol.asyncIterator]()
     let first: Awaited<ReturnType<typeof events.next>>
     try {
       first = await events.next()
@@ -972,65 +1032,151 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'upstream_unavailable', message: 'Cosmo could not start a reply. Please try again.' }, { status: 502 })
     }
 
+    let cancelled = false
+
     const readable = new ReadableStream({
       async start(controller) {
         let failed = false
+        const encoder = new TextEncoder()
+        // Usage summed across every request this turn: a turn with two library
+        // searches is three billed requests, and the free-tier budget and the
+        // chat_usage log must both see all three.
+        const usage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }
+        let rounds = 0
+        let searches = 0
+        let truncated = false
+        // Text from successive rounds is one reply to the client. A round that
+        // follows a tool_result is a new assistant message, so if the previous
+        // text ended mid-line, a paragraph break keeps "…sit with.Here" from
+        // fusing. A pause_turn continuation resumes the same message: no break.
+        let lastChar = ''
+        let needsBreak = false
         try {
-          for (let next = first; !next.done; next = await events.next()) {
-            const event = next.value
-            if (
-              event.type === 'content_block_delta' &&
-              event.delta.type === 'text_delta'
-            ) {
-              controller.enqueue(new TextEncoder().encode(event.delta.text))
+          let next = first
+          for (;;) {
+            for (; !next.done; next = await events.next()) {
+              const event = next.value
+              if (
+                event.type === 'content_block_delta' &&
+                event.delta.type === 'text_delta'
+              ) {
+                let text = event.delta.text
+                if (!text) continue
+                if (needsBreak && lastChar && !/\s/.test(lastChar) && !/^\s/.test(text)) {
+                  text = '\n\n' + text
+                }
+                needsBreak = false
+                lastChar = text.slice(-1)
+                controller.enqueue(encoder.encode(text))
+              }
             }
-          }
-          // Track token usage after stream completes. Fire-and-forget — never blocks the response.
-          stream.finalMessage().then((msg) => {
+
+            const msg = await stream.finalMessage()
+            rounds++
+            usage.input += msg.usage.input_tokens
+            usage.output += msg.usage.output_tokens
+            usage.cacheRead += msg.usage.cache_read_input_tokens ?? 0
+            usage.cacheWrite += msg.usage.cache_creation_input_tokens ?? 0
+
             // Only text_delta events reach the client, so stop_reason is otherwise
             // discarded. It matters for Xensō: a reply truncated at max_tokens cuts
             // the trailing xenso-state block mid-JSON, and on the client that is
             // indistinguishable from a turn that legitimately emitted no state.
             // Logging it here is the only way that failure is ever visible.
             if (msg.stop_reason === 'max_tokens') {
+              truncated = true
               console.log(JSON.stringify({
                 event: 'chat_truncated',
                 ts: new Date().toISOString(),
                 xensoMode: Boolean(xensoMode),
                 outputTokens: msg.usage.output_tokens,
+                round: rounds,
               }))
             }
-            // Cache accounting. The whole argument for appending the Xensō module
-            // after the static prefix rather than inside it is that a xenso request
-            // still READS /dialog's warm entry and only writes its own tail — but
-            // nothing surfaced the numbers to check that, or to notice the day a
+
+            if (cancelled || rounds >= MAX_ROUNDS_PER_TURN) break
+            const forceAnswer = rounds === MAX_ROUNDS_PER_TURN - 1
+
+            if (msg.stop_reason === 'pause_turn') {
+              // A long server-side web_fetch turn paused. Send the paused turn
+              // back as-is and the API resumes it. Before this loop existed the
+              // reply simply ended here, silently short.
+              turnMessages = [...turnMessages, { role: 'assistant', content: msg.content }]
+            } else if (msg.stop_reason === 'tool_use') {
+              const toolUses = msg.content.filter(
+                (b): b is Anthropic.Beta.Messages.BetaToolUseBlock => b.type === 'tool_use',
+              )
+              if (toolUses.length === 0) break
+              // Every tool_use gets a tool_result in one user message, or the
+              // next request is rejected. Searches past the per-turn cap, and
+              // any tool we don't run, are answered with an error instead.
+              const results = await Promise.all(toolUses.map(async (tu) => {
+                if (tu.name !== LIBRARY_TOOL_NAME || !xensoMode) {
+                  return { type: 'tool_result' as const, tool_use_id: tu.id, is_error: true, content: `Unknown tool: ${tu.name}` }
+                }
+                if (searches >= MAX_LIBRARY_SEARCHES_PER_TURN) {
+                  return { type: 'tool_result' as const, tool_use_id: tu.id, is_error: true, content: 'Search limit for this turn reached. Answer now from what you already have.' }
+                }
+                searches++
+                const { result, log } = await runLibrarySearch(tu)
+                console.log(JSON.stringify({ event: 'library_search', ts: new Date().toISOString(), ...log }))
+                return result
+              }))
+              turnMessages = [
+                ...turnMessages,
+                { role: 'assistant', content: msg.content },
+                { role: 'user', content: results },
+              ]
+              needsBreak = true
+            } else {
+              break // end_turn, max_tokens, refusal, stop_sequence: the reply is done
+            }
+
+            if (cancelled) break
+            stream = openStream(turnMessages, forceAnswer || searches >= MAX_LIBRARY_SEARCHES_PER_TURN)
+            events = stream[Symbol.asyncIterator]()
+            next = await events.next()
+          }
+        } catch (err) {
+          failed = true
+          console.error(JSON.stringify({
+            event: 'chat_stream_error',
+            ts: new Date().toISOString(),
+            round: rounds + 1,
+            status: err instanceof Anthropic.APIError ? err.status ?? null : null,
+            message: err instanceof Error ? err.message : String(err),
+          }))
+          controller.error(err)
+        } finally {
+          // Usage is counted whether or not the turn finished cleanly: tokens
+          // already billed for completed rounds are real spend either way.
+          // Fire-and-forget — never blocks the response.
+          if (rounds > 0) {
+            // Cache accounting. Surfaces whether xenso still reads its cached
+            // static prefix and only writes its own tail — and the day a
             // reordering silently turns every request into a full rewrite.
             console.log(JSON.stringify({
               event: 'chat_usage',
               ts: new Date().toISOString(),
               mode: xensoMode ? 'xenso' : creativeMode ? 'creative' : 'dialog',
-              cacheRead: msg.usage.cache_read_input_tokens ?? 0,
-              cacheWrite: msg.usage.cache_creation_input_tokens ?? 0,
-              input: msg.usage.input_tokens,
-              output: msg.usage.output_tokens,
+              cacheRead: usage.cacheRead,
+              cacheWrite: usage.cacheWrite,
+              input: usage.input,
+              output: usage.output,
+              rounds,
+              librarySearches: searches,
+              truncated,
             }))
             if (freeTierSessionId) {
-              incrementFreeTokens(
-                freeTierSessionId,
-                msg.usage.input_tokens,
-                msg.usage.output_tokens,
-              ).catch(() => {})
+              incrementFreeTokens(freeTierSessionId, usage.input, usage.output).catch(() => {})
             }
-          }).catch(() => {})
-        } catch (err) {
-          failed = true
-          controller.error(err)
-        } finally {
+          }
           // Closing an errored stream throws; only close a clean one.
           if (!failed) controller.close()
         }
       },
       cancel() {
+        cancelled = true
         stream.abort()
       },
     })
