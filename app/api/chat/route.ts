@@ -11,6 +11,7 @@ import { getDoc, slugFromDocPath, extractSection } from '@/lib/knowledge'
 import { getQuoteBucket } from '@/lib/quotes'
 import { quoteBucketFromDocPath } from '@/lib/corpus-href'
 import { MODEL_GENERAL, MODEL_ADMIN } from '@/lib/ai-models'
+import { formatQuestCanvas, type QuestCanvas } from '@/lib/quest-canvas'
 import {
   LIBRARY_TOOL,
   LIBRARY_TOOL_GUIDANCE,
@@ -452,6 +453,9 @@ type XensoContext = {
   }>
   // Offered voice logs about anything other than a cast.
   voiceLogs?: Array<{ date: string; about: string; transcript: string }>
+  // From the iOS quest builder: the canvas open now, things by key and the
+  // connections between them (lib/quest-canvas.ts).
+  questCanvas?: QuestCanvas
 }
 
 /**
@@ -496,6 +500,13 @@ function formatLocalTime(clientZone: string | undefined, headerZone: string | nu
 // Render the player's context as a system block. Caps are defensive: this is
 // client-supplied and lands in the prompt, so it is bounded here rather than trusted.
 function formatXensoContext(ctx: XensoContext): string | null {
+  const canvas = formatQuestCanvas(ctx.questCanvas)
+  const treasury = formatTreasury(ctx)
+  if (!canvas && !treasury) return null
+  return [treasury, canvas].filter(Boolean).join('\n\n')
+}
+
+function formatTreasury(ctx: XensoContext): string | null {
   const gems = (ctx.gems ?? []).slice(0, 60)
   const quests = (ctx.openQuests ?? []).slice(0, 20)
   const keeps = (ctx.keeps ?? []).slice(0, 40)

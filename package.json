@@ -10,7 +10,8 @@
     "content": "node scripts/fetch-content.mjs",
     "adr:index": "tsx scripts/adr-index.ts",
     "xenso:check-iching": "tsx scripts/iching-check.ts",
-    "xenso:check-library": "tsx scripts/library-tool-check.ts"
+    "xenso:check-library": "tsx scripts/library-tool-check.ts",
+    "xenso:check-canvas": "tsx scripts/quest-canvas-check.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
