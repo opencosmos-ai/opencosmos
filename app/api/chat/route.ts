@@ -456,6 +456,10 @@ type XensoContext = {
   // From the iOS quest builder: the canvas open now, things by key and the
   // connections between them (lib/quest-canvas.ts).
   questCanvas?: QuestCanvas
+  // From the iOS app: the one thing the player has open as they speak (a
+  // quest, a cast, or a gem), which the app shows them Cosmo can see. Absent
+  // when nothing is open, or when they've taken it away from Cosmo.
+  focus?: { kind: string; title: string; detail?: string | null }
 }
 
 /**
@@ -502,8 +506,28 @@ function formatLocalTime(clientZone: string | undefined, headerZone: string | nu
 function formatXensoContext(ctx: XensoContext): string | null {
   const canvas = formatQuestCanvas(ctx.questCanvas)
   const treasury = formatTreasury(ctx)
-  if (!canvas && !treasury) return null
-  return [treasury, canvas].filter(Boolean).join('\n\n')
+  const focus = formatFocus(ctx.focus)
+  if (!canvas && !treasury && !focus) return null
+  return [treasury, focus, canvas].filter(Boolean).join('\n\n')
+}
+
+// The one thing the player has open. One Cosmo follows them across the app
+// in a single session, so this is how Cosmo knows a turn is about the cast
+// they're reading rather than the quest they spoke of earlier. The player
+// can see that Cosmo sees it; it is context, never a prompt to speak of it.
+const FOCUS_KINDS: Record<string, string> = { quest: 'a quest', cast: 'an I Ching cast', gem: 'a gem' }
+
+function formatFocus(focus: XensoContext['focus']): string | null {
+  if (!focus || typeof focus.title !== 'string' || !focus.title.trim()) return null
+  const kind = FOCUS_KINDS[String(focus.kind)] ?? 'something'
+  const clip = (s: unknown, n: number) => String(s ?? '').slice(0, n)
+  const parts = [
+    `# What they have open\n\nAs they speak, they have ${kind} open: **${clip(focus.title, 200)}**. ` +
+      'They can see that you see it. Take it as what "this" and "here" refer to, unless they say otherwise; ' +
+      'do not remark on it or bring it up unprompted.',
+  ]
+  if (focus.detail) parts.push(clip(focus.detail, 6000))
+  return parts.join('\n\n')
 }
 
 function formatTreasury(ctx: XensoContext): string | null {
