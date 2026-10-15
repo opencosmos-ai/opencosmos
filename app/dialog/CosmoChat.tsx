@@ -177,7 +177,7 @@ export function CosmoChat() {
         bottomItems={[
           { icon: <MessageSquare className="w-4 h-4" />, label: 'Dialog',    href: '/dialog',                                           active: true },
           { icon: <BookOpen     className="w-4 h-4" />, label: 'Library', href: '/library' },
-          { icon: <ExternalLink className="w-4 h-4" />, label: 'Studio',    href: 'https://studio.opencosmos.ai/docs/getting-started', external: true },
+          { icon: <ExternalLink className="w-4 h-4" />, label: 'Toolkit',   href: 'https://studio.opencosmos.ai/docs/getting-started', external: true },
           { icon: <Sparkles     className="w-4 h-4" />, label: 'Inception', href: '/inception' },
           { icon: <CircleDashed className="w-4 h-4" />, label: 'Xensō',     href: '/xenso' },
         ]}
@@ -200,7 +200,7 @@ export function CosmoChat() {
           navLinks={[
             { label: 'Dialog',    href: '/dialog' },
             { label: 'Library', href: '/library' },
-            { label: 'Studio',    href: 'https://studio.opencosmos.ai/docs/getting-started' },
+            { label: 'Toolkit',   href: 'https://studio.opencosmos.ai/docs/getting-started' },
             { label: 'Inception', href: '/inception' },
             { label: 'Xensō',     href: '/xenso' },
           ]}

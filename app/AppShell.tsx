@@ -44,7 +44,7 @@ export function AppShell({
           },
           {
             icon: <ExternalLink className="w-4 h-4" />,
-            label: 'Studio',
+            label: 'Toolkit',
             href: 'https://studio.opencosmos.ai/docs/getting-started',
             external: true,
           },
