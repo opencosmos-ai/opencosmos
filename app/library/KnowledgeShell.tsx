@@ -30,7 +30,7 @@ import { SidebarFooterContent } from '../dialog/SidebarFooterContent'
 const NAV_LINKS: HeaderNavLink[] = [
   { label: 'Dialog',    href: '/dialog' },
   { label: 'Library', href: '/library' },
-  { label: 'Studio',    href: 'https://studio.opencosmos.ai/docs/getting-started' },
+  { label: 'Toolkit',   href: 'https://studio.opencosmos.ai/docs/getting-started' },
   { label: 'Inception', href: '/inception' },
   { label: 'Xensō',     href: '/xenso' },
 ]
@@ -336,9 +336,10 @@ export function KnowledgeShell({ children }: { children: React.ReactNode }) {
         href={KNOWLEDGE_REPO_URL}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="GitHub (opens in a new tab)"
       >
         <GitHubIcon className="w-4 h-4" />
-        <span className="hidden sm:inline!">Star on GitHub</span>
+        <span className="hidden sm:inline!">GitHub</span>
       </a>
     </Button>
   )

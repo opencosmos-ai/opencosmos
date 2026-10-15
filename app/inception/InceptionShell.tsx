@@ -25,7 +25,7 @@ import { type Path } from '@/lib/inception/schema'
 const NAV_LINKS: HeaderNavLink[] = [
   { label: 'Dialog',    href: '/dialog' },
   { label: 'Library', href: '/library' },
-  { label: 'Studio',    href: 'https://studio.opencosmos.ai/docs/getting-started' },
+  { label: 'Toolkit',   href: 'https://studio.opencosmos.ai/docs/getting-started' },
   { label: 'Inception', href: '/inception' },
   { label: 'Xensō',     href: '/xenso' },
 ]
@@ -286,9 +286,14 @@ export function InceptionShell({ children }: { children: React.ReactNode }) {
 
   const headerActions = (
     <Button variant="outline" size="sm" asChild className="gap-2">
-      <a href="https://github.com/opencosmos-ai/opencosmos" target="_blank" rel="noopener noreferrer">
+      <a
+        href="https://github.com/opencosmos-ai/opencosmos"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="GitHub (opens in a new tab)"
+      >
         <GitHubIcon className="w-4 h-4" />
-        <span className="hidden sm:inline!">Star on GitHub</span>
+        <span className="hidden sm:inline!">GitHub</span>
       </a>
     </Button>
   )

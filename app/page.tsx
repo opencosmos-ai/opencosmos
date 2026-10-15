@@ -20,7 +20,7 @@ export default function Home() {
           navLinks={[
             { label: 'Dialog', href: '/dialog' },
             { label: 'Library', href: '/library' },
-            { label: 'Studio', href: 'https://studio.opencosmos.ai/docs/getting-started' },
+            { label: 'Toolkit', href: 'https://studio.opencosmos.ai/docs/getting-started' },
             { label: 'Inception', href: '/inception' },
             { label: 'Xensō', href: '/xenso' },
           ]}
