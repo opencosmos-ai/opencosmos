@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-10-02
+**Last updated:** 2026-10-15
 
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
@@ -35,7 +35,14 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## 2026-10-02 — Cosmo runs on Sonnet 5.5
+## 2026-10-15 — The Tao Te Ching's place in the Library is decided
+
+The Library's Tao Te Ching is Gia-Fu Feng and Jane English's 1972 translation, which is in copyright and labelled `public-domain`. [ADR 0020](docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md) records how the Open Tao Te Ching replaces it. Decided, not yet built:
+
+- **A chapter to a page** at `/library/sources/taoism-tao-te-ching/{1…81}`, built from [taoteching](https://github.com/opencosmos-ai/taoteching)'s export. Each chapter has the same six sections, and its characters open into the [Character Atlas](https://chinese-atlas.opencosmos.ai/).
+- **English and Chinese are linked only where the line alignment is certain.** That's the 61 chapters whose line counts agree; in the other 20 the database's pairing is a guess, and chapter 6 shows it guessing wrong.
+- **The Feng–English text leaves now, replaced in place rather than deleted.** Deleting it would break eight linking documents, two quote edges and every citation Cosmo has stored. Four wiki pages also quote it verbatim and get re-quoted in the same change.
+- **Deferred:** the Chinese voice (still being auditioned), English audio, and Cosmo learning the glossary.
 
 Shalom's call: every Cosmo surface that ran on Sonnet 5 (`/dialog`, admin and creative sessions, Xensō on the web and in the iOS app, which reach Cosmo through `/api/chat`) now runs on Claude Sonnet 5.5, at the same price. One line in [`lib/ai-models.ts`](lib/ai-models.ts) covers all of them; `/inception` stays on Haiku 4.5.
 
