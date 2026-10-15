@@ -116,7 +116,7 @@ The fifth, `connections/cosmology-comparison`, quotes chapter 42 as "The Tao gav
 
 **So the file is replaced in place, in two steps.**
 - **Now: a stopgap.**
-  - One knowledge pull request regenerates the file from the taoteching export with a one-off script: the CC0 English, chapter by chapter, under the **same headings** (`## One` … `## Eighty-One`), so every existing link, citation and graph edge still lands where it did.
+  - One knowledge pull request ([knowledge#14](https://github.com/opencosmos-ai/knowledge/pull/14)) regenerates the file with a one-off script from taoteching's chapter files (the export does not yet carry stanzas): the CC0 English, chapter by chapter, under the **same headings** (`## One` … `## Eighty-One`), so every existing link, citation and graph edge still lands where it did.
   - The frontmatter declares CC0 and Shalom Ormsby as translator, and the summary no longer names Feng and English.
   - The same pull request re-quotes the five wiki pages from the Open Tao Te Ching, with chapter numbers. Where a page's own prose echoes the old wording ("heaven and earth", "the ten thousand things"), it follows the quotation, so no Feng–English wording and no unsourced rendering stays in the corpus.
   - Merging it is enough: knowledge's `knowledge-sync` workflow already rebuilds the graph, re-embeds the corpus (removing the Feng chunks from the index) and redeploys the site through its `VERCEL_DEPLOY_HOOK`.
