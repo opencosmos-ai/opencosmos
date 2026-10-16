@@ -59,12 +59,14 @@ export function quoteHrefFromParts(bucket: string, quoteId?: string): string {
 // (ADR 0020). Its citations name the corpus document and a heading anchor, and
 // two generations of headings are in stored conversations:
 //
-//   #one … #eighty-one   the Feng–English file and the stopgap that replaced it
-//                        (`## Twenty-One`, as github-slugger slugs it)
-//   #chapter-1 …         the generated document (`## Chapter 1`)
+//   #one … #eighty-one     the Feng–English file and the stopgap that replaced it
+//                          (`## Twenty-One`, as github-slugger slugs it)
+//   #chapter-1 …           the generated document (`## Chapter 1`)
+//   #notes-on-chapter-1 …  its translator's notes (`### Notes on chapter 1`),
+//                          which land on the chapter page's Notes section
 //
-// Both resolve to the chapter's page; any other anchor resolves to the landing
-// page. PERMANENT: deleting a form breaks every stored citation that uses it.
+// All of them resolve to the chapter's page; any other anchor resolves to the
+// landing page. PERMANENT: deleting a form breaks every stored citation using it.
 
 export const TAO_TE_CHING_DOC = 'knowledge/sources/taoism-tao-te-ching.md'
 export const TAO_TE_CHING_BASE = `${LIBRARY_BASE}/sources/taoism-tao-te-ching`
@@ -101,6 +103,14 @@ export function taoTeChingHref(chapter?: number): string {
   return chapter ? `${TAO_TE_CHING_BASE}/${chapter}` : TAO_TE_CHING_BASE
 }
 
+/** Any citation anchor into the corpus document → where a reader should land. */
+function taoTeChingAnchorHref(anchor: string): string {
+  const notes = /^notes-on-chapter-(\d{1,2})$/.exec(anchor.trim().toLowerCase())
+  const n = notes ? taoTeChingChapterFromAnchor(`chapter-${notes[1]}`) : null
+  if (n) return `${taoTeChingHref(n)}#notes`
+  return taoTeChingHref(taoTeChingChapterFromAnchor(anchor) ?? undefined)
+}
+
 /**
  * `knowledge/sources/x.md#slug` → `/library/sources/x#slug`
  *
@@ -111,7 +121,7 @@ export function taoTeChingHref(chapter?: number): string {
 export function docHref(ref: string): string | null {
   const { path, anchor } = splitAnchor(ref)
   if (!path.startsWith(CORPUS_PREFIX) || path.includes('..')) return null
-  if (path === TAO_TE_CHING_DOC) return taoTeChingHref(taoTeChingChapterFromAnchor(anchor) ?? undefined)
+  if (path === TAO_TE_CHING_DOC) return taoTeChingAnchorHref(anchor)
   const inner = path.replace(/^knowledge\//, '').replace(/\.md$/, '')
   if (inner.split('/').filter(Boolean).length < 2) return null
   return `${LIBRARY_BASE}/${inner}${anchor ? `#${anchor}` : ''}`

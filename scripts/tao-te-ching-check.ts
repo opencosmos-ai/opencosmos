@@ -11,8 +11,8 @@
  * What it guards, in order of what breaking it would cost:
  *
  *   1. Stored citations. Conversations hold `…taoism-tao-te-ching.md#twelve`
- *      (the old headings) and will hold `#chapter-12`. Every one of the 81 word
- *      forms and 81 numeric forms must land on its chapter, through all three
+ *      (the old headings) and will hold `#chapter-12` and `#notes-on-chapter-12`. Every one of the 81 word
+ *      forms, 81 numeric forms and 81 notes forms must land on its chapter, through all three
  *      callers of lib/corpus-href: the chat renderer (docHref), the
  *      constellation (nodeHref) and the landing page's fragment redirect.
  *   2. Discussion titles: `Ch 1` must never collect `Ch 12`.
@@ -61,6 +61,7 @@ for (let n = 1; n <= 81; n++) {
   const want = `${TAO_TE_CHING_BASE}/${n}`
   check(`#${word} → /${n}`, docHref(`${TAO_TE_CHING_DOC}#${word}`) === want, docHref(`${TAO_TE_CHING_DOC}#${word}`))
   check(`#chapter-${n} → /${n}`, docHref(`${TAO_TE_CHING_DOC}#chapter-${n}`) === want)
+  check(`#notes-on-chapter-${n} → /${n}#notes`, docHref(`${TAO_TE_CHING_DOC}#notes-on-chapter-${n}`) === `${want}#notes`)
   // The Feng–English file wrote `## Eighty-one`; slugs are lowercase either way.
   check(`#${word.toUpperCase()} → ${n}`, taoTeChingChapterFromAnchor(word.toUpperCase()) === n)
   const node = nodeHref(`${TAO_TE_CHING_DOC}#${word}`, 'section')
@@ -68,7 +69,7 @@ for (let n = 1; n <= 81; n++) {
 }
 check('81 distinct words', words.size === 81, words.size)
 
-for (const anchor of ['', 'curators-note', 'lao-tsu-and-taoism', 'eighty-two', 'chapter-0', 'chapter-82', 'zero', 'one-hundred']) {
+for (const anchor of ['', 'curators-note', 'curator-s-note', 'intro', 'lao-tsu-and-taoism', 'eighty-two', 'chapter-0', 'chapter-82', 'notes-on-chapter-82', 'zero', 'one-hundred']) {
   const ref = anchor ? `${TAO_TE_CHING_DOC}#${anchor}` : TAO_TE_CHING_DOC
   check(`#${anchor || '(none)'} → the landing page`, docHref(ref) === TAO_TE_CHING_BASE, docHref(ref))
 }

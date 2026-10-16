@@ -47,7 +47,7 @@ All notable changes to this project will be documented in this file.
   - **Notes:** the translator's, set apart from the verse.
   - **Discussion:** open issues and pull requests titled `Ch N —`, from one GitHub call per build, with a link to raise one.
 - **Lines are linked only where the alignment is exact.** That is **32 chapters today, not the 61 ADR 0020 states**: the database has said 32 all along, and in 49 chapters the English and Chinese line counts differ. Elsewhere the page says so and links nothing.
-- **Every old citation still lands.** `lib/corpus-href.ts` maps `#one` … `#eighty-one` and `#chapter-N` on the corpus document to the chapter's page, and anything else to the landing page; the landing page forwards a `#twelve` link the same way. `pnpm check:tao-te-ching` proves all 162 forms through the chat renderer and the constellation, and runs in CI.
+- **Every old citation still lands.** `lib/corpus-href.ts` maps `#one` … `#eighty-one` and `#chapter-N` on the corpus document to the chapter's page, `#notes-on-chapter-N` to its Notes, and anything else to the landing page; the landing page forwards a `#twelve` link the same way. `pnpm check:tao-te-ching` proves every form, for every chapter, through the chat renderer and the constellation, and runs in CI.
 - **"Suggest an edit" opens the chapter's file in taoteching**, not the corpus copy, which is generated and would be overwritten.
 - **Cosmo still knows which chapter you are reading**: the page names its corpus heading, so the chat injects the chapter whole.
 - **`pnpm content` fetches a third source.** `verify` refuses an export without 81 chapters, 798 lines, contract 1, and the reader's keys. Locally only the export is copied, not the 35 MB checkout.

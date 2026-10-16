@@ -39,7 +39,7 @@ jobs:
       # this repo's two previous decision-keeping habits, and an index that lies
       # is worse than none because people stop trusting it.
       # Every citation Cosmo has stored into a conversation points at the Tao Te
-      # Ching by heading (#twelve, #chapter-12). This proves all 162 forms still
+      # Ching by heading (#twelve, #chapter-12, #notes-on-chapter-12). This proves every form still
       # land on their chapter, and runs after the build so the export is there.
       - name: Check the Tao Te Ching reader
         run: pnpm check:tao-te-ching
