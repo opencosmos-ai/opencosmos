@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { Separator } from '@opencosmos/ui'
 import { getDoc } from '@/lib/knowledge'
 import { CATEGORY_LABELS } from '@/lib/knowledge-meta'
 import { TAO_TE_CHING_DOC, taoTeChingHref } from '@/lib/corpus-href'
@@ -19,6 +18,7 @@ import TableOfContents from '../../../[...slug]/TableOfContents'
 import SourceLinks from '../../../../SourceLinks'
 import LibraryBreadcrumb from '../../../../LibraryBreadcrumb'
 import ChapterText from '../_components/ChapterText'
+import TextFooter from '../_components/TextFooter'
 import { ChapterNav, Discussion, Listen, Notes, Terms } from '../_components/Sections'
 import { SECTIONS } from '../_components/styles'
 
@@ -60,10 +60,9 @@ export default async function ChapterPage({ params }: Props) {
   // Cosmo is told the corpus heading for this chapter, so the chat can quote
   // the chapter whole; see corpusHeadingFor.
   const corpus = getDoc(['sources', 'taoism-tao-te-ching'])
-  const { title } = chapter
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-24">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-16">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_224px]! gap-12 items-start">
         <div className="min-w-0" data-doc-content>
           <LibraryBreadcrumb
@@ -75,21 +74,11 @@ export default async function ChapterPage({ params }: Props) {
             ]}
           />
 
-          <h1 className="text-3xl font-light tracking-wide text-foreground mb-3 leading-tight">
+          {/* A number and nothing else: Laozi's chapters had no titles, and
+              Heshang Gong's are not shown (ADR 0021). */}
+          <h1 className="text-3xl font-light tracking-wide text-foreground m-0 leading-tight">
             Chapter {n}
           </h1>
-          {title.zh && (
-            <p className="text-foreground/60 mb-10 flex flex-wrap items-baseline gap-x-2">
-              <span lang="zh-Hant" className="font-han text-lg text-foreground/80">{title.zh}</span>
-              {title.pinyin && <span className="italic">{title.pinyin}</span>}
-              {title.en && <span>· “{title.en}”</span>}
-              <span className="text-xs text-foreground/40 w-full sm:w-auto">
-                — Heshang Gong’s title, from his Han-dynasty commentary, not Laozi’s
-              </span>
-            </p>
-          )}
-
-          <Separator className="mb-2" />
 
           <ChapterText chapter={chapter} />
           <Listen clips={clips} />
@@ -116,6 +105,8 @@ export default async function ChapterPage({ params }: Props) {
           contextHeading={corpusHeadingFor(n, corpus?.content ?? null)}
         />
       </div>
+
+      <TextFooter />
     </div>
   )
 }
