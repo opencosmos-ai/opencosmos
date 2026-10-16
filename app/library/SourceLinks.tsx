@@ -32,12 +32,11 @@ export default function SourceLinks({ docPath, prompt, hrefs: override }: Props)
       aria-label="Improve this text"
       className="mt-12 pt-8 border-t border-foreground/10"
     >
-      <p className="text-xs uppercase tracking-widest text-foreground/30 mb-3">
+      <p className="text-base uppercase tracking-widest text-foreground mb-3">
         This text lives in the commons
       </p>
-      <p className="text-sm text-foreground/50 leading-relaxed mb-5 max-w-prose">
-        {prompt} The source is public, and a correction reaches the Library once
-        it has been reviewed.
+      <p className="text-base text-foreground/70 leading-relaxed mb-5">
+        {prompt} The source is public, and a correction reaches the Library once it has been reviewed.
       </p>
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="outline" size="sm" asChild className="gap-2">
@@ -47,16 +46,13 @@ export default function SourceLinks({ docPath, prompt, hrefs: override }: Props)
             <span className="sr-only"> (opens GitHub in a new tab)</span>
           </a>
         </Button>
-        <a
-          href={hrefs.view}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm text-foreground/50 hover:text-foreground/80 transition-colors"
-        >
-          <GitHubIcon className="w-3.5 h-3.5" aria-hidden="true" />
-          View source
-          <span className="sr-only"> (opens GitHub in a new tab)</span>
-        </a>
+        <Button variant="outline" size="sm" asChild className="gap-2 text-foreground border-foreground/40">
+          <a href={hrefs.view} target="_blank" rel="noopener noreferrer">
+            <GitHubIcon className="w-3.5 h-3.5" aria-hidden="true" />
+            View source
+            <span className="sr-only"> (opens GitHub in a new tab)</span>
+          </a>
+        </Button>
       </div>
     </section>
   )

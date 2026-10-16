@@ -5,7 +5,7 @@ import { Label, Switch, cn } from '@opencosmos/ui'
 import { useMotionPreference } from '@opencosmos/ui/hooks'
 import type { ChapterView } from '@/lib/tao-te-ching'
 import CharacterSheet, { type Selection } from './CharacterSheet'
-import { H2 } from './styles'
+import { DESC, H2 } from './styles'
 
 const PINYIN_KEY = 'opencosmos.tao-te-ching.pinyin'
 const NUMBERS_KEY = 'opencosmos.tao-te-ching.line-numbers'
@@ -49,8 +49,8 @@ const GUTTER = 'w-8 shrink-0 pr-3 text-right text-xs tabular-nums text-foregroun
 /**
  * Translation and Original, together, because they share one piece of state:
  * which line is lit. Focusing or hovering a Chinese line lights the English
- * that renders it, and the reverse — but only in a chapter whose alignment is
- * exact. Elsewhere the pairing is a proportional guess, and a guess is never
+ * that renders it, and the reverse, and selecting an English line scrolls to
+ * its Chinese — but only in a chapter whose alignment is exact. Elsewhere the pairing is a proportional guess, and a guess is never
  * shown as a pairing (ADR 0020 §2).
  */
 export default function ChapterText({ chapter }: { chapter: ChapterView }) {
@@ -76,6 +76,31 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
 
   const link = chapter.exact
   const light = shouldAnimate ? 'transition-colors duration-150' : ''
+  const lit = 'bg-[var(--color-primary)]/30 text-foreground'
+
+  // The Chinese line an English line was just selected to reach. It stays lit
+  // a moment after the scroll, because the scroll moves the English line out
+  // from under the pointer and clears the hover.
+  const [landed, setLanded] = useState<number | null>(null)
+  const landedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => () => {
+    if (landedTimer.current) clearTimeout(landedTimer.current)
+  }, [])
+  const goToLine = useCallback((seq: number) => {
+    const target = document.querySelector(`[data-line="${seq}"]`)
+    if (!target) return
+    target.scrollIntoView({ behavior: shouldAnimate ? 'smooth' : 'auto', block: 'center' })
+    setLanded(seq)
+    if (landedTimer.current) clearTimeout(landedTimer.current)
+    landedTimer.current = setTimeout(() => setLanded(null), 1600)
+  }, [shouldAnimate])
+
+  const lineNumbersToggle = (
+    <div className="flex items-center gap-2">
+      <Label htmlFor="ttc-line-numbers" className="text-sm text-foreground/70">Line numbers</Label>
+      <Switch id="ttc-line-numbers" checked={showNumbers} onCheckedChange={setShowNumbers} />
+    </div>
+  )
 
   let verseNo = 0
   return (
@@ -83,36 +108,44 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
       {/* No visible heading: the verse opens the page. The id keeps the
           contents list's "Translation" link, and the hidden heading keeps the
           section in a screen reader's list of headings. */}
-      <section id="translation" aria-labelledby="translation-heading" className="scroll-mt-28 pt-6">
+      <section id="translation" aria-labelledby="translation-heading" className="scroll-mt-28 pt-16">
         <h2 id="translation-heading" className="sr-only">Translation</h2>
 
-        <div className="flex justify-end mb-2">
-          <div className="flex items-center gap-2">
-            <Switch id="ttc-line-numbers" checked={showNumbers} onCheckedChange={setShowNumbers} />
-            <Label htmlFor="ttc-line-numbers" className="text-xs text-foreground/50">Line numbers</Label>
-          </div>
-        </div>
-
-        <div className="space-y-5 text-lg leading-relaxed text-foreground/85">
+        <div className="space-y-6 text-lg leading-loose text-foreground/85">
           {chapter.stanzas.map((stanza, s) => (
             <p key={s}>
               {stanza.map((line, i) => {
                 const v = ++verseNo
-                const lit = link && litVerses.has(v)
+                const isLit = link && litVerses.has(v)
                 const source = linesOfVerse.get(v) ?? []
+                const target = link ? source[0] : undefined
+                const verseClass = cn('rounded px-1 -mx-1', light, isLit && lit)
                 return (
                   <span key={i} className="flex items-baseline">
                     {showNumbers && (
                       <span className={GUTTER} aria-hidden="true">{source.length ? lineLabel(source) : ''}</span>
                     )}
-                    <span
-                      data-verse={v}
-                      onMouseEnter={link ? () => setActiveLine(source[0] ?? null) : undefined}
-                      onMouseLeave={link ? () => setActiveLine(null) : undefined}
-                      className={cn('rounded px-1 -mx-1', light, lit && 'bg-[var(--color-primary)]/15 text-foreground')}
-                    >
-                      {line}
-                    </span>
+                    {target !== undefined ? (
+                      // Selecting a paired line takes the reader to the Chinese it renders.
+                      <button
+                        type="button"
+                        data-verse={v}
+                        onMouseEnter={() => setActiveLine(target)}
+                        onMouseLeave={() => setActiveLine(null)}
+                        onFocus={() => setActiveLine(target)}
+                        onBlur={() => setActiveLine(null)}
+                        onClick={() => goToLine(target)}
+                        className={cn(
+                          verseClass,
+                          'text-left cursor-pointer',
+                          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]',
+                        )}
+                      >
+                        {line}
+                      </button>
+                    ) : (
+                      <span data-verse={v} className={verseClass}>{line}</span>
+                    )}
                   </span>
                 )
               })}
@@ -120,46 +153,49 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
           ))}
         </div>
 
+        <div className="flex justify-end mt-6">{lineNumbersToggle}</div>
+
         {showNumbers && !link && (
-          <p className="mt-4 mb-0 text-xs text-foreground/40 max-w-prose">
+          <p className="mt-3 mb-0 text-sm text-foreground/50 sm:text-right">
             This chapter’s English and Chinese aren’t paired line by line yet, so only the Chinese is numbered.
           </p>
         )}
       </section>
 
       <section aria-labelledby="original">
-        <h2 id="original" className={H2}>Original</h2>
+        <h2 id="original" className={cn(H2, 'mt-20')}>Original</h2>
 
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-6">
-          <div className="flex items-center gap-2">
-            <Switch id="ttc-pinyin" checked={showPinyin} onCheckedChange={setShowPinyin} />
-            <Label htmlFor="ttc-pinyin" className="text-sm text-foreground/60">Pinyin</Label>
-          </div>
-          <p className="text-sm text-foreground/50 m-0 max-w-prose">
+        <div className="flex flex-col sm:flex-row sm:items-start gap-x-8 gap-y-3 mb-6">
+          <p className={cn(DESC, 'm-0 flex-1 min-w-0')}>
             Select any character for its reading, its meaning, and how this translation renders it.
             {link
-              ? ' Point to a line to see the English that renders it.'
+              ? ' Point to a line to see the English that renders it, or select an English line to go to its Chinese.'
               : ' This chapter’s English and Chinese have different numbers of lines, so the lines are not paired here.'}
           </p>
+          <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto pt-0.5">
+            <Label htmlFor="ttc-pinyin" className="text-sm text-foreground/70">Pinyin</Label>
+            <Switch id="ttc-pinyin" checked={showPinyin} onCheckedChange={setShowPinyin} />
+          </div>
         </div>
 
         <div className="space-y-2">
           {chapter.lines.map((line) => {
-            const lit = link && activeLine === line.seq
+            const isLit = link && (activeLine === line.seq || landed === line.seq)
             return (
               <div key={line.seq} className="flex items-baseline">
               {showNumbers && <span className={GUTTER} aria-hidden="true">{line.seq}</span>}
               <p
                 lang="zh-Hant"
+                data-line={line.seq}
                 onMouseEnter={link ? () => setActiveLine(line.seq) : undefined}
                 onMouseLeave={link ? () => setActiveLine(null) : undefined}
                 onFocus={link ? () => setActiveLine(line.seq) : undefined}
                 onBlur={link ? () => setActiveLine(null) : undefined}
                 className={cn(
-                  'font-han text-2xl sm:text-3xl text-foreground/90 rounded-md px-2 -mx-2 py-1 m-0 w-fit',
+                  'font-han text-3xl sm:text-4xl text-foreground/90 rounded-md px-2 -mx-2 py-1 m-0 w-fit',
                   showPinyin ? 'leading-[2.4]' : 'leading-relaxed',
                   light,
-                  lit && 'bg-[var(--color-primary)]/15',
+                  isLit && lit,
                 )}
               >
                 {line.tokens.map((t, i) => {
@@ -188,7 +224,7 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
                       {showPinyin ? (
                         <ruby>
                           {t.c}
-                          <rt className="font-sans text-xs tracking-normal text-foreground/50">{t.p ?? ''}</rt>
+                          <rt className="font-sans text-sm tracking-normal text-foreground/55">{t.p ?? ''}</rt>
                         </ruby>
                       ) : (
                         t.c

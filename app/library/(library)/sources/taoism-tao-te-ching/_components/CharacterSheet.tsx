@@ -23,11 +23,11 @@ function Parts({ label, parts }: { label: string; parts: Part[] }) {
   if (parts.length === 0) return null
   return (
     <div>
-      <dt className="text-xs uppercase tracking-widest text-foreground/40 mb-1.5">{label}</dt>
+      <dt className="text-sm uppercase tracking-widest text-foreground/50 mb-1.5">{label}</dt>
       <dd className="m-0 space-y-1">
         {parts.map((part) => (
-          <div key={part.c} className="flex items-baseline gap-2 text-sm text-foreground/70">
-            <span lang="zh-Hant" className="font-han text-xl text-foreground">{part.c}</span>
+          <div key={part.c} className="flex items-baseline gap-2 text-base text-foreground/75">
+            <span lang="zh-Hant" className="font-han text-2xl text-foreground">{part.c}</span>
             {part.p && <span className="italic">{part.p.toLowerCase()}</span>}
             {part.g && <span>— {part.g}</span>}
           </div>
@@ -74,9 +74,9 @@ export default function CharacterSheet({ selection, info, onClose, returnFocus }
                 <span lang="zh-Hant" className="font-han text-6xl font-normal leading-none text-foreground">
                   {selection.c}
                 </span>
-                {reading && <span className="text-xl font-light italic text-foreground/70">{reading}</span>}
+                {reading && <span className="text-2xl font-light italic text-foreground/70">{reading}</span>}
               </SheetTitle>
-              <SheetDescription className="text-base text-foreground/70">
+              <SheetDescription className="text-lg text-foreground/75">
                 {info?.g ?? 'No gloss recorded yet.'}
               </SheetDescription>
             </SheetHeader>
@@ -85,15 +85,15 @@ export default function CharacterSheet({ selection, info, onClose, returnFocus }
               <dl className="mt-6 space-y-5">
                 {info.r && (
                   <div>
-                    <dt className="text-xs uppercase tracking-widest text-foreground/40 mb-1.5">This translation</dt>
-                    <dd className="m-0 text-foreground">{info.r}</dd>
+                    <dt className="text-sm uppercase tracking-widest text-foreground/50 mb-1.5">This translation</dt>
+                    <dd className="m-0 text-lg text-foreground">{info.r}</dd>
                   </div>
                 )}
                 <Parts label="Meaning from" parts={info.sem} />
                 <Parts label="Sound from" parts={info.pho} />
                 <div>
-                  <dt className="text-xs uppercase tracking-widest text-foreground/40 mb-1.5">In the book</dt>
-                  <dd className="m-0 text-sm text-foreground/70">
+                  <dt className="text-sm uppercase tracking-widest text-foreground/50 mb-1.5">In the book</dt>
+                  <dd className="m-0 text-base text-foreground/75">
                     {info.n} {info.n === 1 ? 'time' : 'times'}, in {info.chapters} {info.chapters === 1 ? 'chapter' : 'chapters'}
                   </dd>
                 </div>
@@ -102,7 +102,7 @@ export default function CharacterSheet({ selection, info, onClose, returnFocus }
 
             <div className="mt-8 flex flex-col gap-2">
               {info && (
-                <Button variant="outline" size="sm" asChild className="justify-between gap-2">
+                <Button variant="outline" asChild className="justify-between gap-2">
                   <a href={info.atlas} target="_blank" rel="noopener noreferrer">
                     <span>
                       <span lang="zh-Hant" className="font-han">{selection.c}</span> in the Character Atlas
@@ -113,7 +113,7 @@ export default function CharacterSheet({ selection, info, onClose, returnFocus }
                 </Button>
               )}
               {info?.entries.map((entry) => (
-                <Button key={entry.slug} variant="outline" size="sm" asChild className="justify-between gap-2">
+                <Button key={entry.slug} variant="outline" asChild className="justify-between gap-2">
                   <a href={entry.href} target="_blank" rel="noopener noreferrer">
                     <span className="truncate">
                       Glossary: <span lang="zh-Hant" className="font-han">{entry.term}</span>{' '}

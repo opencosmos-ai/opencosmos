@@ -204,14 +204,6 @@ export function chapterNumbers(): number[] {
   return Array.from({ length: TAO_TE_CHING_CHAPTERS }, (_, i) => i + 1)
 }
 
-export function getChapterTitles(): ChapterTitle[] {
-  const x = load()
-  return chapterNumbers().map((n) => {
-    const [zh, pinyin, en] = x.chapters[String(n)] ?? [null, null, null]
-    return { n, zh, pinyin, en }
-  })
-}
-
 export function getChapter(n: number): ChapterView | null {
   if (!Number.isInteger(n) || n < 1 || n > TAO_TE_CHING_CHAPTERS) return null
   const x = load()

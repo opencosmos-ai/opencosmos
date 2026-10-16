@@ -4,10 +4,11 @@ import { Badge, Button, GitHubIcon, Separator } from '@opencosmos/ui'
 import { BookOpen, ExternalLink } from 'lucide-react'
 import { CATEGORY_LABELS } from '@/lib/knowledge-meta'
 import { TAO_TE_CHING_DOC, taoTeChingHref } from '@/lib/corpus-href'
-import { ATLAS_URL, TAOTECHING_URL, getChapterTitles } from '@/lib/tao-te-ching'
+import { ATLAS_URL, TAOTECHING_URL, chapterNumbers } from '@/lib/tao-te-ching'
 import TableOfContents from '../../[...slug]/TableOfContents'
 import LibraryBreadcrumb from '../../../LibraryBreadcrumb'
 import LegacyAnchorRedirect from './_components/LegacyAnchorRedirect'
+import TextFooter from './_components/TextFooter'
 import { H2 } from './_components/styles'
 
 export const metadata: Metadata = {
@@ -25,10 +26,10 @@ const TOC = [
 ]
 
 export default function TaoTeChingPage() {
-  const titles = getChapterTitles()
+  const chapters = chapterNumbers()
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-24">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-16">
       <LegacyAnchorRedirect />
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_224px]! gap-12 items-start">
         <div className="min-w-0" data-doc-content>
@@ -54,20 +55,18 @@ export default function TaoTeChingPage() {
           </p>
           <p className="text-lg font-light text-foreground/60 leading-relaxed mb-10">
             A new English translation, made directly from the classical Chinese and given to the public domain.
-            Eighty-one short chapters on the Tao, non-doing, emptiness and softness, without the overlays earlier
-            translations laid over them.
           </p>
 
           <Separator className="mb-2" />
 
           <section aria-labelledby="about-this-translation">
             <h2 id="about-this-translation" className={H2}>About this translation</h2>
-            <div className="space-y-5 text-foreground/70 leading-relaxed max-w-prose">
+            <div className="space-y-6 text-lg text-foreground/85 leading-relaxed max-w-prose">
               <p>
                 Each chapter was worked out line by line from the Chinese, the classical commentaries and the
                 histories of its characters, never from earlier English translations, and no phrasing is borrowed
-                from them. The aim is an honest, living English, free of what dynastic, Christian missionary and New
-                Age readings brought to the text.
+                from them. The aim is an honest, living English, free of what dynastic, Christian missionary, and New
+                Age readings overlaid upon the text.
               </p>
               <p>
                 So the sage is not “he”. 天 (<em>tiān</em>) is “sky”, not “Heaven”. The text’s own images come
@@ -90,23 +89,17 @@ export default function TaoTeChingPage() {
 
           <section aria-labelledby="chapters">
             <h2 id="chapters" className={H2}>Chapters</h2>
-            <p className="text-sm text-foreground/50 mb-5 max-w-prose">
-              The titles are Heshang Gong’s, from his Han-dynasty commentary, centuries after the text. Laozi’s
-              chapters had none. Their English here is a working rendering.
-            </p>
-            <ol className="list-none p-0 m-0 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-              {titles.map((t) => (
-                <li key={t.n} className="border-b border-foreground/10">
+            {/* Numbers only, as Laozi left them: no titles, Heshang Gong's or
+                anyone's (ADR 0021). Nine by nine. */}
+            <ol className="list-none p-0 m-0 grid grid-cols-6 sm:grid-cols-9 gap-2">
+              {chapters.map((n) => (
+                <li key={n}>
                   <Link
-                    href={taoTeChingHref(t.n)}
-                    className="flex items-baseline gap-3 py-2.5 px-2 -mx-2 rounded hover:bg-foreground/5 transition-colors"
+                    href={taoTeChingHref(n)}
+                    aria-label={`Chapter ${n}`}
+                    className="flex items-center justify-center h-12 sm:h-14 rounded-md border border-foreground/10 text-lg tabular-nums text-foreground/80 hover:bg-foreground/10 hover:text-foreground hover:border-foreground/30 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
                   >
-                    <span className="text-sm text-foreground/40 w-6 text-right tabular-nums shrink-0">{t.n}</span>
-                    {t.zh && <span lang="zh-Hant" className="font-han text-lg text-foreground/90 shrink-0">{t.zh}</span>}
-                    <span className="min-w-0 text-sm text-foreground/60 truncate">
-                      {t.pinyin && <span className="italic">{t.pinyin}</span>}
-                      {t.en && <span> · {t.en}</span>}
-                    </span>
+                    {n}
                   </Link>
                 </li>
               ))}
@@ -115,11 +108,19 @@ export default function TaoTeChingPage() {
 
           <section aria-labelledby="take-part">
             <h2 id="take-part" className={H2}>Take part</h2>
-            <p className="text-foreground/70 leading-relaxed max-w-prose mb-6">
+            <p className="text-lg text-foreground/85 leading-relaxed max-w-prose mb-6">
               The translation, its glossary and its method live in one public repository, released into the public
               domain. A line that doesn’t land, a better word, a typo: every chapter page opens a discussion or an
-              edit on its own file. The Character Atlas carries every character in the book, with its parts, its
-              history and every line it stands in.
+              edit on its own file. The{' '}
+              <a
+                href={ATLAS_URL}
+                {...external}
+                className="text-foreground underline underline-offset-2 hover:text-foreground/60 transition-colors"
+              >
+                Open Classical Chinese Character Atlas &amp; Glossary
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>{' '}
+              carries every character in the book, with its parts, its history and every line it stands in.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <Button variant="outline" size="sm" asChild className="gap-2">
@@ -151,6 +152,8 @@ export default function TaoTeChingPage() {
 
         <TableOfContents toc={TOC} docTitle="Tao Te Ching" docPath={TAO_TE_CHING_DOC} />
       </div>
+
+      <TextFooter />
     </div>
   )
 }

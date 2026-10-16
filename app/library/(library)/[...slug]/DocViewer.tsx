@@ -25,12 +25,12 @@ export default function DocViewer({ content, format }: Props) {
       rehypePlugins={[rehypeSlug]}
       components={{
         h1: ({ children }) => (
-          <h1 className="text-2xl font-light text-foreground mt-10 mb-4 leading-tight">
+          <h1 className="text-3xl font-light text-foreground mt-10 mb-6 leading-tight">
             {children}
           </h1>
         ),
         h2: ({ children, id }) => (
-          <h2 id={id} className="text-xl font-light text-foreground mt-10 mb-3 leading-snug scroll-mt-28">
+          <h2 id={id} className="text-2xl font-light text-foreground mt-14 mb-6 leading-snug scroll-mt-28">
             {children}
           </h2>
         ),

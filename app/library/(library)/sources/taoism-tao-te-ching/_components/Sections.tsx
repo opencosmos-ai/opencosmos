@@ -13,7 +13,7 @@ import {
   type TermView,
 } from '@/lib/tao-te-ching'
 import { TAO_TE_CHING_CHAPTERS, taoTeChingHref } from '@/lib/corpus-href'
-import { H2 } from './styles'
+import { DESC, H2 } from './styles'
 
 const external = { target: '_blank', rel: 'noopener noreferrer' } as const
 
@@ -42,12 +42,12 @@ export function Listen({ clips }: { clips: { seq: number; src: string }[] }) {
 export function Terms({ terms }: { terms: TermView[] }) {
   return (
     <section aria-labelledby="terms">
-      <h2 id="terms" className={H2}>Terms</h2>
+      <h2 id="terms" className={H2}>Key Terms</h2>
       {terms.length === 0 ? (
         <p className="text-foreground/50">No glossary entry stands in this chapter yet.</p>
       ) : (
         <>
-          <p className="text-sm text-foreground/50 mb-4 max-w-prose">
+          <p className={`${DESC} mb-4`}>
             The glossary entries for words in this chapter: how this translation renders each one, and why.
             Each opens in the Character Atlas.
           </p>
@@ -57,7 +57,7 @@ export function Terms({ terms }: { terms: TermView[] }) {
                 <a
                   href={t.href}
                   {...external}
-                  className="flex items-baseline gap-3 py-3 px-2 -mx-2 rounded hover:bg-foreground/5 transition-colors"
+                  className="group flex items-baseline gap-3 py-3 px-2 -mx-2 rounded hover:bg-foreground/10 transition-colors"
                 >
                   <span lang="zh-Hant" className="font-han text-2xl text-foreground w-20 shrink-0">{t.term}</span>
                   <span className="italic text-foreground/60 w-28 shrink-0 hidden sm:inline!">{t.pinyin}</span>
@@ -68,7 +68,10 @@ export function Terms({ terms }: { terms: TermView[] }) {
                   {t.status && t.status !== 'locked' && (
                     <Badge variant="outline" className="text-foreground/50 shrink-0">{t.status}</Badge>
                   )}
-                  <ExternalLink className="w-3.5 h-3.5 text-foreground/30 shrink-0 self-center" aria-hidden="true" />
+                  <ExternalLink
+                    className="w-3.5 h-3.5 text-foreground group-hover:text-primary! transition-colors shrink-0 self-center"
+                    aria-hidden="true"
+                  />
                   <span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </li>
@@ -82,8 +85,8 @@ export function Terms({ terms }: { terms: TermView[] }) {
 
 /**
  * The translator's reasoning, set apart from the verse so a note is never read
- * as scripture (ADR 0017): a bounded panel in the body face, smaller and
- * quieter than the poem it explains.
+ * as scripture (ADR 0017): a bounded panel, in the verse's own size so its
+ * long reasoning is as easy to read as the poem it explains.
  */
 export function Notes({ markdown }: { markdown: string }) {
   return (
@@ -94,31 +97,31 @@ export function Notes({ markdown }: { markdown: string }) {
       ) : (
         <aside
           aria-label="The translator's notes"
-          className="rounded-lg border border-foreground/10 bg-foreground/[0.03] px-5 py-5 sm:px-7 sm:py-6"
+          className="rounded-lg border border-foreground/10 bg-foreground/[0.03] px-6 py-6 sm:px-12! sm:py-8! lg:px-16!"
         >
           <p className="text-xs uppercase tracking-widest text-foreground/40 mb-4">
             From the translator — why the English reads as it does
           </p>
-          <div className="text-[0.94rem] leading-relaxed text-foreground/70">
+          <div className="text-lg leading-loose text-foreground/85">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                p: ({ children }) => <p className="mb-4 last:mb-0">{children}</p>,
-                h3: ({ children }) => <h3 className="text-base font-medium text-foreground mt-6 mb-2">{children}</h3>,
-                h4: ({ children }) => <h4 className="text-sm font-medium text-foreground mt-5 mb-2">{children}</h4>,
-                ul: ({ children }) => <ul className="list-disc list-outside pl-5 mb-4 space-y-1.5">{children}</ul>,
-                ol: ({ children }) => <ol className="list-decimal list-outside pl-5 mb-4 space-y-1.5">{children}</ol>,
+                p: ({ children }) => <p className="mb-6 last:mb-0">{children}</p>,
+                h3: ({ children }) => <h3 className="text-xl font-medium text-foreground mt-8 mb-3">{children}</h3>,
+                h4: ({ children }) => <h4 className="text-lg font-medium text-foreground mt-6 mb-2">{children}</h4>,
+                ul: ({ children }) => <ul className="list-disc list-outside pl-5 mb-6 space-y-3">{children}</ul>,
+                ol: ({ children }) => <ol className="list-decimal list-outside pl-5 mb-6 space-y-3">{children}</ol>,
                 strong: ({ children }) => <strong className="font-semibold text-foreground/90">{children}</strong>,
                 em: ({ children }) => <em className="italic">{children}</em>,
                 blockquote: ({ children }) => (
-                  <blockquote className="border-l-2 border-foreground/20 pl-4 my-4 text-foreground/60">{children}</blockquote>
+                  <blockquote className="border-l-2 border-foreground/20 pl-4 my-5 text-foreground/70">{children}</blockquote>
                 ),
                 code: ({ children }) => (
-                  <code className="font-mono text-xs px-1 py-0.5 rounded bg-foreground/5">{children}</code>
+                  <code className="font-mono text-sm px-1 py-0.5 rounded bg-foreground/5">{children}</code>
                 ),
                 table: ({ children }) => (
-                  <div className="overflow-x-auto mb-4">
-                    <table className="w-full text-sm text-left border-collapse">{children}</table>
+                  <div className="overflow-x-auto mb-5">
+                    <table className="w-full text-base text-left border-collapse">{children}</table>
                   </div>
                 ),
                 th: ({ children }) => <th className="py-1.5 pr-4 font-medium text-foreground/60">{children}</th>,
@@ -142,7 +145,7 @@ export function Discussion({ n, data }: { n: number; data: DiscussionData }) {
   return (
     <section aria-labelledby="discussion">
       <h2 id="discussion" className={H2}>Discussion</h2>
-      <p className="text-sm text-foreground/50 mb-4 max-w-prose">
+      <p className={`${DESC} mb-5`}>
         The translation is edited in the open. Questions and proposals about this chapter are issues and pull
         requests titled “Ch {n} —” in its repository.
       </p>
@@ -153,7 +156,7 @@ export function Discussion({ n, data }: { n: number; data: DiscussionData }) {
               <a
                 href={item.url}
                 {...external}
-                className="flex items-baseline gap-3 text-foreground/80 hover:text-foreground transition-colors"
+                className="flex items-baseline gap-3 text-lg text-foreground/85 hover:text-foreground transition-colors"
               >
                 <Badge variant="outline" className="text-foreground/50 shrink-0">
                   {item.pr ? 'Pull request' : 'Issue'}
@@ -167,7 +170,7 @@ export function Discussion({ n, data }: { n: number; data: DiscussionData }) {
         </ul>
       )}
       {data.ok && data.items.length === 0 && (
-        <p className="text-foreground/60 mb-5">Nothing open about this chapter right now.</p>
+        <p className="text-lg text-foreground/85 mb-5">Nothing open about this chapter right now.</p>
       )}
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="outline" size="sm" asChild className="gap-2">
@@ -180,7 +183,7 @@ export function Discussion({ n, data }: { n: number; data: DiscussionData }) {
         <a
           href={hrefs.list}
           {...external}
-          className="text-sm text-foreground/50 hover:text-foreground/80 transition-colors"
+          className="text-base text-foreground/60 hover:text-foreground transition-colors"
         >
           {data.ok && data.complete ? 'All discussion of this chapter' : 'See what is open about this chapter'} →
           <span className="sr-only"> (opens GitHub in a new tab)</span>
