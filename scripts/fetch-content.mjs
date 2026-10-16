@@ -1,13 +1,15 @@
 /**
  * Makes the content this app builds from available on disk at build time.
  *
- * Two sources, both in their own repositories so that adding a text or editing
+ * Three sources, each in its own repository so that adding a text or editing
  * a prompt does not mean cloning the site:
  *
- *   knowledge  opencosmos-ai/knowledge  the corpus behind /library
- *   cosmo      opencosmos-ai/cosmo      Cosmo's constitutional layer
+ *   knowledge   opencosmos-ai/knowledge   the corpus behind /library
+ *   cosmo       opencosmos-ai/cosmo       Cosmo's constitutional layer
+ *   taoteching  opencosmos-ai/taoteching  the Tao Te Ching reader, from its
+ *                                         data/atlas-export.json (ADR 0020)
  *
- * This app still needs both on disk. The Library pages are statically
+ * This app still needs all three on disk. The Library pages are statically
  * generated, so the corpus is read at build time and baked out; Cosmo's prompts
  * are inlined into the bundle by next.config.mjs's `env` block. Neither is read
  * at runtime — retrieval goes through Upstash.
@@ -36,6 +38,11 @@
  *   KNOWLEDGE_REPO       defaults to the public HTTPS URL below
  *   COSMO_LOCAL_DIR      as above, for the constitutional layer
  *   COSMO_REPO           as above
+ *   TAOTECHING_LOCAL_DIR as above, for the Tao Te Ching
+ *   TAOTECHING_REPO      as above
+ *   TAOTECHING_GITHUB_TOKEN  optional, read-only. Raises the rate limit on the
+ *                        one call that lists the translation's open issues and
+ *                        pull requests for the chapter pages' Discussion section
  *   CONTENT_REF          branch/tag/SHA to fetch; defaults to the default branch
  *   CONTENT_TOKEN        GitHub token, only needed while a source repo is private
  *
@@ -45,7 +52,7 @@
  */
 
 import { execFileSync } from 'node:child_process'
-import { cpSync, existsSync, mkdirSync, rmSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, rmSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -74,6 +81,44 @@ const SOURCES = [
       const docs = readdirSync(join(dest, 'sources')).filter((f) => f.endsWith('.md'))
       if (docs.length === 0) throw new Error(`corpus at ${dest} has no documents in sources/`)
       return `${docs.length} source documents`
+    },
+  },
+  {
+    name: 'taoteching',
+    repo: process.env.TAOTECHING_REPO || 'https://github.com/opencosmos-ai/taoteching.git',
+    localEnv: 'TAOTECHING_LOCAL_DIR',
+    sibling: 'taoteching',
+    markers: ['chapters', 'glossary', 'data'],
+    // The app reads the export and nothing else (ADR 0020 §3: the chapter files
+    // are the translation's internals). A local checkout is 35 MB with its
+    // database and commentaries, so only what is read is copied. `data/audio`
+    // does not exist yet; it is where line and character clips will live.
+    include: ['data/atlas-export.json', 'data/audio'],
+    verify(dest) {
+      // A thin export builds a Library with no chapters and a green check mark.
+      // Refused by count, never by exit status.
+      const file = join(dest, 'data', 'atlas-export.json')
+      if (!existsSync(file)) throw new Error(`taoteching at ${dest} has no data/atlas-export.json`)
+      const x = JSON.parse(readFileSync(file, 'utf-8'))
+      // The atlas holds this file to contract 1 as well; a bump means the shape
+      // changed in a way this reader has not been taught.
+      if (x.contract !== 1) throw new Error(`taoteching export is contract ${x.contract}; this reader reads 1`)
+      const chapters = Object.keys(x.chapters ?? {}).length
+      const lines = Object.keys(x.lines ?? {}).length
+      if (chapters !== 81 || lines !== 798) {
+        throw new Error(
+          `taoteching export has ${chapters} chapters and ${lines} lines; expected 81 and 798. ` +
+          `If taoteching re-divided its lines on purpose, update the count here.`,
+        )
+      }
+      // The reader's own keys, added in taoteching#30. An export without them
+      // predates the reader and would render chapters with no verse.
+      for (const key of ['verse', 'notes', 'literal', 'align']) {
+        if (Object.keys(x[key] ?? {}).length === 0) {
+          throw new Error(`taoteching export has no "${key}" — it predates the Library reader (taoteching#30)`)
+        }
+      }
+      return `${chapters} chapters, ${lines} lines, ${x.entries.length} glossary entries`
     },
   },
   {
@@ -141,9 +186,16 @@ function findLocalCheckout(src) {
   return validCheckout(resolve(REPO_ROOT, '..', src.sibling), src.markers)
 }
 
-function copyFrom(target, dest) {
+function copyFrom(target, dest, include) {
   mkdirSync(dirname(dest), { recursive: true })
   rmSync(dest, { recursive: true, force: true })
+  if (include) {
+    for (const rel of include) {
+      if (existsSync(join(target, rel))) cpSync(join(target, rel), join(dest, rel), { recursive: true, dereference: true })
+    }
+    log(`copied ${include.filter((rel) => existsSync(join(target, rel))).join(', ')} ← ${target}`)
+    return
+  }
   // `.git` is excluded: this is a build input, not a working copy, and copying
   // it would make the content look like a nested repository to tooling.
   // `node_modules` likewise — a sibling checkout may have its own, and copying
@@ -172,14 +224,50 @@ function clone(src, dest) {
   log(`cloned at ${git(['rev-parse', '--short', 'HEAD'], dest)} (${git(['log', '-1', '--format=%cs'], dest)})`)
 }
 
-function main() {
-  for (const src of SOURCES) {
-    const dest = join(REPO_ROOT, '.content', src.name)
-    const local = findLocalCheckout(src)
-    if (local) copyFrom(local, dest)
-    else clone(src, dest)
-    log(`${src.name} ready — ${src.verify(dest)}`)
+/**
+ * The open issues and pull requests in taoteching, for the chapter pages'
+ * Discussion section: one API call per build, never one per chapter. The pages
+ * filter it by title (`Ch N — …`). Failure is never fatal — the section falls
+ * back to links — so it writes `ok: false` rather than throwing.
+ */
+async function fetchDiscussion() {
+  const out = join(REPO_ROOT, '.content', 'taoteching-discussion.json')
+  const token = process.env.TAOTECHING_GITHUB_TOKEN || ''
+  const write = (body) => writeFileSync(out, JSON.stringify({ fetched_at: new Date().toISOString(), ...body }, null, 1))
+  try {
+    const res = await fetch('https://api.github.com/repos/opencosmos-ai/taoteching/issues?state=open&per_page=100', {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        'User-Agent': 'opencosmos.ai build',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      signal: AbortSignal.timeout(15_000),
+    })
+    if (!res.ok) throw new Error(`GitHub answered ${res.status}`)
+    const items = (await res.json()).map((i) => ({
+      number: i.number,
+      title: i.title,
+      url: i.html_url,
+      pr: Boolean(i.pull_request),
+    }))
+    // 100 is the API's page size; past it the list is partial, and says so.
+    write({ ok: true, complete: items.length < 100, items })
+    log(`taoteching discussion — ${items.length} open issues and pull requests${token ? ' (authenticated)' : ''}`)
+  } catch (err) {
+    write({ ok: false, items: [] })
+    log(`taoteching discussion unavailable (${err.message}) — chapter pages will show links only`)
   }
 }
 
-main()
+async function main() {
+  for (const src of SOURCES) {
+    const dest = join(REPO_ROOT, '.content', src.name)
+    const local = findLocalCheckout(src)
+    if (local) copyFrom(local, dest, src.include)
+    else clone(src, dest)
+    log(`${src.name} ready — ${src.verify(dest)}`)
+  }
+  await fetchDiscussion()
+}
+
+await main()

@@ -53,15 +53,65 @@ export function quoteHrefFromParts(bucket: string, quoteId?: string): string {
   return `${LIBRARY_BASE}/quotes/${bucket}${quoteId ? `#${quoteId}` : ''}`
 }
 
+// ── The Tao Te Ching ─────────────────────────────────────────────────────────
+//
+// One corpus document, read as 82 pages: a landing page and a page per chapter
+// (ADR 0020). Its citations name the corpus document and a heading anchor, and
+// two generations of headings are in stored conversations:
+//
+//   #one … #eighty-one   the Feng–English file and the stopgap that replaced it
+//                        (`## Twenty-One`, as github-slugger slugs it)
+//   #chapter-1 …         the generated document (`## Chapter 1`)
+//
+// Both resolve to the chapter's page; any other anchor resolves to the landing
+// page. PERMANENT: deleting a form breaks every stored citation that uses it.
+
+export const TAO_TE_CHING_DOC = 'knowledge/sources/taoism-tao-te-ching.md'
+export const TAO_TE_CHING_BASE = `${LIBRARY_BASE}/sources/taoism-tao-te-ching`
+export const TAO_TE_CHING_CHAPTERS = 81
+
+const ONES = [
+  '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+  'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen',
+  'eighteen', 'nineteen',
+]
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty']
+
+/** 21 → `twenty-one`: the slug of the old `## Twenty-One` heading. */
+export function chapterWord(n: number): string {
+  if (n < 20) return ONES[n] ?? ''
+  const tens = TENS[Math.floor(n / 10)] ?? ''
+  return n % 10 ? `${tens}-${ONES[n % 10]}` : tens
+}
+
+const WORD_TO_CHAPTER = new Map(
+  Array.from({ length: TAO_TE_CHING_CHAPTERS }, (_, i) => [chapterWord(i + 1), i + 1] as const),
+)
+
+/** `twelve` or `chapter-12` → 12; anything else → null. */
+export function taoTeChingChapterFromAnchor(anchor: string): number | null {
+  const a = anchor.trim().toLowerCase()
+  const m = /^chapter-(\d{1,2})$/.exec(a)
+  const n = m ? Number(m[1]) : WORD_TO_CHAPTER.get(a) ?? null
+  return n !== null && n >= 1 && n <= TAO_TE_CHING_CHAPTERS ? n : null
+}
+
+/** The landing page, or a chapter's page. */
+export function taoTeChingHref(chapter?: number): string {
+  return chapter ? `${TAO_TE_CHING_BASE}/${chapter}` : TAO_TE_CHING_BASE
+}
+
 /**
  * `knowledge/sources/x.md#slug` → `/library/sources/x#slug`
  *
  * Requires at least two path segments below `knowledge/`, which is what
- * distinguishes a real document from a stray directory reference.
+ * distinguishes a real document from a stray directory reference. The Tao Te
+ * Ching is the one document read as more than one page; see above.
  */
 export function docHref(ref: string): string | null {
   const { path, anchor } = splitAnchor(ref)
   if (!path.startsWith(CORPUS_PREFIX) || path.includes('..')) return null
+  if (path === TAO_TE_CHING_DOC) return taoTeChingHref(taoTeChingChapterFromAnchor(anchor) ?? undefined)
   const inner = path.replace(/^knowledge\//, '').replace(/\.md$/, '')
   if (inner.split('/').filter(Boolean).length < 2) return null
   return `${LIBRARY_BASE}/${inner}${anchor ? `#${anchor}` : ''}`

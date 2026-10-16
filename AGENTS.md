@@ -203,7 +203,7 @@ pnpm unlink @opencosmos/ui && pnpm install
 ```bash
 pnpm dev                         # opencosmos.ai at localhost:3000 (fetches content first)
 pnpm build                       # Production build
-pnpm content                     # Re-fetch knowledge + cosmo into .content/
+pnpm content                     # Re-fetch knowledge, cosmo and taoteching into .content/
 ```
 
 ### CI Pipeline

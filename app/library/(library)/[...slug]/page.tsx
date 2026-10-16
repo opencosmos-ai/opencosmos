@@ -5,9 +5,11 @@ import GithubSlugger from 'github-slugger'
 import { Badge, Separator } from '@opencosmos/ui'
 import { getDoc, getAllDocs } from '@/lib/knowledge'
 import { CATEGORY_LABELS } from '@/lib/knowledge-meta'
+import { TAO_TE_CHING_BASE } from '@/lib/corpus-href'
 import DocViewer from './DocViewer'
 import TableOfContents, { type TocEntry } from './TableOfContents'
 import SourceLinks from '../../SourceLinks'
+import LibraryBreadcrumb from '../../LibraryBreadcrumb'
 
 /**
  * Extract H2 and H3 headings from raw markdown for the TOC sidebar.
@@ -28,8 +30,12 @@ type Props = {
 }
 
 export async function generateStaticParams() {
-  const docs = getAllDocs()
-  return docs.map((doc) => ({ slug: doc.slug }))
+  // The Tao Te Ching has its own routes (sources/taoism-tao-te-ching/), which
+  // read taoteching's export rather than the corpus copy. Listing it here too
+  // would generate the same path twice.
+  return getAllDocs()
+    .filter((doc) => doc.href !== TAO_TE_CHING_BASE)
+    .map((doc) => ({ slug: doc.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -59,45 +65,13 @@ export default async function DocPage({ params }: Props) {
 
           {/* Main document column */}
           <div className="min-w-0">
-            {/* Breadcrumb — Next.js Link-based so navigation back to /knowledge
-                stays a soft route change. The shared @opencosmos/ui Breadcrumbs
-                renders a plain <a href> which triggers a full reload and
-                remounts the chat sidebar. */}
-            <nav aria-label="Breadcrumb" className="mb-10">
-              <ol className="flex items-center flex-nowrap list-none m-0 p-0 text-sm overflow-x-auto scrollbar-hide">
-                {[
-                  { label: 'The Library', href: '/library' },
-                  { label: CATEGORY_LABELS[doc.category] ?? doc.category, href: '/library' },
-                  { label: doc.title },
-                ].map((item, i, arr) => {
-                  const isLast = i === arr.length - 1
-                  return (
-                    <li key={i} className="flex items-center flex-shrink-0">
-                      {item.href && !isLast ? (
-                        <Link
-                          href={item.href}
-                          className="text-[var(--color-primary)] hover:bg-[var(--color-text-primary)] hover:text-[var(--color-background)] font-medium px-1.5 py-1.5 -mx-1.5 -my-1.5 rounded transition-colors duration-150 active:scale-95"
-                        >
-                          {item.label}
-                        </Link>
-                      ) : (
-                        <span
-                          aria-current={isLast ? 'page' : undefined}
-                          className="text-[var(--color-text-primary)] font-semibold"
-                        >
-                          {item.label}
-                        </span>
-                      )}
-                      {!isLast && (
-                        <span aria-hidden="true" className="mx-2 select-none text-[var(--color-border)] font-bold">
-                          /
-                        </span>
-                      )}
-                    </li>
-                  )
-                })}
-              </ol>
-            </nav>
+            <LibraryBreadcrumb
+              items={[
+                { label: 'The Library', href: '/library' },
+                { label: CATEGORY_LABELS[doc.category] ?? doc.category, href: '/library' },
+                { label: doc.title },
+              ]}
+            />
 
             {/* Badges */}
             <div className="flex flex-wrap gap-2 mb-6">

@@ -7,6 +7,12 @@ type Props = {
   docPath: string
   /** One sentence naming what a reader here is likely to have noticed. */
   prompt: string
+  /**
+   * Where the text is really maintained, when that is not its knowledge file.
+   * The Tao Te Ching's corpus copy is generated from opencosmos-ai/taoteching,
+   * so an edit to the copy would be overwritten; it points at the chapter.
+   */
+  hrefs?: { view: string; edit: string }
 }
 
 /**
@@ -17,8 +23,8 @@ type Props = {
  * opens a pull request for any signed-in reader. Renders nothing when the path
  * does not resolve, never a dead link.
  */
-export default function SourceLinks({ docPath, prompt }: Props) {
-  const hrefs = sourceHrefs(docPath)
+export default function SourceLinks({ docPath, prompt, hrefs: override }: Props) {
+  const hrefs = override ?? sourceHrefs(docPath)
   if (!hrefs) return null
 
   return (

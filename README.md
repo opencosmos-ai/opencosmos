@@ -39,10 +39,10 @@ The site **does not contain** the commons. It fetches them at build time from th
 git clone https://github.com/opencosmos-ai/opencosmos.git
 cd opencosmos
 pnpm install
-pnpm dev          # fetches knowledge + cosmo into .content/, then serves http://localhost:3000
+pnpm dev          # fetches knowledge, cosmo and taoteching into .content/, then serves http://localhost:3000
 ```
 
-If `../knowledge` or `../cosmo` exist as sibling checkouts, the fetch copies them, so local edits show up. Otherwise it clones them.
+If `../knowledge`, `../cosmo` or `../taoteching` exist as sibling checkouts, the fetch copies them, so local edits show up. Otherwise it clones them. From taoteching it takes only `data/atlas-export.json`, which the Tao Te Ching reader is built from.
 
 ---
 
@@ -71,7 +71,7 @@ This platform is built on four principles:
 ```bash
 pnpm dev          # Dev server (fetches content first)
 pnpm build        # Production build (fetches content first)
-pnpm content      # Re-fetch knowledge + cosmo into .content/
+pnpm content      # Re-fetch knowledge, cosmo and taoteching into .content/
 pnpm adr:index    # Regenerate the ADR index after adding one
 ```
 
