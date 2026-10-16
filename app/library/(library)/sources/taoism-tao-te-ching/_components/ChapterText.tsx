@@ -8,32 +8,43 @@ import CharacterSheet, { type Selection } from './CharacterSheet'
 import { H2 } from './styles'
 
 const PINYIN_KEY = 'opencosmos.tao-te-ching.pinyin'
+const NUMBERS_KEY = 'opencosmos.tao-te-ching.line-numbers'
 
 /**
- * The reader's pinyin choice, remembered per visitor. Read after mount so the
- * server render and the first client render agree; storage can be missing or
- * throw (private windows, blocked site data), so every access is guarded.
+ * A reader's choice, remembered per visitor. Read after mount so the server
+ * render and the first client render agree; storage can be missing or throw
+ * (private windows, blocked site data), so every access is guarded.
  */
-function usePinyinPreference(): [boolean, (on: boolean) => void] {
-  const [on, setOn] = useState(true)
+function useStoredToggle(key: string, initial: boolean): [boolean, (on: boolean) => void] {
+  const [on, setOn] = useState(initial)
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(PINYIN_KEY)
+      const saved = localStorage.getItem(key)
       if (saved !== null) setOn(saved === '1')
     } catch {
       // no storage — the default stands
     }
-  }, [])
+  }, [key])
   const set = useCallback((next: boolean) => {
     setOn(next)
     try {
-      localStorage.setItem(PINYIN_KEY, next ? '1' : '0')
+      localStorage.setItem(key, next ? '1' : '0')
     } catch {
       // no storage — the choice lasts for this visit
     }
-  }, [])
+  }, [key])
   return [on, set]
 }
+
+/** [3] → "3", [3, 4] → "3–4", [3, 5] → "3, 5". */
+function lineLabel(nums: number[]): string {
+  const sorted = [...nums].sort((a, b) => a - b)
+  const contiguous = sorted.every((n, i) => i === 0 || n === sorted[i - 1]! + 1)
+  if (sorted.length > 1 && contiguous) return `${sorted[0]}–${sorted[sorted.length - 1]}`
+  return sorted.join(', ')
+}
+
+const GUTTER = 'w-8 shrink-0 pr-3 text-right text-xs tabular-nums text-foreground/35 select-none'
 
 /**
  * Translation and Original, together, because they share one piece of state:
@@ -44,15 +55,17 @@ function usePinyinPreference(): [boolean, (on: boolean) => void] {
  */
 export default function ChapterText({ chapter }: { chapter: ChapterView }) {
   const { shouldAnimate } = useMotionPreference()
-  const [showPinyin, setShowPinyin] = usePinyinPreference()
+  const [showPinyin, setShowPinyin] = useStoredToggle(PINYIN_KEY, true)
+  const [showNumbers, setShowNumbers] = useStoredToggle(NUMBERS_KEY, false)
   const [activeLine, setActiveLine] = useState<number | null>(null)
   const [selected, setSelected] = useState<Selection | null>(null)
   const trigger = useRef<HTMLButtonElement | null>(null)
 
-  // verse line (1-based) → Chinese line, the inverse of each line's `verse`.
-  const lineOfVerse = useMemo(() => {
-    const m = new Map<number, number>()
-    for (const l of chapter.lines) for (const v of l.verse) m.set(v, l.seq)
+  // verse line (1-based) → the Chinese lines it renders, the inverse of each
+  // line's `verse`. Empty unless the chapter's alignment is exact.
+  const linesOfVerse = useMemo(() => {
+    const m = new Map<number, number[]>()
+    for (const l of chapter.lines) for (const v of l.verse) m.set(v, [...(m.get(v) ?? []), l.seq])
     return m
   }, [chapter.lines])
 
@@ -67,19 +80,34 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
   let verseNo = 0
   return (
     <>
-      <section aria-labelledby="translation">
-        <h2 id="translation" className={H2}>Translation</h2>
+      {/* No visible heading: the verse opens the page. The id keeps the
+          contents list's "Translation" link, and the hidden heading keeps the
+          section in a screen reader's list of headings. */}
+      <section id="translation" aria-labelledby="translation-heading" className="scroll-mt-28 pt-6">
+        <h2 id="translation-heading" className="sr-only">Translation</h2>
+
+        <div className="flex justify-end mb-2">
+          <div className="flex items-center gap-2">
+            <Switch id="ttc-line-numbers" checked={showNumbers} onCheckedChange={setShowNumbers} />
+            <Label htmlFor="ttc-line-numbers" className="text-xs text-foreground/50">Line numbers</Label>
+          </div>
+        </div>
+
         <div className="space-y-5 text-lg leading-relaxed text-foreground/85">
           {chapter.stanzas.map((stanza, s) => (
             <p key={s}>
               {stanza.map((line, i) => {
                 const v = ++verseNo
                 const lit = link && litVerses.has(v)
+                const source = linesOfVerse.get(v) ?? []
                 return (
-                  <span key={i} className="block">
+                  <span key={i} className="flex items-baseline">
+                    {showNumbers && (
+                      <span className={GUTTER} aria-hidden="true">{source.length ? lineLabel(source) : ''}</span>
+                    )}
                     <span
                       data-verse={v}
-                      onMouseEnter={link ? () => setActiveLine(lineOfVerse.get(v) ?? null) : undefined}
+                      onMouseEnter={link ? () => setActiveLine(source[0] ?? null) : undefined}
                       onMouseLeave={link ? () => setActiveLine(null) : undefined}
                       className={cn('rounded px-1 -mx-1', light, lit && 'bg-[var(--color-primary)]/15 text-foreground')}
                     >
@@ -91,6 +119,12 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
             </p>
           ))}
         </div>
+
+        {showNumbers && !link && (
+          <p className="mt-4 mb-0 text-xs text-foreground/40 max-w-prose">
+            This chapter’s English and Chinese aren’t paired line by line yet, so only the Chinese is numbered.
+          </p>
+        )}
       </section>
 
       <section aria-labelledby="original">
@@ -113,8 +147,9 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
           {chapter.lines.map((line) => {
             const lit = link && activeLine === line.seq
             return (
+              <div key={line.seq} className="flex items-baseline">
+              {showNumbers && <span className={GUTTER} aria-hidden="true">{line.seq}</span>}
               <p
-                key={line.seq}
                 lang="zh-Hant"
                 onMouseEnter={link ? () => setActiveLine(line.seq) : undefined}
                 onMouseLeave={link ? () => setActiveLine(null) : undefined}
@@ -162,6 +197,7 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
                   )
                 })}
               </p>
+              </div>
             )
           })}
         </div>

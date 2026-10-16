@@ -40,7 +40,7 @@ All notable changes to this project will be documented in this file.
 [ADR 0020](docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md), built. `/library/sources/taoism-tao-te-ching` now introduces the Open Tao Te Ching and lists its 81 chapters, and each chapter is its own page, built from [taoteching](https://github.com/opencosmos-ai/taoteching)'s `data/atlas-export.json`.
 
 - **A chapter page has six sections**, which the contents list follows:
-  - **Translation:** the English, in stanzas.
+  - **Translation:** the English, in stanzas. It opens the page with no visible heading; the contents list still links to it. A *Line numbers* switch, off by default and remembered, labels each English line with the Chinese line it renders.
   - **Original:** the Chinese line by line, with pinyin the reader can hide, which is remembered per visitor. Every character is a button opening a panel with its reading, meaning, this translation's rendering, its parts and how often it occurs. The panel links to the [Character Atlas](https://chinese-atlas.opencosmos.ai/).
   - **Listen:** renders nothing until clips exist.
   - **Terms:** the glossary entries standing in the chapter.
