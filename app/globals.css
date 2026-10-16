@@ -56,3 +56,14 @@
 @media (prefers-reduced-motion: reduce) {
   .quote-record:target { animation: none; }
 }
+
+/* Classical Chinese, for the Tao Te Ching reader: a Song/Ming face, from the
+   reader's own system — the same stack the Character Atlas uses, so a
+   character looks the same on both sites, and nothing is downloaded. macOS and
+   iOS have Songti; Windows has SimSun; Linux and Android have Noto Serif CJK
+   where installed, and fall back to their own CJK serif, then any CJK face. */
+@theme {
+  --font-han: "Songti TC", "Songti SC", "STSong", "Noto Serif CJK TC", "Noto Serif TC",
+    "Noto Serif CJK SC", "Source Han Serif TC", "SimSun", "Hiragino Mincho ProN",
+    "Yu Mincho", serif;
+}

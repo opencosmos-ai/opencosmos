@@ -23,6 +23,13 @@ type Props = {
   toc: TocEntry[]
   docTitle: string
   docPath: string   // relative knowledge/ path, e.g. "knowledge/sources/foo.md"
+  /**
+   * The corpus heading Cosmo is told the reader is in, when the page's own
+   * headings are not the corpus document's. A Tao Te Ching chapter page has
+   * sections (Translation, Original, …) that its corpus document does not, so
+   * it names its chapter's heading instead, and the chat injects that chapter.
+   */
+  contextHeading?: string
 }
 
 // Matches scroll-mt-28 (7rem = 112px) on h2/h3 in DocViewer, plus a small
@@ -35,7 +42,7 @@ const HEADER_OFFSET = 120
 // ballooning the prompt. Typical paragraphs are 200–600 chars.
 const PASSAGE_MAX_CHARS = 800
 
-export default function TableOfContents({ toc, docTitle, docPath }: Props) {
+export default function TableOfContents({ toc, docTitle, docPath, contextHeading }: Props) {
   const [activeId, setActiveId] = useState<string>(toc[0]?.id ?? '')
   const [passage, setPassage] = useState<string>('')
   const headingElsRef = useRef<HTMLElement[]>([])
@@ -137,8 +144,9 @@ export default function TableOfContents({ toc, docTitle, docPath }: Props) {
     const entry = toc.find(e => e.id === activeId)
     if (!entry) return
 
+    const heading = contextHeading ?? entry.text
     const ctx: CosmoContext = {
-      heading: entry.text,
+      heading,
       passage,
       doc_title: docTitle,
       doc_path: docPath,
@@ -152,10 +160,10 @@ export default function TableOfContents({ toc, docTitle, docPath }: Props) {
     emitCosmoEvent('selected-section', {
       doc_path: docPath,
       doc_title: docTitle,
-      heading: entry.text,
+      heading,
       passage,
     })
-  }, [activeId, passage, toc, docTitle, docPath])
+  }, [activeId, passage, toc, docTitle, docPath, contextHeading])
 
   if (toc.length === 0) return null
 

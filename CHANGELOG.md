@@ -35,6 +35,23 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-10-15 — The Open Tao Te Ching is read in the Library, a chapter to a page
+
+[ADR 0020](docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md), built. `/library/sources/taoism-tao-te-ching` now introduces the Open Tao Te Ching and lists its 81 chapters, and each chapter is its own page, built from [taoteching](https://github.com/opencosmos-ai/taoteching)'s `data/atlas-export.json`.
+
+- **A chapter page has six sections**, which the contents list follows:
+  - **Translation:** the English, in stanzas. It opens the page with no visible heading; the contents list still links to it. A *Line numbers* switch, off by default and remembered, labels each English line with the Chinese line it renders.
+  - **Original:** the Chinese line by line, with pinyin the reader can hide, which is remembered per visitor. Every character is a button opening a panel with its reading, meaning, this translation's rendering, its parts and how often it occurs. The panel links to the [Character Atlas](https://chinese-atlas.opencosmos.ai/).
+  - **Listen:** renders nothing until clips exist.
+  - **Terms:** the glossary entries standing in the chapter.
+  - **Notes:** the translator's, set apart from the verse.
+  - **Discussion:** open issues and pull requests titled `Ch N —`, from one GitHub call per build, with a link to raise one.
+- **Lines are linked only where the alignment is exact.** That is **32 chapters today, not the 61 ADR 0020 states**: the database has said 32 all along, and in 49 chapters the English and Chinese line counts differ. Elsewhere the page says so and links nothing.
+- **Every old citation still lands.** `lib/corpus-href.ts` maps `#one` … `#eighty-one` and `#chapter-N` on the corpus document to the chapter's page, `#notes-on-chapter-N` to its Notes, and anything else to the landing page; the landing page forwards a `#twelve` link the same way. `pnpm check:tao-te-ching` proves every form, for every chapter, through the chat renderer and the constellation, and runs in CI.
+- **"Suggest an edit" opens the chapter's file in taoteching**, not the corpus copy, which is generated and would be overwritten.
+- **Cosmo still knows which chapter you are reading**: the page names its corpus heading, so the chat injects the chapter whole.
+- **`pnpm content` fetches a third source.** `verify` refuses an export without 81 chapters, 798 lines, contract 1, and the reader's keys. Locally only the export is copied, not the 35 MB checkout.
+
 ## 2026-10-15 — The Tao Te Ching's place in the Library is decided
 
 The Library's Tao Te Ching is Gia-Fu Feng and Jane English's 1972 translation, which is in copyright and labelled `public-domain`. [ADR 0020](docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md) records how the Open Tao Te Ching replaces it. Decided, not yet built:

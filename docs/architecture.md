@@ -104,8 +104,9 @@ Knowledge Sync workflow — fires on any push that is not .github/**
 ── in this repository ─────────────────────────────────────────────────────
        ▼
 Vercel build
-  ├─ scripts/fetch-content.mjs clones knowledge + cosmo
-  │    into .content/ (or copies a sibling checkout, locally)
+  ├─ scripts/fetch-content.mjs clones knowledge + cosmo + taoteching
+  │    into .content/ (or copies a sibling checkout, locally), and lists
+  │    taoteching's open issues once, for the chapter pages' Discussion
   └─ next build bakes /library at build time — 322 static pages
        │
        ├──→ opencosmos.ai/library          (reading)

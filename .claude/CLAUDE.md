@@ -49,9 +49,12 @@ Each is public and contributable.
 The personal apps (portfolio, creative-powerup) left for `shalomormsby/` on
 18 Sept 2026 and are not part of the organization.
 
-**Fetching:** `pnpm content` pulls `knowledge` and `cosmo` into
-`.content/`. A sibling checkout at `../knowledge` or `../cosmo` is used
-in preference to a clone, so local edits are picked up.
+**Fetching:** `pnpm content` pulls `knowledge`, `cosmo` and `taoteching` into
+`.content/`. A sibling checkout at `../knowledge`, `../cosmo` or `../taoteching`
+is used in preference to a clone, so local edits are picked up. From taoteching
+it takes only `data/atlas-export.json`: the Library's Tao Te Ching
+(`/library/sources/taoism-tao-te-ching/{1…81}`) is built from that export, never
+from the chapter files ([ADR 0020](../docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md)).
 
 **Rule:** Don't create `packages/ui/`, `packages/tokens/`, or `packages/mcp/` here. Those are developed and published from opencosmos-ui.
 

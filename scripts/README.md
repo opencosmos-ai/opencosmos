@@ -40,6 +40,15 @@ Cosmo's kaizen practice embeds itself from
 Regenerates the index of architecture decision records from
 [`docs/decisions/`](../docs/decisions/). Run after adding an ADR.
 
+### `pnpm check:tao-te-ching`
+
+Checks the Tao Te Ching reader ([ADR 0020](../docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md)).
+It proves that every stored citation form, `#one` … `#eighty-one` and
+`#chapter-1` … `#chapter-81` and `#notes-on-chapter-N`, lands on its chapter through the chat renderer
+and the constellation. It also checks that `Ch 1` never collects `Ch 12`'s
+discussion, and, once `pnpm content` has run, that lines are linked only in
+chapters whose alignment is exact. CI runs it after the build.
+
 ### `pnpm xenso:check-iching`
 
 Checks the I Ching cast engine — coin arithmetic, the non-uniform odds,
