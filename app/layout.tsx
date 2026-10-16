@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   ),
   title: 'OpenCosmos',
   description: 'A creative platform built on the recognition that we are not separate from the universe we inhabit.',
+  // The name a chat app or social site prints above a link's preview. Each
+  // page's own title and description still fill the rest of the card; the
+  // image is opengraph-image.tsx, here or nearer the page.
+  openGraph: { siteName: 'OpenCosmos', type: 'website' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
