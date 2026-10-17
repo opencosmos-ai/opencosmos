@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   Header,
   Button,
@@ -23,7 +23,7 @@ import {
   type HeaderNavLink,
 } from '@opencosmos/ui'
 import { PanelLeftClose } from 'lucide-react'
-import { KNOWLEDGE_REPO_URL } from '@/lib/corpus-href'
+import { KNOWLEDGE_REPO_URL, LIBRARY_BASE } from '@/lib/corpus-href'
 import { CosmoSidebarContent } from './CosmoSidebarContent'
 import { SidebarFooterContent } from '../dialog/SidebarFooterContent'
 
@@ -68,6 +68,47 @@ const SidebarWidthContext = createContext<WidthCtx>({
   setIsDragging: () => {},
 })
 
+// A text (any source — the Tao Te Ching among them) is read with Cosmo tucked
+// away: the sidebar starts collapsed whatever the Library's remembered
+// preference. Opening it while reading lasts across chapters until the reader
+// leaves the texts, and is never written to storage — that preference belongs
+// to browsing, and reading shouldn't overwrite it.
+function isTextPath(pathname: string): boolean {
+  return pathname.startsWith(`${LIBRARY_BASE}/sources/`)
+}
+
+type ShellSidebar = ReturnType<typeof useAppSidebar>
+const ShellSidebarContext = createContext<ShellSidebar | null>(null)
+
+function ShellSidebarProvider({ children }: { children: React.ReactNode }) {
+  const reading = isTextPath(usePathname() ?? '')
+  const browsing = useAppSidebar()
+  const [readingOpen, setReadingOpen] = useState(false)
+
+  // Leaving the texts resets, so the next text opened starts collapsed again.
+  useEffect(() => {
+    if (!reading) setReadingOpen(false)
+  }, [reading])
+
+  const value: ShellSidebar = reading
+    ? {
+        isOpen: readingOpen,
+        toggle: () => setReadingOpen((o) => !o),
+        open: () => setReadingOpen(true),
+        close: () => setReadingOpen(false),
+      }
+    : browsing
+
+  return <ShellSidebarContext.Provider value={value}>{children}</ShellSidebarContext.Provider>
+}
+
+// Never throws (see transpilePackages context duplication) — falls back to the
+// design system's own sidebar state.
+function useShellSidebar(): ShellSidebar {
+  const browsing = useAppSidebar()
+  return useContext(ShellSidebarContext) ?? browsing
+}
+
 // Auto-collapse on first visit to narrow viewports — matches the /dialog pattern.
 function MobileSidebarInit() {
   const { close } = useAppSidebar()
@@ -79,7 +120,7 @@ function MobileSidebarInit() {
 }
 
 function ChatSidebar() {
-  const { isOpen, toggle, close } = useAppSidebar()
+  const { isOpen, toggle, close } = useShellSidebar()
   const isMobile = useIsMobile()
   const { width, setWidth, isDragging, setIsDragging } = useContext(SidebarWidthContext)
   const { shouldAnimate, scale } = useMotionPreference()
@@ -258,7 +299,7 @@ function ChatSidebar() {
 }
 
 function Inset({ children }: { children: React.ReactNode }) {
-  const { isOpen } = useAppSidebar()
+  const { isOpen } = useShellSidebar()
   const isMobile = useIsMobile()
   const { width, isDragging } = useContext(SidebarWidthContext)
   const { shouldAnimate, scale } = useMotionPreference()
@@ -386,11 +427,13 @@ export function KnowledgeShell({ children }: { children: React.ReactNode }) {
     <AppSidebarProvider defaultOpen={true} storageKey={STORAGE_KEY}>
       <SidebarWidthContext.Provider value={{ width, setWidth, isDragging, setIsDragging }}>
         <MobileSidebarInit />
-        <ChatSidebar />
-        <Inset>
-          {header}
-          {children}
-        </Inset>
+        <ShellSidebarProvider>
+          <ChatSidebar />
+          <Inset>
+            {header}
+            {children}
+          </Inset>
+        </ShellSidebarProvider>
       </SidebarWidthContext.Provider>
     </AppSidebarProvider>
   )
