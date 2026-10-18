@@ -107,7 +107,7 @@ Vercel build
   ├─ scripts/fetch-content.mjs clones knowledge + cosmo + taoteching
   │    into .content/ (or copies a sibling checkout, locally), and lists
   │    taoteching's open issues once, for the chapter pages' Discussion
-  └─ next build bakes /library at build time — 322 static pages
+  └─ next build bakes /library at build time
        │
        ├──→ opencosmos.ai/library          (reading)
        └──→ RAG API, app/api/knowledge/   (retrieval, via Upstash)
@@ -262,13 +262,14 @@ Lives at `app/api/knowledge/route.ts`, deployed to `opencosmos.ai/api/knowledge`
 
 ### The Library
 
-A section of opencosmos.ai at **`/library/`**, built at deploy time from `.content/knowledge/` — the corpus as fetched, not as committed. 111 document routes of the 322 static pages.
+A section of opencosmos.ai at **`/library/`**, built at deploy time from `.content/knowledge/` — the corpus as fetched, not as committed. The Tao Te Ching is the exception: its landing page and its 81 chapter pages (`/library/sources/taoism-tao-te-ching/1` … `/81`) are built from `.content/taoteching/data/atlas-export.json`, per [ADR 0020](decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md).
 
 - Renders markdown with frontmatter metadata displayed
 - Browsable by domain, role, and tags
 - Search powered by the same Upstash Vector index (via the RAG API)
 - Built as part of the site's Next.js app — no separate deployment
 - A corpus edit reaches the site without anyone touching this repository: the corpus workflow fires a Vercel deploy hook, the build re-fetches, the pages regenerate
+- A translation edit in taoteching reaches the Tao Te Ching pages the same way, through knowledge's daily *Tao Te Ching sync*. taoteching's own `notify-opencosmos.yml` would do it on every merge, once its `VERCEL_DEPLOY_HOOK` and `KNOWLEDGE_DISPATCH_TOKEN` secrets are set
 - **Document outline panel:** Sticky TOC sidebar (`TableOfContents.tsx`) extracted from H2/H3 headings using `rehype-slug` + `github-slugger` for consistent anchor IDs. IntersectionObserver highlights the active section. On active section change, the current section (heading, doc title, doc path) is written to `sessionStorage` under `cosmo_context` so the Cosmo chat at `/dialog` can read it and ground responses in the user's current reading position.
 
 ### Sync Workflow (Git → Upstash Vector)
