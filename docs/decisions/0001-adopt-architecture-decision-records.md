@@ -16,13 +16,15 @@ The value of a decision record is highest exactly where the reasoning is least v
 
 ## Decision
 
-Record each load-bearing decision as a small, numbered, immutable markdown file in `docs/decisions/`, using the Nygard format already running at 44 records in the sibling Agency of One repository. Adopting the same conventions deliberately, so the two read the same way.
+Record each load-bearing decision as a small, numbered markdown file in `docs/decisions/`, using the Nygard format already running at 44 records in the sibling Agency of One repository. Adopting the same conventions deliberately, so the two read the same way.
 
 ### Conventions
 
 - **Location:** `docs/decisions/NNNN-short-slug.md`, zero-padded, sequential.
 - **Status:** `Proposed` · `Accepted` · `Superseded by NNNN`.
-- **Append-only.** Never edit a record to change its meaning. To reverse a decision, write a new one that supersedes it and link both directions. The history of reversals is itself information.
+- **Correct a factual error in place, as soon as it is found.** A record that states something false misleads every reader who trusts it, and a correction logged somewhere else (a CHANGELOG entry, a later pull request) never reaches them. Fix the sentence where it stands and mark it inline, *(Corrected YYYY-MM-DD: was "…")*, so the reader sees that it changed; git holds the rest. *(Shalom's call, 2026-10-17.)*
+- **Append updates to the record itself.** When something a record describes moves on (a planned step ships, a measured number changes, a dependency turns out to be missing), add a dated entry to a closing `## Updates` section, oldest first. The body stays the decision as made; the updates say what has happened since. A reader of the record should never have to find its current state in another file. *(Shalom's call, 2026-10-17.)*
+- **Reverse a decision only with a new record.** Changing what was *decided*, as opposed to correcting a fact or reporting progress, takes a new record that supersedes the old one, linked both ways. The history of reversals is itself information.
 - **Header:** `**Date:** YYYY-MM-DD · **Status:** …` plus any `Supersedes` / `Superseded by` / `Relates to` cross-links.
 - **Summary line:** one italic sentence directly beneath the header, saying what the record is for. It orients a reader opening the file, and `pnpm adr:index` harvests it into the index table in [README.md](README.md).
 - **No frontmatter.** The heading carries the number and title and the header line carries the status; restating either in frontmatter would duplicate facts that then drift apart. The index is generated from the documents rather than from a parallel set of metadata.
@@ -68,3 +70,7 @@ Four headings, in this order. Keep each short enough to read in a sitting.
 - **Revive `docs/chronicle.md`.** Rejected as the primary mechanism. It is the best writing in the repository and should continue as narrative, but it is per-episode rather than per-decision: no index, no titles that name decisions, no way to look up a specific choice without reading prose.
 - **Revive the Decision Log table in `architecture.md`.** Rejected: a table row cannot hold consequences or rejected alternatives, and has no supersession mechanism. Its surviving rows are migrated here instead.
 - **Nothing.** Rejected. The reasoning behind the `knowledge/` versus `/library` split survived only because someone asked about it directly, in a conversation that was about to end.
+
+## Updates
+
+- **2026-10-17 — Records are corrected and updated in place, not only superseded.** *(Shalom's call.)* The original convention was a blanket "append-only: never edit a record". In practice that left [0020](0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md) stating a measured count that was wrong when written, and describing as planned two steps that had shipped, with the corrections living only in CHANGELOG, where a reader of the record would not find them. The conventions above now separate three cases: a factual error is corrected in place and marked; progress is appended under `## Updates`; only a change of decision needs a new record.
