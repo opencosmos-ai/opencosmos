@@ -95,7 +95,7 @@ See [AGENTS.md § Document Organization](../AGENTS.md#document-organization) for
 - **Root (5 max):** README, WELCOME, DESIGN-PHILOSOPHY, CHANGELOG, CONTRIBUTING
 - **Root (agent context):** AGENTS.md, .claude/CLAUDE.md
 - **docs/:** Architecture, migration plans, research, chronicle, retrospectives
-- **docs/decisions/:** ADRs — numbered, append-only, one per load-bearing decision
+- **docs/decisions/:** ADRs — numbered, one per load-bearing decision. Correct a factual error in place as soon as it is found; append progress under the record's `## Updates`; supersede only to change a decision ([0001](../docs/decisions/0001-adopt-architecture-decision-records.md))
 - **the corpus:** not in this repo — [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge), see its [README](https://github.com/opencosmos-ai/knowledge/blob/main/README.md)
 - **Cosmo's documents:** in [opencosmos-ai/cosmo](https://github.com/opencosmos-ai/cosmo), not here
 

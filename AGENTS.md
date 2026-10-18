@@ -142,7 +142,7 @@ Root should contain only the files every visitor or contributor needs immediatel
 | **Root** | README, WELCOME, DESIGN-PHILOSOPHY, CHANGELOG, CONTRIBUTING | 5 |
 | **Root (agent context)** | AGENTS.md, .claude/CLAUDE.md | 2 |
 | **docs/** | Architecture, migration plans, research, narrative history (chronicle), retrospectives | No limit |
-| **docs/decisions/** | ADRs — numbered, append-only, one per load-bearing decision | No limit |
+| **docs/decisions/** | ADRs — numbered, one per load-bearing decision; factual errors corrected in place, progress appended under `## Updates`, a changed decision superseded ([0001](docs/decisions/0001-adopt-architecture-decision-records.md)) | No limit |
 | **docs/archive-and-deprecated/** | Historical documents superseded by current work | No limit |
 | **the corpus** | Anything that should be RAG-indexed. **Not in this repo** — it lives in [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge); see its [README](https://github.com/opencosmos-ai/knowledge/blob/main/README.md) for the schema | No limit |
 

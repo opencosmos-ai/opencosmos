@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-10-15
+**Last updated:** 2026-10-17
 
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
@@ -35,6 +35,17 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-10-17 — The Open Tao Te Ching is announced in public
+
+Shalom announced the translation in [*Welcome to the Open Tao Te Ching*](https://shalomormsby.substack.com/p/welcome-to-the-open-tao-te-ching), which sends readers to the Library, the [Character Atlas & Glossary](https://chinese-atlas.opencosmos.ai/) and Cosmo. The full account is in [taoteching's changelog](https://github.com/opencosmos-ai/taoteching/blob/main/CHANGELOG.md).
+
+## 2026-10-15 — Cosmo's copy of the Tao Te Ching is generated, not hand-kept
+
+The stopgap in [ADR 0020](docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md) §9 is replaced by the generated document it promised ([knowledge#16](https://github.com/opencosmos-ai/knowledge/pull/16)).
+- **`sources/taoism-tao-te-ching.md` is written by `npm run ttc:generate`** from taoteching's export. Each chapter gives the English verse, the Chinese, and the translator's notes, under `## Chapter N` headings. Old anchors still land through `lib/corpus-href.ts`.
+- **knowledge's daily *Tao Te Ching sync* regenerates it**, then *Knowledge Sync* re-embeds the corpus and redeploys the site, so Cosmo's copy and the Library are never more than a day behind the translation.
+- **The faster path is built but not yet connected.** taoteching's `notify-opencosmos.yml` would redeploy the site and regenerate the copy on every merge, but its `VERCEL_DEPLOY_HOOK` and `KNOWLEDGE_DISPATCH_TOKEN` secrets are not set, so each run skips with a notice and the daily sync carries the change.
+
 ## 2026-10-15 — The Open Tao Te Ching is read in the Library, a chapter to a page
 
 [ADR 0020](docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md), built. `/library/sources/taoism-tao-te-ching` now introduces the Open Tao Te Ching and lists its 81 chapters, and each chapter is its own page, built from [taoteching](https://github.com/opencosmos-ai/taoteching)'s `data/atlas-export.json`.
@@ -46,7 +57,7 @@ All notable changes to this project will be documented in this file.
   - **Terms:** the glossary entries standing in the chapter.
   - **Notes:** the translator's, set apart from the verse.
   - **Discussion:** open issues and pull requests titled `Ch N —`, from one GitHub call per build, with a link to raise one.
-- **Lines are linked only where the alignment is exact.** That is **32 chapters today, not the 61 ADR 0020 states**: the database has said 32 all along, and in 49 chapters the English and Chinese line counts differ. Elsewhere the page says so and links nothing.
+- **Lines are linked only where the alignment is exact.** That is **32 chapters today, not the 61 ADR 0020 first stated** (since corrected in the record): the database has said 32 all along, and in 49 chapters the English and Chinese line counts differ. Elsewhere the page says so and links nothing.
 - **Every old citation still lands.** `lib/corpus-href.ts` maps `#one` … `#eighty-one` and `#chapter-N` on the corpus document to the chapter's page, `#notes-on-chapter-N` to its Notes, and anything else to the landing page; the landing page forwards a `#twelve` link the same way. `pnpm check:tao-te-ching` proves every form, for every chapter, through the chat renderer and the constellation, and runs in CI.
 - **"Suggest an edit" opens the chapter's file in taoteching**, not the corpus copy, which is generated and would be overwritten.
 - **Cosmo still knows which chapter you are reading**: the page names its corpus heading, so the chat injects the chapter whole.
