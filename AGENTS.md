@@ -231,7 +231,7 @@ rm -rf .next .content && pnpm build
 | React | React 19.2.1 | |
 | Language | TypeScript 5 | Strict mode |
 | Styling | Tailwind CSS | Via CSS variables from @opencosmos/ui |
-| Design System | `@opencosmos/ui` (npm) | 100 components, 3 themes |
+| Design System | `@opencosmos/ui` (npm) | components and themes — see [studio.opencosmos.ai](https://studio.opencosmos.ai/) |
 | Package manager | pnpm | One package at the root — [ADR 0019](docs/decisions/0019-one-application-lives-at-the-repository-root.md) |
 | Deployment | Vercel | Auto-deploys main; the knowledge repo's sync workflow also triggers a rebuild |
 

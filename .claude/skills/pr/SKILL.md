@@ -56,6 +56,17 @@ Check the repo root for `CHANGELOG.md`.
 - Write the entry from the **reader's-eye view** — what changed and why it matters, not a restated diff. One entry, describing this PR's work as a whole.
 - Pass `--no-changelog` to skip this step even when a CHANGELOG.md exists (e.g. for a change genuinely too minor to log).
 
+## Step 3b — Docs impact: does this change make anything else false?
+
+A change that is correct here can leave a statement false somewhere else, in this repo's docs or in a sibling repo. That is how the opencosmos-ai repos drift, so ask four questions of the diff before pushing. Fix what they find **in this PR**; for a sibling repo, open its PR in the same session and link the two.
+
+1. **What did this replace?** For every value, name, wording, URL, date or behaviour the diff changes, search the old one across this repo and its siblings in `~/Developer/opencosmos-ai/` (Markdown and YAML, skipping `node_modules`, `.content`, generated `data/` and vendored sources). A hit outside dated history (a CHANGELOG, a ledger, a log) is a stale copy: fix it.
+2. **Is it a correction?** Fix the false statement where it stands, marked *(Corrected YYYY-MM-DD: was "…")*. In taoteching, also register the withdrawn claim in `process/retractions.yaml`, so `check_retractions.py` fails on any copy. In an ADR, correct in place and append progress under its `## Updates` (opencosmos ADR 0001). Never leave it and log the correction elsewhere.
+3. **Did a count move?** A count in prose that nothing checks is trimmed to a link to what prints it. A gated one (`<!-- count: … -->` in taoteching) is updated, and `check_counts.py` proves it.
+4. **Does another repo describe this?** taoteching's text, export or workflows are described in opencosmos (`docs/architecture.md`, ADR 0020, CHANGELOG), in knowledge (wiki quotations, checked by `npm run quotes:living`) and in chinese-atlas (README). Check the ones that apply.
+
+Say what was checked in the PR body, under **Docs impact**, even when the answer is "none".
+
 ## Step 5: Push
 
 ```bash

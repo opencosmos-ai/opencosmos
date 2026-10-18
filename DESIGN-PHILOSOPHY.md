@@ -187,7 +187,7 @@ The design system and the site that uses it live in two repositories:
 ```
 opencosmos-ui/
 ├── packages/
-│   ├── ui/                   ← @opencosmos/ui - Component library (100 components)
+│   ├── ui/                   ← @opencosmos/ui - Component library
 │   ├── tokens/               ← @opencosmos/tokens - Design tokens
 │   └── mcp/                  ← @opencosmos/mcp - AI assistant tools
 └── apps/web/                 ← OpenCosmos Studio (studio.opencosmos.ai)

@@ -18,6 +18,7 @@
 - [ ] Accessibility: keyboard navigable, screen reader friendly, motion respects `useMotionPreference()`
 - [ ] No hardcoded colors — uses CSS variables / theme tokens
 - [ ] CHANGELOG.md updated (if significant change)
+- [ ] Docs impact: anything this change made false, here or in a sibling repo, is fixed (see `/pr` → Docs impact)
 
 ## Test Plan
 
