@@ -60,8 +60,8 @@ This layer is inspired by and extends the work of [Andrej Karpathy's LLM Wiki pa
 
 | Layer | Status |
 |-------|--------|
-| Knowledge corpus (~60 source documents) | Live, actively curated |
-| Wiki synthesis layer (25 entities/concepts/connections) | Live, updated 2026-04-11 |
+| Knowledge corpus | Live, actively curated |
+| Wiki synthesis layer (entities, concepts, connections) | Live |
 | Wiki index ambient in Claude Code sessions | Live (via `@` import in CLAUDE.md) |
 | Wiki index ambient in deployed product | Live (baked into `COSMO_WIKI_INDEX` at build time) |
 | Knowledge browser at `/knowledge` | Live |
