@@ -45,8 +45,8 @@ Around the chapters sit 53 glossary entries (rulings, with locked English and fo
 | Discussion | open issues and pull requests for this chapter, and a way to open one |
 
 **The English and the Chinese are linked by highlighting, not by table rows.** Focusing a Chinese line highlights the English line that renders it. That link is shown **only where the alignment is certain**:
-- **Today:** the 32 chapters whose line counts agree. *(Corrected 2026-10-17: was "61".)*
-- **The other 49:** no link until taoteching records an authored alignment for them. A proportional guess is never presented as a pairing, the same rule the database already keeps.
+- **Today:** all 81. The 32 whose line counts agree pair 1:1, and the 49 whose counts differ pair by an alignment taoteching records by hand. *(Updated 2026-10-24: was "the 32 chapters whose line counts agree", corrected 2026-10-17 from "61". See Updates.)*
+- **The other 49:** no link until taoteching records an authored alignment for them. A proportional guess is never presented as a pairing, the same rule the database already keeps. *(Done 2026-10-24: all 49 carry one, and taoteching no longer makes the guess.)*
 - **What the export must carry:** each alignment's confidence, so the page can tell the two cases apart.
 
 **3. The source is taoteching's export, fetched at build time.**
