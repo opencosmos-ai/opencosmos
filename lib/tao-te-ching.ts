@@ -66,6 +66,10 @@ type AtlasExport = {
   align: Record<string, [number, number, string][]>
 }
 
+/** The alignment methods that are pairings, not guesses: the counts agree, or
+ *  the chapter names its pairings by hand (taoteching WORKLIST T5-23). */
+const CERTAIN = new Set(['exact-count', 'authored'])
+
 let cached: AtlasExport | null = null
 
 function load(): AtlasExport {
@@ -132,7 +136,7 @@ export type ChapterView = {
   title: ChapterTitle
   stanzas: string[][]
   lines: OriginalLine[]
-  /** Every line pairs at exact-count: the only case a link is shown (ADR 0020 §2). */
+  /** Every line pairs with certainty, at exact-count or authored: the only case a link is shown (ADR 0020 §2). */
   exact: boolean
   chars: Record<string, CharView>
 }
@@ -208,7 +212,7 @@ export function getChapter(n: number): ChapterView | null {
   if (!Number.isInteger(n) || n < 1 || n > TAO_TE_CHING_CHAPTERS) return null
   const x = load()
   const keys = lineKeys(x, n)
-  const exact = keys.length > 0 && keys.every((k) => (x.align[k] ?? []).every(([, , m]) => m === 'exact-count'))
+  const exact = keys.length > 0 && keys.every((k) => (x.align[k] ?? []).every(([, , m]) => CERTAIN.has(m)))
 
   const lines: OriginalLine[] = keys.map((k, i) => {
     const [zh, pinyin] = x.lines[k]!
