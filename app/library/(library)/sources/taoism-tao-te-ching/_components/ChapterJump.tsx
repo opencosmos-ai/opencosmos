@@ -9,7 +9,7 @@ export default function ChapterJump({ current }: { current: number }) {
       <p className="text-xs uppercase tracking-widest text-foreground/30 mb-3 font-medium px-2">
         Chapters
       </p>
-      <ul className="grid grid-cols-6 gap-0.5">
+      <ul className="grid grid-cols-3 gap-0.5">
         {chapterNumbers().map((n) => (
           <li key={n}>
             <Link
