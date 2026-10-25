@@ -18,6 +18,7 @@ import TableOfContents from '../../../[...slug]/TableOfContents'
 import SourceLinks from '../../../../SourceLinks'
 import LibraryBreadcrumb from '../../../../LibraryBreadcrumb'
 import ChapterText from '../_components/ChapterText'
+import ChapterJump from '../_components/ChapterJump'
 import TextFooter from '../_components/TextFooter'
 import { ChapterNav, Discussion, Listen, Notes, Terms } from '../_components/Sections'
 import { SECTIONS } from '../_components/styles'
@@ -103,7 +104,9 @@ export default async function ChapterPage({ params }: Props) {
           docTitle="Tao Te Ching"
           docPath={TAO_TE_CHING_DOC}
           contextHeading={corpusHeadingFor(n, corpus?.content ?? null)}
-        />
+        >
+          <ChapterJump current={n} />
+        </TableOfContents>
       </div>
 
       <TextFooter />
