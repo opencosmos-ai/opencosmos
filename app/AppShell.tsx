@@ -1,7 +1,7 @@
 'use client'
 
 import { AppSidebar, AppSidebarProvider, AppSidebarInset, InfinityAnim, useAppSidebar } from '@opencosmos/ui'
-import { MessageSquare, BookOpen, ExternalLink, Sparkles, CircleDashed } from 'lucide-react'
+import { MessageSquare, BookOpen, ExternalLink, CircleDashed } from 'lucide-react'
 import { SidebarAvatar } from './SidebarAvatar'
 import { SidebarUsage } from './SidebarUsage'
 
@@ -48,12 +48,13 @@ export function AppShell({
             href: 'https://studio.opencosmos.ai/docs/getting-started',
             external: true,
           },
-          {
-            icon: <Sparkles className="w-4 h-4" />,
-            label: 'Inception',
-            href: '/inception',
-            active: activePath === '/inception',
-          },
+          // Inception is hidden from navigation; the page still lives at /inception.
+          // {
+          //   icon: <Sparkles className="w-4 h-4" />,
+          //   label: 'Inception',
+          //   href: '/inception',
+          //   active: activePath === '/inception',
+          // },
           {
             icon: <CircleDashed className="w-4 h-4" />,
             label: 'Xensō',

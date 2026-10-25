@@ -21,7 +21,8 @@ export default function Home() {
             { label: 'Dialog', href: '/dialog' },
             { label: 'Library', href: '/library' },
             { label: 'Toolkit', href: 'https://studio.opencosmos.ai/docs/getting-started' },
-            { label: 'Inception', href: '/inception' },
+            // Inception is hidden from navigation; the page still lives at /inception.
+            // { label: 'Inception', href: '/inception' },
             { label: 'Xensō', href: '/xenso' },
           ]}
           actions={<AuthButton />}
