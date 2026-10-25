@@ -97,6 +97,17 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
   useEffect(() => () => {
     if (landedTimer.current) clearTimeout(landedTimer.current)
   }, [])
+  // The English line a reader arrived at from the landing page's search
+  // (`#verse-N`). Next scrolls to it; this lights it long enough to be found.
+  const [arrived, setArrived] = useState<number | null>(null)
+  useEffect(() => {
+    const m = /^#verse-(\d+)$/.exec(window.location.hash)
+    if (!m) return
+    setArrived(Number(m[1]))
+    const t = setTimeout(() => setArrived(null), 2400)
+    return () => clearTimeout(t)
+  }, [])
+
   const goToLine = useCallback((seq: number) => {
     const target = document.querySelector(`[data-line="${seq}"]`)
     if (!target) return
@@ -127,10 +138,10 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
             <p key={s}>
               {stanza.map((line, i) => {
                 const v = ++verseNo
-                const isLit = link && litVerses.has(v)
+                const isLit = (link && litVerses.has(v)) || arrived === v
                 const source = linesOfVerse.get(v) ?? []
                 const target = link ? source[0] : undefined
-                const verseClass = cn('rounded px-1 -mx-1', light, isLit && lit)
+                const verseClass = cn('rounded px-1 -mx-1 scroll-mt-28', light, isLit && lit)
                 return (
                   <span key={i} className="flex items-baseline">
                     {showNumbers && (
@@ -140,6 +151,7 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
                       // Selecting a paired line takes the reader to the Chinese it renders.
                       <button
                         type="button"
+                        id={`verse-${v}`}
                         data-verse={v}
                         onMouseEnter={() => setActiveLine(target)}
                         onMouseLeave={() => setActiveLine(null)}
@@ -155,7 +167,7 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
                         {line}
                       </button>
                     ) : (
-                      <span data-verse={v} className={verseClass}>{line}</span>
+                      <span id={`verse-${v}`} data-verse={v} className={verseClass}>{line}</span>
                     )}
                   </span>
                 )

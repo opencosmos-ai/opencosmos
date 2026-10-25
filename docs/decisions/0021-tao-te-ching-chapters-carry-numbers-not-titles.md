@@ -31,3 +31,7 @@ _The Library shows each chapter of the Open Tao Te Ching by its number alone. He
 
 - **Keep the titles, with the caption.** This was 0020's choice. Rejected because the caption names the overlay but still lays it over the text first.
 - **Show the opening line of each chapter as its label.** This is the classical way to name an untitled poem, and it uses only Laozi's words. Not taken now: the translation's opening lines still change weekly, and a grid of numbers is the cleaner view. It remains open.
+
+## Updates
+
+- **2026-10-24 — The search this record counted on exists.** *Consequences* sent a reader looking for "the chapter about water" to search, but the Library's search covered titles and metadata, not the verse. The landing page now searches the text itself, in English, pinyin and Chinese, and each result opens its chapter at the line ([0020](0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md) § Updates).

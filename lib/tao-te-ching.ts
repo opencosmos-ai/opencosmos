@@ -373,3 +373,32 @@ export function corpusHeadingFor(n: number, corpus: string | null): string {
     `Chapter ${n}`
   )
 }
+
+// ── Search (the landing page) ─────────────────────────────────────────────────
+
+/**
+ * One English line of the translation, with the Chinese it renders:
+ * [chapter, verse line (1-based across stanzas), English, Chinese, pinyin].
+ * A tuple, not an object, because the index ships as JSON and 855 copies of
+ * five key names would outweigh the pinyin. The Chinese and pinyin are empty
+ * for a line whose chapter isn't paired with certainty.
+ */
+export type SearchLine = [number, number, string, string, string]
+
+export function getSearchIndex(): SearchLine[] {
+  const out: SearchLine[] = []
+  for (const n of chapterNumbers()) {
+    const ch = getChapter(n)
+    if (!ch) continue
+    const source = new Map<number, OriginalLine[]>()
+    for (const l of ch.lines) for (const v of l.verse) source.set(v, [...(source.get(v) ?? []), l])
+    let v = 0
+    for (const stanza of ch.stanzas) {
+      for (const en of stanza) {
+        const lines = source.get(++v) ?? []
+        out.push([n, v, en, lines.map((l) => l.zh).join(''), lines.map((l) => l.pinyin).join(' ')])
+      }
+    }
+  }
+  return out
+}
