@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Badge, Button, GitHubIcon, Separator } from '@opencosmos/ui'
+import { Badge, Button, GitHubIcon } from '@opencosmos/ui'
 import { BookOpen, ExternalLink } from 'lucide-react'
 import { CATEGORY_LABELS } from '@/lib/knowledge-meta'
 import { TAO_TE_CHING_DOC, taoTeChingHref } from '@/lib/corpus-href'
@@ -59,8 +59,6 @@ export default function TaoTeChingPage() {
           </p>
 
           <TextSearch />
-
-          <Separator className="mb-2" />
 
           <section aria-labelledby="chapters">
             <h2 id="chapters" className={H2}>Chapters</h2>
