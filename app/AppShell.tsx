@@ -1,7 +1,7 @@
 'use client'
 
 import { AppSidebar, AppSidebarProvider, AppSidebarInset, InfinityAnim, useAppSidebar } from '@opencosmos/ui'
-import { MessageSquare, BookOpen, ExternalLink, CircleDashed } from 'lucide-react'
+import { MessageSquare, BookOpen, ExternalLink } from 'lucide-react'
 import { SidebarAvatar } from './SidebarAvatar'
 import { SidebarUsage } from './SidebarUsage'
 
@@ -55,12 +55,13 @@ export function AppShell({
           //   href: '/inception',
           //   active: activePath === '/inception',
           // },
-          {
-            icon: <CircleDashed className="w-4 h-4" />,
-            label: 'Xensō',
-            href: '/xenso',
-            active: activePath === '/xenso',
-          },
+          // Xensō is hidden from navigation; the page still lives at /xenso.
+          // {
+          //   icon: <CircleDashed className="w-4 h-4" />,
+          //   label: 'Xensō',
+          //   href: '/xenso',
+          //   active: activePath === '/xenso',
+          // },
         ]}
         footer={<ShellFooter />}
       />
