@@ -44,14 +44,16 @@ function lineLabel(nums: number[]): string {
   return sorted.join(', ')
 }
 
-const GUTTER = 'w-8 shrink-0 pr-3 text-right text-xs tabular-nums text-foreground/35 select-none'
+// Left-aligned, so the numbers share a clean left edge, and never wrapped: a
+// range like "13–14" stays on one line. The width is set per chapter, below.
+const GUTTER = 'shrink-0 pr-3 text-left whitespace-nowrap text-xs tabular-nums text-foreground/35 select-none'
 
 /**
  * Translation and Original, together, because they share one piece of state:
  * which line is lit. Focusing or hovering a Chinese line lights the English
  * that renders it, and the reverse, and selecting an English line scrolls to
- * its Chinese — but only in a chapter whose alignment is exact. Elsewhere the pairing is a proportional guess, and a guess is never
- * shown as a pairing (ADR 0020 §2).
+ * its Chinese — but only in a chapter whose alignment is certain, which since
+ * 2026-10-24 is all 81. A guess is never shown as a pairing (ADR 0020 §2).
  */
 export default function ChapterText({ chapter }: { chapter: ChapterView }) {
   const { shouldAnimate } = useMotionPreference()
@@ -68,6 +70,15 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
     for (const l of chapter.lines) for (const v of l.verse) m.set(v, [...(m.get(v) ?? []), l.seq])
     return m
   }, [chapter.lines])
+
+  // One gutter width for both columns, wide enough for the chapter's longest
+  // label and never narrower than 2rem, so the English and the Chinese start at
+  // the same indent and a chapter of single numbers keeps its narrow gutter.
+  const gutterStyle = useMemo(() => {
+    const labels = [...linesOfVerse.values()].map(lineLabel)
+    const longest = Math.max(String(chapter.lines.length).length, ...labels.map((l) => l.length))
+    return { width: `max(2rem, calc(${longest}ch + 0.75rem))` }
+  }, [linesOfVerse, chapter.lines.length])
 
   const litVerses = useMemo(() => {
     const line = chapter.lines.find((l) => l.seq === activeLine)
@@ -123,7 +134,7 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
                 return (
                   <span key={i} className="flex items-baseline">
                     {showNumbers && (
-                      <span className={GUTTER} aria-hidden="true">{source.length ? lineLabel(source) : ''}</span>
+                      <span className={GUTTER} style={gutterStyle} aria-hidden="true">{source.length ? lineLabel(source) : ''}</span>
                     )}
                     {target !== undefined ? (
                       // Selecting a paired line takes the reader to the Chinese it renders.
@@ -183,7 +194,7 @@ export default function ChapterText({ chapter }: { chapter: ChapterView }) {
             const isLit = link && (activeLine === line.seq || landed === line.seq)
             return (
               <div key={line.seq} className="flex items-baseline">
-              {showNumbers && <span className={GUTTER} aria-hidden="true">{line.seq}</span>}
+              {showNumbers && <span className={GUTTER} style={gutterStyle} aria-hidden="true">{line.seq}</span>}
               <p
                 lang="zh-Hant"
                 data-line={line.seq}

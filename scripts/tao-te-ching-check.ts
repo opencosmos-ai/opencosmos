@@ -16,8 +16,10 @@
  *      callers of lib/corpus-href: the chat renderer (docHref), the
  *      constellation (nodeHref) and the landing page's fragment redirect.
  *   2. Discussion titles: `Ch 1` must never collect `Ch 12`.
- *   3. The export, when `pnpm content` has fetched it: chapters pair lines
- *      exactly where, and only where, their line counts agree.
+ *   3. The export, when `pnpm content` has fetched it: a chapter links its
+ *      lines exactly where every pairing is certain (`exact-count` where the
+ *      counts agree, `authored` where taoteching names them by hand), and a
+ *      linked chapter leaves no English or Chinese line out.
  */
 
 import fs from 'fs'
@@ -119,17 +121,33 @@ if (!fs.existsSync(EXPORT)) {
 } else {
   console.log('export')
   const x = JSON.parse(fs.readFileSync(EXPORT, 'utf-8'))
+  const align = x.align as Record<string, [number, number, string][]>
+  const certain = new Set(['exact-count', 'authored'])
   let exact = 0
   for (let n = 1; n <= 81; n++) {
     const ch = getChapter(n)!
     const verseCount = ch.stanzas.flat().length
+    const pairings = ch.lines.flatMap((l) => align[`${n}.${l.seq}`] ?? [])
     if (ch.exact) exact++
-    check(`ch ${n} is exact iff its counts agree`, ch.exact === (verseCount === ch.lines.length), { exact: ch.exact, verse: verseCount, lines: ch.lines.length })
+    check(`ch ${n} is linked iff every pairing is certain`, ch.exact === (pairings.length > 0 && pairings.every(([, , m]) => certain.has(m))), { exact: ch.exact, methods: [...new Set(pairings.map(([, , m]) => m))] })
     check(`ch ${n} has verse and lines`, verseCount > 0 && ch.lines.length > 0)
-    if (!ch.exact) check(`ch ${n} links nothing`, ch.lines.every((l) => l.verse.length === 0))
+    if (ch.exact) {
+      const covered = new Set(ch.lines.flatMap((l) => l.verse))
+      check(`ch ${n}: every Chinese line renders into English`, ch.lines.every((l) => l.verse.length > 0))
+      check(`ch ${n}: every English line renders a Chinese line`, covered.size === verseCount && [...covered].every((v) => v >= 1 && v <= verseCount), { covered: covered.size, verse: verseCount })
+      if (verseCount === ch.lines.length && pairings.every(([, , m]) => m === 'exact-count')) {
+        check(`ch ${n}: even counts pair one to one`, ch.lines.every((l) => l.verse.length === 1 && l.verse[0] === l.seq))
+      }
+    } else {
+      check(`ch ${n} links nothing`, ch.lines.every((l) => l.verse.length === 0))
+    }
     check(`ch ${n}: every character has a panel`, ch.lines.every((l) => l.tokens.every((t) => t.kind !== 'han' || ch.chars[t.c])))
   }
-  check('chapter 6, the ADR’s example, is not linked', getChapter(6)!.exact === false)
+  // ADR 0020 was written around this line: the proportional guess paired the
+  // gate of the dark female with "This is the dark female." Its English is the
+  // next line, and the authored alignment says so.
+  const six = getChapter(6)!
+  check('chapter 6’s gate pairs with its own English', six.exact && six.lines[2]!.verse.join() === '3', { verse: six.lines[2]?.verse })
   const wei = Object.entries(x.lines as Record<string, [string, string]>).find(([, [zh]]) => zh.includes('為'))
   check('為 keeps the translation’s reading', wei !== undefined && getChapter(Number(wei[0].split('.')[0]))!.lines.some((l) => l.tokens.some((t) => t.kind === 'han' && t.c === '為' && t.p === 'wéi')))
   check('chapter 1 has the 道 (dào) entry among its terms', getChapterTerms(1).some((t) => t.slug === 'dao-道'))
