@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { cn } from '@opencosmos/ui'
 import { emitCosmoEvent } from '@/lib/cosmo-events'
 import { ScrollContainerContext } from '../../ScrollContainerContext'
@@ -30,6 +30,8 @@ type Props = {
    * it names its chapter's heading instead, and the chat injects that chapter.
    */
   contextHeading?: string
+  /** Extra sidebar sections rendered below the outline, e.g. a chapter jump list. */
+  children?: ReactNode
 }
 
 // Matches scroll-mt-28 (7rem = 112px) on h2/h3 in DocViewer, plus a small
@@ -42,7 +44,7 @@ const HEADER_OFFSET = 120
 // ballooning the prompt. Typical paragraphs are 200–600 chars.
 const PASSAGE_MAX_CHARS = 800
 
-export default function TableOfContents({ toc, docTitle, docPath, contextHeading }: Props) {
+export default function TableOfContents({ toc, docTitle, docPath, contextHeading, children }: Props) {
   const [activeId, setActiveId] = useState<string>(toc[0]?.id ?? '')
   const [passage, setPassage] = useState<string>('')
   const headingElsRef = useRef<HTMLElement[]>([])
@@ -207,6 +209,7 @@ export default function TableOfContents({ toc, docTitle, docPath, contextHeading
           )
         })}
       </ul>
+      {children}
     </aside>
   )
 }
