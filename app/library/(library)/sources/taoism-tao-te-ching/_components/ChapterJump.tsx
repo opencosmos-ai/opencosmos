@@ -15,7 +15,7 @@ export default function ChapterJump({ current }: { current: number }) {
             <Link
               href={taoTeChingHref(n)}
               aria-current={n === current ? 'page' : undefined}
-              className={`block text-center text-xs py-1 rounded ring-1 ring-inset ring-transparent hover:ring-foreground/40 transition-colors ${
+              className={`block text-center text-xs py-1 rounded ring-1 ring-inset ring-transparent hover:ring-foreground/40 hover:bg-foreground/10 transition-colors ${
                 n === current
                   ? 'text-white font-medium bg-foreground/10'
                   : 'text-foreground/40 hover:text-foreground/70'
