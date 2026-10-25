@@ -9,13 +9,13 @@ export default function ChapterJump({ current }: { current: number }) {
       <p className="text-xs uppercase tracking-widest text-foreground/30 mb-3 font-medium px-2">
         Chapters
       </p>
-      <ul className="grid grid-cols-3 gap-0.5">
+      <ul className="grid grid-cols-9 gap-0.5">
         {chapterNumbers().map((n) => (
           <li key={n}>
             <Link
               href={taoTeChingHref(n)}
               aria-current={n === current ? 'page' : undefined}
-              className={`block text-center text-sm py-1 rounded transition-colors ${
+              className={`block text-center text-xs py-1 rounded transition-colors ${
                 n === current
                   ? 'text-white font-medium bg-foreground/10'
                   : 'text-foreground/40 hover:text-foreground/70'
