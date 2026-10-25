@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og'
-import { INK, Mark, OG_SIZE, Tile, interFonts, markPath } from '@/lib/og'
+import { INK, Mark, OG_SIZE, Tile, interFonts, markPath, ogFonts } from '@/lib/og'
 
 export const alt = 'OpenCosmos — an ensō, drawn in one stroke'
 export const size = OG_SIZE
@@ -35,6 +35,6 @@ export default async function Image() {
         </div>
       </Tile>
     ),
-    { ...OG_SIZE, fonts }
+    { ...OG_SIZE, fonts: ogFonts(fonts) }
   )
 }

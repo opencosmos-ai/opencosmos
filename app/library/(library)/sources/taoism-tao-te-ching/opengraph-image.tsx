@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og'
-import { INK, Mark, OG_SIZE, Tile, interFonts, markPath } from '@/lib/og'
+import { INK, Mark, OG_SIZE, Tile, interFonts, markPath, ogFonts } from '@/lib/og'
 
 export const alt = 'Tao Te Ching — the Open Tao Te Ching, in the OpenCosmos Library'
 export const size = OG_SIZE
@@ -27,7 +27,7 @@ export default async function Image() {
         <Footer />
       </Tile>
     ),
-    { ...OG_SIZE, fonts }
+    { ...OG_SIZE, fonts: ogFonts(fonts) }
   )
 }
 
