@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Badge, Button, GitHubIcon, Separator } from '@opencosmos/ui'
+import { Badge, Button, GitHubIcon } from '@opencosmos/ui'
 import { BookOpen, ExternalLink } from 'lucide-react'
 import { CATEGORY_LABELS } from '@/lib/knowledge-meta'
 import { TAO_TE_CHING_DOC, taoTeChingHref } from '@/lib/corpus-href'
@@ -9,6 +9,7 @@ import TableOfContents from '../../[...slug]/TableOfContents'
 import LibraryBreadcrumb from '../../../LibraryBreadcrumb'
 import LegacyAnchorRedirect from './_components/LegacyAnchorRedirect'
 import TextFooter from './_components/TextFooter'
+import TextSearch from './_components/TextSearch'
 import { H2 } from './_components/styles'
 
 export const metadata: Metadata = {
@@ -20,8 +21,8 @@ export const metadata: Metadata = {
 const external = { target: '_blank', rel: 'noopener noreferrer' } as const
 
 const TOC = [
-  { id: 'about-this-translation', text: 'About this translation', depth: 2 as const },
   { id: 'chapters', text: 'Chapters', depth: 2 as const },
+  { id: 'about-this-translation', text: 'About this translation', depth: 2 as const },
   { id: 'take-part', text: 'Take part', depth: 2 as const },
 ]
 
@@ -53,11 +54,30 @@ export default function TaoTeChingPage() {
           <p className="text-sm text-foreground/40 mb-6">
             The Open Tao Te Ching · Laozi · translated by Shalom Ormsby
           </p>
-          <p className="text-lg font-light text-foreground/60 leading-relaxed mb-10">
+          <p className="text-lg font-light text-foreground/60 leading-relaxed mb-6">
             A new English translation, made directly from the classical Chinese and given to the public domain.
           </p>
 
-          <Separator className="mb-2" />
+          <TextSearch />
+
+          <section aria-labelledby="chapters">
+            <h2 id="chapters" className={H2}>Chapters</h2>
+            {/* Numbers only, as Laozi left them: no titles, Heshang Gong's or
+                anyone's (ADR 0021). Nine by nine. */}
+            <ol className="list-none p-0 m-0 grid grid-cols-6 sm:grid-cols-9 gap-2">
+              {chapters.map((n) => (
+                <li key={n}>
+                  <Link
+                    href={taoTeChingHref(n)}
+                    aria-label={`Chapter ${n}`}
+                    className="flex items-center justify-center h-12 sm:h-14 rounded-md border border-foreground/10 text-lg tabular-nums text-foreground/80 hover:bg-foreground/10 hover:text-foreground hover:border-foreground/30 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
+                  >
+                    {n}
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </section>
 
           <section aria-labelledby="about-this-translation">
             <h2 id="about-this-translation" className={H2}>About this translation</h2>
@@ -85,25 +105,6 @@ export default function TaoTeChingPage() {
                 chapter, the translator’s notes on why it reads as it does, and what is open for discussion.
               </p>
             </div>
-          </section>
-
-          <section aria-labelledby="chapters">
-            <h2 id="chapters" className={H2}>Chapters</h2>
-            {/* Numbers only, as Laozi left them: no titles, Heshang Gong's or
-                anyone's (ADR 0021). Nine by nine. */}
-            <ol className="list-none p-0 m-0 grid grid-cols-6 sm:grid-cols-9 gap-2">
-              {chapters.map((n) => (
-                <li key={n}>
-                  <Link
-                    href={taoTeChingHref(n)}
-                    aria-label={`Chapter ${n}`}
-                    className="flex items-center justify-center h-12 sm:h-14 rounded-md border border-foreground/10 text-lg tabular-nums text-foreground/80 hover:bg-foreground/10 hover:text-foreground hover:border-foreground/30 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
-                  >
-                    {n}
-                  </Link>
-                </li>
-              ))}
-            </ol>
           </section>
 
           <section aria-labelledby="take-part">

@@ -31,8 +31,10 @@ const NAV_LINKS: HeaderNavLink[] = [
   { label: 'Dialog',    href: '/dialog' },
   { label: 'Library', href: '/library' },
   { label: 'Toolkit',   href: 'https://studio.opencosmos.ai/docs/getting-started' },
-  { label: 'Inception', href: '/inception' },
-  { label: 'Xensō',     href: '/xenso' },
+  // Inception is hidden from navigation; the page still lives at /inception.
+  // { label: 'Inception', href: '/inception' },
+  // Xensō is hidden from navigation; the page still lives at /xenso.
+  // { label: 'Xensō',     href: '/xenso' },
 ]
 
 const STORAGE_KEY = 'appsidebar:knowledge'

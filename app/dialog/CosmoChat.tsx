@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Header, Button, Input, cn, AppSidebar, AppSidebarProvider, AppSidebarInset, InfinityAnim, useAppSidebar, APP_SIDEBAR_WIDTH, APP_SIDEBAR_WIDTH_COLLAPSED, APP_SIDEBAR_MOBILE_BREAKPOINT, useMotionPreference } from '@opencosmos/ui'
 import Link from 'next/link'
-import { MessageSquare, BookOpen, ExternalLink, Sparkles, CircleDashed } from 'lucide-react'
+import { MessageSquare, BookOpen, ExternalLink } from 'lucide-react'
 import { AuthButton } from '../AuthButton'
 import { useCosmoSession } from './useCosmoSession'
 import { SidebarFooterContent } from './SidebarFooterContent'
@@ -178,8 +178,10 @@ export function CosmoChat() {
           { icon: <MessageSquare className="w-4 h-4" />, label: 'Dialog',    href: '/dialog',                                           active: true },
           { icon: <BookOpen     className="w-4 h-4" />, label: 'Library', href: '/library' },
           { icon: <ExternalLink className="w-4 h-4" />, label: 'Toolkit',   href: 'https://studio.opencosmos.ai/docs/getting-started', external: true },
-          { icon: <Sparkles     className="w-4 h-4" />, label: 'Inception', href: '/inception' },
-          { icon: <CircleDashed className="w-4 h-4" />, label: 'Xensō',     href: '/xenso' },
+          // Inception is hidden from navigation; the page still lives at /inception.
+          // { icon: <Sparkles     className="w-4 h-4" />, label: 'Inception', href: '/inception' },
+          // Xensō is hidden from navigation; the page still lives at /xenso.
+          // { icon: <CircleDashed className="w-4 h-4" />, label: 'Xensō',     href: '/xenso' },
         ]}
         footer={<ContextAwareFooter />}
       >
@@ -201,8 +203,10 @@ export function CosmoChat() {
             { label: 'Dialog',    href: '/dialog' },
             { label: 'Library', href: '/library' },
             { label: 'Toolkit',   href: 'https://studio.opencosmos.ai/docs/getting-started' },
-            { label: 'Inception', href: '/inception' },
-            { label: 'Xensō',     href: '/xenso' },
+            // Inception is hidden from navigation; the page still lives at /inception.
+            // { label: 'Inception', href: '/inception' },
+            // Xensō is hidden from navigation; the page still lives at /xenso.
+            // { label: 'Xensō',     href: '/xenso' },
           ]}
           actions={<AuthButton />}
         />
