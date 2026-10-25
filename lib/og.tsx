@@ -56,6 +56,17 @@ export async function interFonts(): Promise<Font[]> {
 }
 
 /**
+ * What to hand ImageResponse as `fonts`. An empty list is not "no fonts": it
+ * replaces the default face ImageResponse carries, and Satori then throws "No
+ * fonts are loaded" and fails the build when Google Fonts can't be reached.
+ * Undefined keeps the default, so a failed fetch costs the tile its typeface
+ * and nothing more.
+ */
+export function ogFonts<T>(fonts: T[]): T[] | undefined {
+  return fonts.length ? fonts : undefined
+}
+
+/**
  * The glyph path from one of the site's favicon SVGs, so a tile's mark is the
  * favicon's mark exactly and there is one drawing of each, not two.
  */

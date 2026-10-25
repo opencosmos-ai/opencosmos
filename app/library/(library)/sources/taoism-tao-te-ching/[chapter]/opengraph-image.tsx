@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og'
-import { INK, Mark, OG_SIZE, Tile, googleFont, interFonts, markPath } from '@/lib/og'
+import { INK, Mark, OG_SIZE, Tile, googleFont, interFonts, markPath, ogFonts } from '@/lib/og'
 import { chapterNumbers, getChapter } from '@/lib/tao-te-ching'
 import { DAO_SVG, Footer } from '../opengraph-image'
 
@@ -90,6 +90,6 @@ export default async function Image({ params }: { params: Promise<{ chapter: str
         <Footer left="Laozi · the Open Tao Te Ching" />
       </Tile>
     ),
-    { ...OG_SIZE, fonts: all }
+    { ...OG_SIZE, fonts: ogFonts(all) }
   )
 }
