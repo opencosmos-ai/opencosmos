@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-10-17
+**Last updated:** 2026-10-27
 
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
@@ -34,6 +34,13 @@ All notable changes to this project will be documented in this file.
 **The test for whether something belongs here rather than in a sub-project's changelog: would someone not working on that sub-project need to know?** If yes, a sentence here with a link. If no, it stays there.
 
 ---
+
+## 2026-10-27 — Next.js 16.4.3, for the framework's security fixes
+
+The site ran Next.js 16.1.6, which an audit after [Railway's Oct 21 breach](https://hoodline.com/2026/10/railway-breach-may-have-exposed-secrets-in-up-to-100-000-workspaces/) found carried five critical and twenty-eight high advisories. None was shown to be exploitable here (no image-optimizer config, no `use cache`, and every API route checks its own auth behind the proxy), but one upgrade clears them all.
+
+- `next` 16.1.6 → 16.4.3. A `pnpm dedupe` moved the peers that pinned the old version; it also lifted other transitive packages within their existing ranges.
+- Still open, outside Next: `js-yaml` 3.14.2 (via `gray-matter`), `dompurify` 3.4.13 (via `@opencosmos/constellation`), `zod` 3 (via `@anthropic-ai/sdk`), `source-map-js` and `valibot`.
 
 ## 2026-10-17 — The Open Tao Te Ching is announced in public
 
