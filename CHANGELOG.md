@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-10-27
+**Last updated:** 2026-10-28
 
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
@@ -34,6 +34,15 @@ All notable changes to this project will be documented in this file.
 **The test for whether something belongs here rather than in a sub-project's changelog: would someone not working on that sub-project need to know?** If yes, a sentence here with a link. If no, it stays there.
 
 ---
+
+## 2026-10-28 — BYOK keys move out of reach of page scripts
+
+An audit prompted by a friend's warning found that OpenCosmos never stored a visitor's own Anthropic key and never logged one, but the key sat in plain text in `localStorage`, where any script running on opencosmos.ai could read it. One injected script or compromised dependency would have been enough to take it.
+
+- The key now lives in an HttpOnly, Secure, SameSite=Strict cookie scoped to `/api`, sealed with AES-256-GCM under a key derived from `WORKOS_COOKIE_PASSWORD` ([`lib/byok-cookie.ts`](lib/byok-cookie.ts)). The chat and inception routes read it from there, never from the request body. OpenCosmos still stores nothing.
+- The page sees only a hint cookie, the key's last four characters ([`lib/byok-client.ts`](lib/byok-client.ts)). Keys already in `localStorage` move into the cookie on the next page load and are deleted.
+- The account page now says truthfully where the key lives. It used to say the key was "never sent to OpenCosmos servers," which wasn't so: the server has always forwarded it to Anthropic.
+- If `WORKOS_COOKIE_PASSWORD` rotates, sealed keys stop opening and visitors are asked for their key again.
 
 ## 2026-10-27 — Next.js 16.4.3, for the framework's security fixes
 
