@@ -6,6 +6,7 @@ import { Redis } from '@upstash/redis'
 import { withAuth } from '@workos-inc/authkit-nextjs'
 import { ADMIN_COOKIE_NAME, isAdminCookie } from '@/lib/admin-cookie'
 import { markByok } from '@/lib/byok'
+import { readByokKey } from '@/lib/byok-cookie'
 import { fetchRagContext, formatRagChunks, type RagResult } from '@/lib/rag'
 import { getDoc, slugFromDocPath, extractSection } from '@/lib/knowledge'
 import { getQuoteBucket } from '@/lib/quotes'
@@ -588,11 +589,10 @@ function formatTreasury(ctx: XensoContext): string | null {
 export async function POST(req: NextRequest) {
   try {
     const {
-      messages, apiKey, turnstileToken, current_section, doc_changed,
+      messages, turnstileToken, current_section, doc_changed,
       creativeMode: creativeModeRaw, xensoMode, xensoContext, timeZone,
     } = await req.json() as {
       messages: Message[]
-      apiKey?: string
       turnstileToken?: string
       current_section?: CurrentSection
       doc_changed?: boolean
@@ -671,6 +671,10 @@ export async function POST(req: NextRequest) {
     // For BYOK requests we still need the userId to record server-side BYOK status
     // (so the account page can show "API connection" regardless of browser/device).
     const authenticatedUser = await withAuth({ ensureSignedIn: false }).then(a => a.user).catch(() => null)
+
+    // BYOK: the visitor's own key, from the sealed HttpOnly cookie. Never the
+    // request body, and never logged (lib/byok-cookie.ts).
+    const apiKey = readByokKey(req)
 
     const isAdmin =
       isAdminCookie(req.cookies.get(ADMIN_COOKIE_NAME)?.value) ||

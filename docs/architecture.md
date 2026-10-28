@@ -793,7 +793,7 @@ Server component at `app/account/page.tsx`. Redirects to sign-in if unauthentica
 
 **Sections:**
 1. **Profile card** — avatar (photo or initials), full name, email, member-since date, Log out button
-2. **API key** (`app/account/ApiKeyForm.tsx`, client component) — stores Anthropic API key in `localStorage` under key `cosmo_api_key`. Key is never sent to OpenCosmos servers — only forwarded directly to Anthropic on each chat request.
+2. **API key** (`app/account/ApiKeyForm.tsx`, client component) — hands the Anthropic API key to `POST /api/byok`, which seals it into an HttpOnly cookie in the visitor's browser (`lib/byok-cookie.ts`). No script on the page can read it, and OpenCosmos never stores it: the chat routes open the cookie, use the key for that request, and forget it. The page sees only a hint cookie with the key's last four characters. Keys saved in `localStorage` before 2026-10-28 move into the cookie on the next load (`lib/byok-client.ts`).
 3. **Plan tiers** (`app/account/ApiKeyForm.tsx`) — Spark $5 / Flame $10 / Hearth $50. Live checkout buttons for unauthenticated or unsubscribed users; active subscribers see usage meter + "Manage billing" portal link.
 
 ### Webhook Handler
@@ -835,7 +835,7 @@ Users who are not signed in (or signed in but without an API key) get 3 free mes
 | User state | Inference path | Limit |
 |-----------|---------------|-------|
 | Anonymous / no API key | OpenCosmos shared Anthropic key | 3 messages/session (Redis counter) |
-| BYOK (API key in localStorage) | User's own Anthropic key, forwarded | Unlimited (Anthropic rate limits apply) |
+| BYOK (API key in a sealed HttpOnly cookie) | User's own Anthropic key, forwarded | Unlimited (Anthropic rate limits apply) |
 
 **PM mode** (Shalom-only): A hidden button in the sidebar footer (opacity-0, always rendered) unlocks unlimited access via `COSMO_ADMIN_SECRET`. Activated via `POST /api/admin/auth` with the secret; deactivated via `DELETE /api/admin/auth`. Auth state stored in an HttpOnly cookie read server-side.
 

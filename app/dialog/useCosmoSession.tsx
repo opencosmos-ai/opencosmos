@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
+import { migrateLegacyByokKey, readByokHint, saveByokKey } from '@/lib/byok-client'
 
 type Message = { role: 'user' | 'assistant'; content: string }
 
@@ -15,7 +16,6 @@ type Conversation = {
 }
 
 const DEFAULT_TOKEN_BUDGET = 20_000
-const KEY_API_KEY = 'cosmo_api_key'
 const KEY_CONVERSATIONS = 'cosmo_conversations'
 const KEY_CURRENT_ID = 'cosmo_current_id'
 // sessionStorage, not localStorage: staying in Xensō across a reload and a
@@ -55,7 +55,8 @@ type CosmoSession = {
   messages: Message[]
   input: string
   isStreaming: boolean
-  apiKey: string
+  /** The connected key's last four characters, '' when none. The key itself never reaches the page. */
+  byokHint: string
   apiKeyDraft: string
   tokensUsed: number
   tokenBudget: number
@@ -85,7 +86,7 @@ type CosmoSession = {
   openConversation: (conv: Conversation) => void
   renameConversation: (id: string, title: string) => void
   deleteConversation: (id: string) => void
-  saveKey: () => void
+  saveKey: () => Promise<void>
   activatePm: () => Promise<void>
   deactivatePm: () => Promise<void>
 
@@ -99,7 +100,7 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
-  const [apiKey, setApiKey] = useState('')
+  const [byokHint, setByokHint] = useState('')
   const [apiKeyDraft, setApiKeyDraft] = useState('')
   const [tokensUsed, setTokensUsed] = useState(0)
   const [tokenBudget, setTokenBudget] = useState(DEFAULT_TOKEN_BUDGET)
@@ -149,7 +150,8 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
       : xensoParam === '0' ? false
       : sessionStorage.getItem(KEY_XENSO) === '1'
     setXensoMode(xensoOn)
-    setApiKey(localStorage.getItem(KEY_API_KEY) || '')
+    setByokHint(readByokHint())
+    migrateLegacyByokKey().then(setByokHint).catch(() => {})
 
     const savedId = localStorage.getItem(KEY_CURRENT_ID)
     const all = loadAll()
@@ -189,7 +191,7 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
         if (!data.user) return
         setIsAuthenticated(true)
 
-        if (localStorage.getItem(KEY_API_KEY)) {
+        if (readByokHint()) {
           fetch('/api/byok', { method: 'POST' }).catch(() => {})
         }
 
@@ -231,7 +233,7 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
     setConversations(Object.values(loadAll()).sort((a, b) => b.updatedAt - a.updatedAt))
   }, [])
 
-  const isLimited = mounted && !apiKey && !pmMode && tokensUsed >= tokenBudget
+  const isLimited = mounted && !byokHint && !pmMode && tokensUsed >= tokenBudget
 
   const send = useCallback(async (override?: string) => {
     const raw = override !== undefined ? override : input
@@ -264,7 +266,7 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
         // sessionStorage unavailable — non-fatal
       }
 
-      const isFreeTier = !apiKey && !pmMode
+      const isFreeTier = !byokHint && !pmMode
 
       // Wait for Turnstile to produce a token before posting on the free-tier
       // path. Without this, the landing-page handoff (`/dialog?q=…` auto-send)
@@ -293,7 +295,6 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: newMessages,
-          apiKey: apiKey || undefined,
           turnstileToken: isFreeTier ? resolvedTurnstileToken : undefined,
           current_section: currentSection,
           doc_changed: docChanged || undefined,
@@ -352,7 +353,7 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
         })
       }
 
-      if (!apiKey) {
+      if (!byokHint) {
         fetch(`/api/session${xensoMode ? '?xenso=1' : ''}`)
           .then((r) => r.json())
           .then((data: { tokensUsed: number; tokenBudget: number; sessionExpiresAt: number }) => {
@@ -393,7 +394,7 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
       })
     } finally {
       setIsStreaming(false)
-      if (!apiKey && !pmMode) {
+      if (!byokHint && !pmMode) {
         turnstileRef.current?.reset()
         setTurnstileToken('')
       }
@@ -403,7 +404,7 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
     isStreaming,
     isLimited,
     messages,
-    apiKey,
+    byokHint,
     pmMode,
     creativeMode,
     xensoMode,
@@ -414,13 +415,13 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
     tokenBudget,
   ])
 
-  const saveKey = useCallback(() => {
+  const saveKey = useCallback(async () => {
     const key = apiKeyDraft.trim()
     if (!key) return
-    localStorage.setItem(KEY_API_KEY, key)
-    setApiKey(key)
+    const hint = await saveByokKey(key)
+    if (!hint) return
+    setByokHint(hint)
     setApiKeyDraft('')
-    fetch('/api/byok', { method: 'POST' }).catch(() => {})
   }, [apiKeyDraft])
 
   const activatePm = useCallback(async () => {
@@ -517,7 +518,7 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
       messages,
       input,
       isStreaming,
-      apiKey,
+      byokHint,
       apiKeyDraft,
       tokensUsed,
       tokenBudget,
@@ -552,7 +553,7 @@ export function CosmoSessionProvider({ children }: { children: ReactNode }) {
       messages,
       input,
       isStreaming,
-      apiKey,
+      byokHint,
       apiKeyDraft,
       tokensUsed,
       tokenBudget,

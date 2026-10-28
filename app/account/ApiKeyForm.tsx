@@ -3,14 +3,16 @@
 import { useState, useEffect } from 'react'
 import { Button, Input, Card, CardHeader, CardTitle, CardDescription, CardContent } from '@opencosmos/ui'
 import { TokenGauge } from '@/components/TokenGauge'
-
-const KEY_API_KEY = 'cosmo_api_key'
+import { clearByokKey, migrateLegacyByokKey, readByokHint, saveByokKey } from '@/lib/byok-client'
 
 
 export function ApiKeyForm() {
-  const [apiKey, setApiKey] = useState('')
+  // The connected key's last four characters, '' when none. The key itself
+  // lives in a sealed HttpOnly cookie this page cannot read.
+  const [byokHint, setByokHint] = useState('')
   const [draft, setDraft] = useState('')
   const [saved, setSaved] = useState(false)
+  const [refused, setRefused] = useState(false)
   // Gates the cards below so they do not flash before BYOK status is known.
   const [statusLoaded, setStatusLoaded] = useState(false)
   const [hasByok, setHasByok] = useState(false)
@@ -21,15 +23,15 @@ export function ApiKeyForm() {
   } | null>(null)
 
   useEffect(() => {
-    // Load key synchronously from localStorage so all conditional rendering is
-    // correct on the first paint — prevents "Free quota" flashing for BYOK users.
-    const stored = localStorage.getItem(KEY_API_KEY) || ''
-    setApiKey(stored)
-    setDraft(stored)
+    // Read the hint cookie synchronously so all conditional rendering is correct
+    // on the first paint — prevents "Free quota" flashing for BYOK users.
+    const hint = readByokHint()
+    setByokHint(hint)
+    migrateLegacyByokKey().then(setByokHint).catch(() => {})
 
     // Fetch session data only when there's no API key. Doing this here (after
-    // reading localStorage) ensures we never request session data for BYOK users.
-    if (!stored) {
+    // reading the hint) ensures we never request session data for BYOK users.
+    if (!hint) {
       fetch('/api/session')
         .then((r) => r.json())
         .then((data: { tokensUsed: number; tokenBudget: number; sessionExpiresAt: number }) => {
@@ -49,13 +51,13 @@ export function ApiKeyForm() {
         if (data.hasByok) {
           setHasByok(true)
         } else {
-          // Backfill: if the user has a key in localStorage but no server flag
+          // Backfill: if this browser holds a key but there's no server flag
           // (e.g. saved before server-side detection was deployed), write the flag
           // now. The account page is authenticated so this call always resolves.
-          const storedKey = localStorage.getItem(KEY_API_KEY)
-          if (storedKey) {
+          if (readByokHint()) {
             fetch('/api/byok', { method: 'POST' })
-              .then(res => { if (res.ok) setHasByok(true) })
+              .then(res => res.json())
+              .then((data: { ok?: boolean }) => { if (data.ok) setHasByok(true) })
               .catch(() => {})
           }
         }
@@ -63,25 +65,26 @@ export function ApiKeyForm() {
       .catch(() => setStatusLoaded(true))
   }, [])
 
-  const save = () => {
-    const key = draft.trim()
-    localStorage.setItem(KEY_API_KEY, key)
-    setApiKey(key)
+  const save = async () => {
+    // The server seals the key into this browser's cookie and, since the
+    // account page is always authenticated, records the BYOK flag too.
+    const hint = await saveByokKey(draft.trim())
+    if (!hint) {
+      setRefused(true)
+      return
+    }
+    setByokHint(hint)
+    setDraft('')
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
-    // Record server-side that this authenticated user has a BYOK key.
-    // The account page is always authenticated, so this is more reliable than
-    // waiting for a chat message to trigger the flag.
-    fetch('/api/byok', { method: 'POST' }).catch(() => {})
   }
 
   const clear = () => {
-    localStorage.removeItem(KEY_API_KEY)
-    setApiKey('')
+    setByokHint('')
     setDraft('')
     setHasByok(false)
-    // Revoke the server-side BYOK flag so the account page reflects the change.
-    fetch('/api/byok', { method: 'DELETE' }).catch(() => {})
+    // Forget the key in this browser and revoke the server-side BYOK flag.
+    clearByokKey()
   }
 
   return (
@@ -90,15 +93,16 @@ export function ApiKeyForm() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Your Anthropic API Key</CardTitle>
-          {!apiKey && (
+          {!byokHint && (
             <CardDescription>
-              Bring your own key for unlimited messages. Your key is stored only in your browser
-              and is never sent to OpenCosmos servers — only forwarded directly to Anthropic.
+              Bring your own key for unlimited messages. Your key stays in this browser, sealed
+              where no script on the page can read it. OpenCosmos never stores it, and passes it
+              to Anthropic only for your own conversations. Use a key with a spending limit.
             </CardDescription>
           )}
         </CardHeader>
         <CardContent className="space-y-3">
-          {apiKey ? (
+          {byokHint ? (
             /* Connected state — show status + unlimited indicator + clear, no form */
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -106,7 +110,7 @@ export function ApiKeyForm() {
                   <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
                   <span className="text-xs font-medium text-emerald-500">Connected</span>
                   <span className="text-xs font-mono text-foreground/60">
-                    {apiKey.slice(0, 16)}...{apiKey.slice(-4)}
+                    sk-ant-…{byokHint}
                   </span>
                 </div>
                 <Button variant="ghost" size="sm" onClick={clear} className="text-foreground/40">
@@ -128,7 +132,7 @@ export function ApiKeyForm() {
                   type="password"
                   placeholder="sk-ant-..."
                   value={draft}
-                  onChange={(e) => { setDraft(e.target.value); setSaved(false) }}
+                  onChange={(e) => { setDraft(e.target.value); setSaved(false); setRefused(false) }}
                   onKeyDown={(e) => e.key === 'Enter' && save()}
                   className="flex-1 font-mono text-sm"
                 />
@@ -136,11 +140,16 @@ export function ApiKeyForm() {
                   variant="outline"
                   size="sm"
                   onClick={save}
-                  disabled={!draft.trim() || draft === apiKey}
+                  disabled={!draft.trim()}
                 >
                   {saved ? 'Saved' : 'Save'}
                 </Button>
               </div>
+              {refused && (
+                <p className="text-xs text-foreground/60" role="alert">
+                  That key couldn&apos;t be saved. Check that it starts with sk-ant- and try again.
+                </p>
+              )}
               <p className="text-xs text-foreground/30">
                 Get a key at{' '}
                 <a
@@ -158,7 +167,7 @@ export function ApiKeyForm() {
       </Card>
 
       {/* Free quota and community handoff — hidden for BYOK users; the top card already shows unlimited status */}
-      {!apiKey && !hasByok && <div className="space-y-3">
+      {!byokHint && !hasByok && <div className="space-y-3">
 
         {/* Free quota — shown while no API key is connected */}
         {sessionData && statusLoaded && (

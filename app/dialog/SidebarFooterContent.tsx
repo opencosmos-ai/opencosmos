@@ -13,7 +13,7 @@ type Props = {
 export function SidebarFooterContent({ compact = false }: Props) {
   const {
     mounted,
-    apiKey,
+    byokHint,
     tokensUsed,
     tokenBudget,
     pmMode,
@@ -45,7 +45,7 @@ export function SidebarFooterContent({ compact = false }: Props) {
         <TokenGauge
           used={tokensUsed}
           total={tokenBudget}
-          unlimited={!!apiKey}
+          unlimited={!!byokHint}
           compact
           className="shrink-0"
         />

@@ -4,6 +4,7 @@ import { randomUUID } from 'crypto'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { MODEL_INCEPTION as MODEL } from '@/lib/ai-models'
+import { readByokKey } from '@/lib/byok-cookie'
 
 // Inception route — Cosmo as the one who draws a personal agent out of a person.
 //
@@ -243,10 +244,11 @@ export async function POST(req: NextRequest) {
       build?: Build
       step?: string
       answersSoFar?: unknown
-      apiKey?: string
       turnstileToken?: string
     }
-    const { mode = 'chat', messages = [], path = 'agent', build = 'no-code', step, answersSoFar, apiKey, turnstileToken } = body
+    const { mode = 'chat', messages = [], path = 'agent', build = 'no-code', step, answersSoFar, turnstileToken } = body
+    // BYOK: the visitor's own key, from the sealed HttpOnly cookie (lib/byok-cookie.ts).
+    const apiKey = readByokKey(req)
 
     if (!Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json({ error: 'messages required' }, { status: 400 })

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { TokenGauge } from '@/components/TokenGauge'
+import { readByokHint } from '@/lib/byok-client'
 
 type UsageState =
   | { kind: 'idle' }
@@ -12,9 +13,9 @@ export function SidebarUsage() {
   const [state, setState] = useState<UsageState>({ kind: 'idle' })
 
   useEffect(() => {
-    // Check localStorage immediately — if a BYOK key is present we know the user
-    // is unlimited without waiting for the server response.
-    if (localStorage.getItem('cosmo_api_key')) {
+    // Check the hint cookie immediately — if a BYOK key is connected we know the
+    // user is unlimited without waiting for the server response.
+    if (readByokHint()) {
       setState({ kind: 'unlimited' })
       return
     }

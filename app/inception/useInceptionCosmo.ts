@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMotionPreference } from '@opencosmos/ui'
 import type { TurnstileInstance } from '@marsidev/react-turnstile'
 import type { Answers, Path, Build } from '@/lib/inception/schema'
+import { migrateLegacyByokKey, readByokHint, saveByokKey } from '@/lib/byok-client'
 
 export type Msg = { role: 'user' | 'assistant'; content: string }
 
@@ -21,7 +22,7 @@ const API = '/api/inception'
 /**
  * Lean Cosmo-interview hook for Inception. Its own message list (NOT the global
  * dialog manager) streaming from /api/inception, reusing the free-tier guard via a
- * BYOK key (localStorage `cosmo_api_key`) + an optional Turnstile token. Also exposes
+ * BYOK key (the sealed cookie, lib/byok-cookie.ts) + an optional Turnstile token. Also exposes
  * `synthesize()` which calls the route's structured mode to fill the live blueprint.
  */
 export function useInceptionCosmo(ctx: Ctx) {
@@ -29,7 +30,8 @@ export function useInceptionCosmo(ctx: Ctx) {
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
   const [isLimited, setIsLimited] = useState(false)
-  const [apiKey, setApiKey] = useState<string | null>(null)
+  // The connected key's last four characters, '' when none. The key itself never reaches the page.
+  const [byokHint, setByokHint] = useState('')
   const [apiKeyDraft, setApiKeyDraft] = useState('')
 
   const turnstileRef = useRef<TurnstileInstance>(null)
@@ -43,34 +45,28 @@ export function useInceptionCosmo(ctx: Ctx) {
   useEffect(() => () => { if (typingRef.current) clearInterval(typingRef.current) }, [])
 
   useEffect(() => {
-    try {
-      setApiKey(localStorage.getItem('cosmo_api_key'))
-    } catch {
-      /* ignore */
-    }
+    setByokHint(readByokHint())
+    migrateLegacyByokKey().then(setByokHint).catch(() => {})
   }, [])
 
-  const saveKey = useCallback(() => {
+  const saveKey = useCallback(async () => {
     const k = apiKeyDraft.trim()
     if (!k) return
-    try {
-      localStorage.setItem('cosmo_api_key', k)
-    } catch {
-      /* ignore */
-    }
-    setApiKey(k)
+    const hint = await saveByokKey(k)
+    if (!hint) return
+    setByokHint(hint)
     setApiKeyDraft('')
     setIsLimited(false)
   }, [apiKeyDraft])
 
   const resolveTurnstile = useCallback(async (): Promise<string> => {
-    if (apiKey || !siteKey || !turnstileRef.current) return ''
+    if (byokHint || !siteKey || !turnstileRef.current) return ''
     try {
       return await turnstileRef.current.getResponsePromise()
     } catch {
       return ''
     }
-  }, [apiKey, siteKey])
+  }, [byokHint, siteKey])
 
   const basePayload = useCallback(
     () => ({
@@ -78,9 +74,8 @@ export function useInceptionCosmo(ctx: Ctx) {
       build: ctx.build,
       step: ctx.getStep(),
       answersSoFar: ctx.getAnswers(),
-      apiKey: apiKey ?? undefined,
     }),
-    [ctx, apiKey],
+    [ctx],
   )
 
   // Structured extraction → partial Answers + a Day-0 origin entry.
@@ -238,7 +233,7 @@ export function useInceptionCosmo(ctx: Ctx) {
     setInput,
     isStreaming,
     isLimited,
-    apiKey,
+    byokHint,
     apiKeyDraft,
     setApiKeyDraft,
     saveKey,
