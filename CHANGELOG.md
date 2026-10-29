@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-10-28
+**Last updated:** 2026-10-29
 
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
@@ -35,11 +35,18 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-10-29 — The iOS apps reach Cosmo again
+
+The BYOK change of 2026-10-28 made `/api/chat` read a visitor's key only from the browser cookie. The two iOS apps, Cosmo and Xensō, keep the key in the iPhone's Keychain and send it in each request's body, so every request they made arrived keyless, fell to the free tier's bot check, and was refused with `403 bot_suspected`. In the Cosmo app this showed as "Cosmo couldn't respond just now."
+
+- `/api/chat` reads the key from the sealed cookie first and, when there is none, from the request body, if it has the shape of an Anthropic key. The website never sends one in the body, so nothing a page script can reach changes. The key is still never stored and never logged.
+- The inception route stays cookie-only: only the website calls it.
+
 ## 2026-10-28 — BYOK keys move out of reach of page scripts
 
 An audit prompted by a friend's warning found that OpenCosmos never stored a visitor's own Anthropic key and never logged one, but the key sat in plain text in `localStorage`, where any script running on opencosmos.ai could read it. One injected script or compromised dependency would have been enough to take it.
 
-- The key now lives in an HttpOnly, Secure, SameSite=Strict cookie scoped to `/api`, sealed with AES-256-GCM under a key derived from `WORKOS_COOKIE_PASSWORD` ([`lib/byok-cookie.ts`](lib/byok-cookie.ts)). The chat and inception routes read it from there, never from the request body. OpenCosmos still stores nothing.
+- The key now lives in an HttpOnly, Secure, SameSite=Strict cookie scoped to `/api`, sealed with AES-256-GCM under a key derived from `WORKOS_COOKIE_PASSWORD` ([`lib/byok-cookie.ts`](lib/byok-cookie.ts)). The chat and inception routes read it from there. OpenCosmos still stores nothing. *(Corrected 2026-10-29: was "never from the request body". The native apps send their key in the body, and the chat route reads it there again; see the entry above.)*
 - The page sees only a hint cookie, the key's last four characters ([`lib/byok-client.ts`](lib/byok-client.ts)). Keys already in `localStorage` move into the cookie on the next page load and are deleted.
 - The account page now says truthfully where the key lives. It used to say the key was "never sent to OpenCosmos servers," which wasn't so: the server has always forwarded it to Anthropic.
 - If `WORKOS_COOKIE_PASSWORD` rotates, sealed keys stop opening and visitors are asked for their key again.

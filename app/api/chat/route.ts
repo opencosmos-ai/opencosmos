@@ -6,7 +6,7 @@ import { Redis } from '@upstash/redis'
 import { withAuth } from '@workos-inc/authkit-nextjs'
 import { ADMIN_COOKIE_NAME, isAdminCookie } from '@/lib/admin-cookie'
 import { markByok } from '@/lib/byok'
-import { readByokKey } from '@/lib/byok-cookie'
+import { isPlausibleKey, readByokKey } from '@/lib/byok-cookie'
 import { fetchRagContext, formatRagChunks, type RagResult } from '@/lib/rag'
 import { getDoc, slugFromDocPath, extractSection } from '@/lib/knowledge'
 import { getQuoteBucket } from '@/lib/quotes'
@@ -589,10 +589,11 @@ function formatTreasury(ctx: XensoContext): string | null {
 export async function POST(req: NextRequest) {
   try {
     const {
-      messages, turnstileToken, current_section, doc_changed,
+      messages, apiKey: bodyKey, turnstileToken, current_section, doc_changed,
       creativeMode: creativeModeRaw, xensoMode, xensoContext, timeZone,
     } = await req.json() as {
       messages: Message[]
+      apiKey?: unknown
       turnstileToken?: string
       current_section?: CurrentSection
       doc_changed?: boolean
@@ -672,9 +673,12 @@ export async function POST(req: NextRequest) {
     // (so the account page can show "API connection" regardless of browser/device).
     const authenticatedUser = await withAuth({ ensureSignedIn: false }).then(a => a.user).catch(() => null)
 
-    // BYOK: the visitor's own key, from the sealed HttpOnly cookie. Never the
-    // request body, and never logged (lib/byok-cookie.ts).
-    const apiKey = readByokKey(req)
+    // BYOK: the visitor's own key, never logged. The website's comes from the
+    // sealed HttpOnly cookie (lib/byok-cookie.ts) and never rides in the body.
+    // The native apps, Cosmo and Xensō, keep theirs in the iPhone's Keychain and
+    // send it in the body, where no page script can reach it.
+    const apiKey = readByokKey(req) ??
+      (typeof bodyKey === 'string' && isPlausibleKey(bodyKey) ? bodyKey : undefined)
 
     const isAdmin =
       isAdminCookie(req.cookies.get(ADMIN_COOKIE_NAME)?.value) ||

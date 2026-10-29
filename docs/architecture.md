@@ -793,7 +793,7 @@ Server component at `app/account/page.tsx`. Redirects to sign-in if unauthentica
 
 **Sections:**
 1. **Profile card** — avatar (photo or initials), full name, email, member-since date, Log out button
-2. **API key** (`app/account/ApiKeyForm.tsx`, client component) — hands the Anthropic API key to `POST /api/byok`, which seals it into an HttpOnly cookie in the visitor's browser (`lib/byok-cookie.ts`). No script on the page can read it, and OpenCosmos never stores it: the chat routes open the cookie, use the key for that request, and forget it. The page sees only a hint cookie with the key's last four characters. Keys saved in `localStorage` before 2026-10-28 move into the cookie on the next load (`lib/byok-client.ts`).
+2. **API key** (`app/account/ApiKeyForm.tsx`, client component) — hands the Anthropic API key to `POST /api/byok`, which seals it into an HttpOnly cookie in the visitor's browser (`lib/byok-cookie.ts`). No script on the page can read it, and OpenCosmos never stores it: the chat routes open the cookie, use the key for that request, and forget it. The page sees only a hint cookie with the key's last four characters. Keys saved in `localStorage` before 2026-10-28 move into the cookie on the next load (`lib/byok-client.ts`). The iOS apps, Cosmo and Xensō, keep the key in the iPhone's Keychain and send it in the body of each `/api/chat` request, which the route reads when no cookie is present.
 3. **Plan tiers** (`app/account/ApiKeyForm.tsx`) — Spark $5 / Flame $10 / Hearth $50. Live checkout buttons for unauthenticated or unsubscribed users; active subscribers see usage meter + "Manage billing" portal link.
 
 ### Webhook Handler
