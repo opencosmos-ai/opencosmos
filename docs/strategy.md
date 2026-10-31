@@ -2,8 +2,6 @@
 
 > Strategic context and long-term thinking for OpenCosmos. For active project tasks and status, see [pm.md](pm.md).
 
-**Updated:** 2026-04-10
-
 ---
 
 ## The Three Futures

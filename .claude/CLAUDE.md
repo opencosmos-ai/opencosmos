@@ -2,8 +2,6 @@
 
 > **Context file for AI assistants (primarily Claude) working on this platform. Read this first, then [DESIGN-PHILOSOPHY.md](../DESIGN-PHILOSOPHY.md) and [AGENTS.md](../AGENTS.md).**
 
-Last updated: 2026-09-24
-
 ---
 
 ## Quick Orientation

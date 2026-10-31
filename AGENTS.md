@@ -2,8 +2,6 @@
 
 > **For AI coding agents working on this platform. Read [DESIGN-PHILOSOPHY.md](DESIGN-PHILOSOPHY.md) first — it's the North Star. This file tells you how to build in alignment with it.**
 
-Last updated: 2026-09-24
-
 ---
 
 ## Quick Orientation
