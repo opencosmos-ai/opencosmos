@@ -17,11 +17,7 @@ rest live only in this repository.
 
 ## Working with the repo
 
-| Skill | What it does |
-|---|---|
-| [`/pr`](./pr/SKILL.md) | Package current unmerged work into a pushed branch, a CHANGELOG entry and an open pull request. |
-| [`/clean`](./clean/SKILL.md) | Audit local branches against the default branch, delete what is provably merged, flag what isn't. The follow-up to `/pr`. |
-| [`/git-sync`](./git-sync/SKILL.md) | Fetch, detect an already-merged PR, rebuild the branch from the default, prune stale refs. |
+`/pr` and `/clean` are Shalom's personal skills, in `~/.claude/skills/`, kept in one place for every repository. Until 2026-10-30 copies lived here too, and they drifted.
 
 ## Building
 

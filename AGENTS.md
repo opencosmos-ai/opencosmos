@@ -65,12 +65,11 @@ opencosmos/
 ## Skills
 
 Before writing a procedure from scratch, check whether one already exists.
-Five live in [`.claude/skills/`](.claude/skills/README.md) — that directory is
+Two live in [`.claude/skills/`](.claude/skills/README.md) — that directory is
 where Claude Code discovers them, so a skill is invoked by typing `/<name>`.
 
 | | |
 |---|---|
-| **Repo work** | [`/pr`](.claude/skills/pr/SKILL.md) · [`/clean`](.claude/skills/clean/SKILL.md) · [`/git-sync`](.claude/skills/git-sync/SKILL.md) |
 | **Building** | [`/create`](.claude/skills/create/SKILL.md) · [`/inference-cost`](.claude/skills/inference-cost/SKILL.md) |
 
 The six corpus skills live with the corpus, in
