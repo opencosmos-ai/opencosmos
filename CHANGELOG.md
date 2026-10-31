@@ -2,8 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-**Last updated:** 2026-10-29
-
 > For the story behind the decisions, see [docs/chronicle.md](docs/chronicle.md).
 
 ---

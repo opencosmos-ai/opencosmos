@@ -2,8 +2,6 @@
 
 > **Context file for AI assistants (primarily Claude) working on this platform. Read this first, then [DESIGN-PHILOSOPHY.md](../DESIGN-PHILOSOPHY.md) and [AGENTS.md](../AGENTS.md).**
 
-Last updated: 2026-09-24
-
 ---
 
 ## Quick Orientation
@@ -76,10 +74,10 @@ from the chapter files ([ADR 0020](../docs/decisions/0020-the-tao-te-ching-is-re
 
 ## Skills
 
-Five procedures live in [`.claude/skills/`](../.claude/skills/README.md),
+Two procedures live in [`.claude/skills/`](../.claude/skills/README.md),
 invoked by typing `/<name>`. **Check there before writing a procedure from
-scratch** — `/pr`, `/clean` and `/git-sync` cover the git workflow, `/create`
-covers UI, `/inference-cost` covers model choice. The six corpus skills live
+scratch** — `/create` covers UI, `/inference-cost` covers model choice. The git
+workflow skills, `/pr` and `/clean`, are Shalom's personal ones, in `~/.claude/skills/`. The six corpus skills live
 with the corpus, in
 [opencosmos-ai/knowledge](https://github.com/opencosmos-ai/knowledge/tree/main/.claude/skills).
 

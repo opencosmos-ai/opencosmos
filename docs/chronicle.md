@@ -2,8 +2,6 @@
 
 > A living record of the vision, decisions, and conversations that shape OpenCosmos. This is not a changelog — it's the story. For technical change tracking, see [CHANGELOG.md](../CHANGELOG.md).
 
-**Last updated:** 2026-03-29
-
 ---
 
 ## 2026-03-08 — Inception: The Homecoming

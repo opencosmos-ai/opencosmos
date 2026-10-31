@@ -2,8 +2,6 @@
 
 > Project management hub for all OpenCosmos work. For strategic rationale, see [strategy.md](strategy.md). For infrastructure details, see [architecture.md](architecture.md).
 
-**Updated:** 2026-08-15
-
 ---
 
 ## Cosmo Learning Loop — Phases 1–3 shipped (next: exemplar diversity)
