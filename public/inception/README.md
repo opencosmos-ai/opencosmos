@@ -1,6 +1,6 @@
 # Synthetic Self — Starter Kit
 
-> A copy-and-fill scaffold for building a personal AI agent that gives you **material, ongoing support** for what matters to you — your projects and money and health, *or* your wellbeing, presence, and growth. It's the generalized, accessible version of [`synth-shalom`](../refs/repos/synth-shalom), the "synthetic self" this kit is modeled on.
+> A copy-and-fill scaffold for building a personal AI agent that gives you **material, ongoing support** for what matters to you — your projects and money and health, *or* your wellbeing, presence, and growth. It's the generalized, accessible version of `synth-shalom`, the "synthetic self" this kit is modeled on.
 >
 > **It's a multi-path framework.** You choose a **path** (what your synth-self is *for*) and a **build** (where you *make* it). No coding required for the no-code build. Everything shares the same core, so you can blend paths and switch builds for free.
 
