@@ -270,7 +270,7 @@ See [`knowledge/quotes/README.md`](https://github.com/opencosmos-ai/knowledge/bl
 This is the *infrastructure* work — landing it before validation runs lets Stages 3–5 dogfood the embedding loop.
 
 - Reuse types + parser from [scripts/normalize-quotes/shared.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/normalize-quotes/shared.ts) — `JsonlRecord`, `parseYamlFile()`, `withPreclassifiedProvenance()` already shipped in Stage 1.
-- [scripts/knowledge/embed-knowledge.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts) — add a YAML branch alongside `chunkAtHeadings()` ([scripts/knowledge/embed-knowledge.ts:82-157](../scripts/knowledge/embed-knowledge.ts#L82-L157)). For files under `knowledge/quotes/*.yaml`:
+- [scripts/knowledge/embed-knowledge.ts](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts) — add a YAML branch alongside `chunkAtHeadings()` ([scripts/knowledge/embed-knowledge.ts:150-221](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts#L150-L221)). For files under `knowledge/quotes/*.yaml`:
   - One chunk per quote (atomic; no overlap).
   - Chunk id: `knowledge/quotes/{file}.yaml#{quote.id}` (e.g. `knowledge/quotes/albert-einstein.yaml#q_0159`).
   - Chunk metadata: `chunk_type: 'quote'`, `author`, `author_normalized_key`, `tradition`, `era`, `category`, `keywords`, `source_work`, `source_section`, `provenance.status`, `provenance.confidence`.
@@ -558,7 +558,7 @@ For shipped sub-phase file lists (1.0–1.2), see [Done § Phase 1.0–1.2](#pha
 
 #### Existing utilities to reuse (do not re-invent)
 
-- **Heading chunker:** [scripts/knowledge/embed-knowledge.ts:82-157 `chunkAtHeadings()`](../scripts/knowledge/embed-knowledge.ts#L82-L157) — already handles H2/H3 + legacy CHAPTER. Extend for quotes.
+- **Heading chunker:** [scripts/knowledge/embed-knowledge.ts:150-221 `chunkAtHeadings()`](https://github.com/opencosmos-ai/knowledge/blob/main/scripts/knowledge/embed-knowledge.ts#L150-L221) — already handles H2/H3 + legacy CHAPTER. Extend for quotes.
 - **TOC extractor:** [app/knowledge/[...slug]/page.tsx:16-24 `extractToc()`](../app/knowledge/[...slug]/page.tsx#L16-L24) — uses `github-slugger`; slug IDs match `rehype-slug` output.
 - **Frontmatter parser:** `gray-matter` via [lib/knowledge.ts](../lib/knowledge.ts).
 - **Graph data cache:** Upstash Redis, gzipped JSON, ISR revalidate=3600 at [app/api/knowledge/graph/route.ts](../app/api/knowledge/graph/route.ts). Keep as-is.
