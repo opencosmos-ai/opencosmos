@@ -32,7 +32,7 @@ import {
   taoTeChingChapterFromAnchor,
 } from '../lib/corpus-href'
 import { nodeHref } from '../app/library/graph/nodeHref'
-import { corpusHeadingFor, chapterNumbers, getChapter, getChapterTerms, titleNamesChapter, tokenize } from '../lib/tao-te-ching'
+import { corpusHeadingFor, chapterNumbers, getBookTerms, getChapter, getChapterTerms, titleNamesChapter, tokenize } from '../lib/tao-te-ching'
 
 let failures = 0
 let passes = 0
@@ -151,14 +151,28 @@ if (!fs.existsSync(EXPORT)) {
   const wei = Object.entries(x.lines as Record<string, [string, string]>).find(([, [zh]]) => zh.includes('為'))
   check('為 keeps the translation’s reading', wei !== undefined && getChapter(Number(wei[0].split('.')[0]))!.lines.some((l) => l.tokens.some((t) => t.kind === 'han' && t.c === '為' && t.p === 'wéi')))
   check('chapter 1 has the 道 (dào) entry among its terms', getChapterTerms(1).some((t) => t.slug === 'dao-道'))
-  // Terms are counted in the chapter's Chinese and listed most frequent first.
+  // Key Terms. Where a term stands is counted once, in taoteching, by
+  // term_where(); this site sums the export's `where` and counts nothing.
+  const book = getBookTerms()
+  check('the Key Terms page lists every glossary entry', book.length === x.entries.length, { book: book.length, entries: x.entries.length })
+  check('every entry’s chapter counts sum to its `where`', book.every((t) => {
+    const e = (x.entries as { slug: string; where: [string, number][] }[]).find((y) => y.slug === t.slug)!
+    return t.total === e.where.reduce((sum, [, k]) => sum + k, 0)
+  }))
   // 常 (cháng — "ever") opens chapter 1's verse four times: 非常道, 非常名, 常無欲, 常有欲.
   const terms1 = getChapterTerms(1)
   check('chapter 1 counts 常 (cháng) four times', terms1.find((t) => t.term === '常')?.count === 4, { found: terms1.find((t) => t.term === '常') })
+  // Chapter 4 has 吾 and no 我; the pairing still stands there.
+  check('a pairing stands where its second half does (我 & 吾 in chapter 4)', getChapterTerms(4).some((t) => t.term === '我 & 吾'))
   check('every chapter lists its terms most frequent first', chapterNumbers().every((n) => {
     const ts = getChapterTerms(n)
     return ts.every((t, i) => t.count > 0 && (i === 0 || ts[i - 1]!.count >= t.count))
   }))
+  check('the book’s terms are listed by reach', book.every((t, i) => i === 0 || book[i - 1]!.chapters >= t.chapters))
+  // The rule has one home. A second count here is how INDEX and the Library
+  // came to disagree on 我 & 吾 (7 chapters against 19).
+  const libSource = fs.readFileSync(path.join(process.cwd(), 'lib', 'tao-te-ching.ts'), 'utf-8')
+  check('the Library does not count terms itself', !/\.split\(\s*' & '\s*\)|\.includes\(\s*t\.trim/.test(libSource))
   console.log(`  ${exact} of 81 chapters pair their lines exactly`)
 }
 

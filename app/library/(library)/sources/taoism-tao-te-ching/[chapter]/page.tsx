@@ -83,7 +83,7 @@ export default async function ChapterPage({ params }: Props) {
 
           <ChapterText chapter={chapter} />
           <Listen clips={clips} />
-          <Terms terms={getChapterTerms(n)} />
+          <Terms n={n} terms={getChapterTerms(n)} />
           <Notes markdown={getChapterNotes(n)} />
           <Discussion n={n} data={getChapterDiscussion(n)} />
 

@@ -15,6 +15,7 @@ import {
   TAO_TE_CHING_CHAPTERS,
   chapterWord,
 } from './corpus-href'
+import { type BookTermView, type TermView, byReach, chapterTerms } from './tao-te-ching-terms'
 
 const CONTENT = path.join(process.cwd(), '.content')
 const EXPORT_PATH = path.join(CONTENT, 'taoteching', 'data', 'atlas-export.json')
@@ -47,6 +48,9 @@ type ExportEntry = {
   pinyin: string
   render: string
   status: string
+  /** Every line the term stands in, and how often: [["ch.line", n], …]. Counted
+   *  in taoteching by `term_where()`, the one rule; this site never counts. */
+  where: [string, number][]
 }
 
 type AtlasExport = {
@@ -77,7 +81,19 @@ function load(): AtlasExport {
   if (!fs.existsSync(EXPORT_PATH)) {
     throw new Error(`No Tao Te Ching export at ${EXPORT_PATH} — run \`pnpm content\``)
   }
-  cached = JSON.parse(fs.readFileSync(EXPORT_PATH, 'utf-8')) as AtlasExport
+  const x = JSON.parse(fs.readFileSync(EXPORT_PATH, 'utf-8')) as AtlasExport
+  // Key Terms read each entry's `where` and count nothing here. An export from
+  // before taoteching wrote it would leave every Key Terms list empty with no
+  // error, so it fails the build instead.
+  const missing = x.entries.filter((e) => !Array.isArray(e.where))
+  if (missing.length > 0) {
+    throw new Error(
+      `The Tao Te Ching export has ${missing.length} glossary entries without \`where\` ` +
+        `(first: ${missing[0]!.term}). taoteching writes it from tools/export_atlas.py; ` +
+        `fetch a current export with \`pnpm content\``,
+    )
+  }
+  cached = x
   return cached
 }
 
@@ -122,18 +138,7 @@ export type CharView = {
   atlas: string
 }
 
-export type TermView = {
-  slug: string
-  term: string
-  pinyin: string
-  render: string
-  status: string
-  href: string
-  /** Occurrences in this chapter's Chinese; a pairing counts both halves. */
-  count: number
-  /** Each half of a pairing with its own count (one item for a single term). */
-  halves: { term: string; count: number }[]
-}
+export type { BookTermView, TermView } from './tao-te-ching-terms'
 
 export type ChapterView = {
   n: number
@@ -271,45 +276,44 @@ export function getChapter(n: number): ChapterView | null {
   }
 }
 
-/** Non-overlapping occurrences of `term` in `text`. */
-function occurrences(text: string, term: string): number {
-  return term ? text.split(term).length - 1 : 0
+/**
+ * Each entry's occurrences by chapter, summed from the export's `where`.
+ *
+ * Summing is all this does. Where a term stands, and how often, is counted
+ * once, in taoteching, by `term_where()` in tools/lib/corpus.py: every half of
+ * a pairing (我 & 吾 stands wherever 吾 does), each part on its own (天 counts
+ * the 天 inside 天地). glossary/INDEX.md comes from the same rule, so the
+ * Library and the glossary cannot disagree. Never count the Chinese here.
+ */
+function entryCounts(): { entry: ExportEntry; byChapter: number[] }[] {
+  return load().entries.map((entry) => {
+    const byChapter = new Array<number>(TAO_TE_CHING_CHAPTERS + 1).fill(0)
+    for (const [key, n] of entry.where) byChapter[Number(key.split('.')[0])]! += n
+    return { entry, byChapter }
+  })
 }
 
-/**
- * The glossary entries that stand in this chapter: an entry's term occurs in
- * the chapter's Chinese. A pairing (`我 & 吾`) stands where either half does.
- * The same substring test taoteching's build_index.py uses for an entry's
- * chapters, applied to every half rather than the first.
- *
- * Ordered by how often each occurs in the chapter, most first; a tie keeps the
- * export's order. A pairing counts both halves. Each term is counted on its
- * own, so 天 counts the 天 inside 天地.
- */
-export function getChapterTerms(n: number): TermView[] {
-  const x = load()
-  const text = lineKeys(x, n).map((k) => x.lines[k]![0]).join('')
-  return x.entries
-    .map((e) => {
-      const halves = e.term
-        .split(' & ')
-        .map((t) => t.trim())
-        .filter(Boolean)
-        .map((t) => ({ term: t, count: occurrences(text, t) }))
-      return { e, halves, count: halves.reduce((sum, h) => sum + h.count, 0) }
-    })
-    .filter(({ count }) => count > 0)
-    .sort((a, b) => b.count - a.count)
-    .map(({ e, halves, count }) => ({
+/** Every glossary entry across the book, by how many chapters it stands in. */
+export function getBookTerms(): BookTermView[] {
+  return byReach(
+    entryCounts().map(({ entry: e, byChapter }, order) => ({
       slug: e.slug,
       term: e.term,
       pinyin: e.pinyin,
       render: plain(e.render),
       status: e.status,
       href: atlasEntryHref(e.slug),
-      count,
-      halves,
-    }))
+      order,
+      byChapter,
+      total: byChapter.reduce((sum, k) => sum + k, 0),
+      chapters: byChapter.filter((k) => k > 0).length,
+    })),
+  )
+}
+
+/** The glossary entries that stand in chapter n, most frequent first. */
+export function getChapterTerms(n: number): TermView[] {
+  return chapterTerms(getBookTerms(), n)
 }
 
 export function getChapterNotes(n: number): string {
