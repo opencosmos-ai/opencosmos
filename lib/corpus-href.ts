@@ -103,6 +103,12 @@ export function taoTeChingHref(chapter?: number): string {
   return chapter ? `${TAO_TE_CHING_BASE}/${chapter}` : TAO_TE_CHING_BASE
 }
 
+/** The Key Terms page: every glossary entry across the book. With a chapter,
+ *  it opens with that chapter's column selected. */
+export function taoTeChingTermsHref(chapter?: number): string {
+  return `${TAO_TE_CHING_BASE}/terms${chapter ? `#chapter-${chapter}` : ''}`
+}
+
 /** Any citation anchor into the corpus document → where a reader should land. */
 function taoTeChingAnchorHref(anchor: string): string {
   const notes = /^notes-on-chapter-(\d{1,2})$/.exec(anchor.trim().toLowerCase())

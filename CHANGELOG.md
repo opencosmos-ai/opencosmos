@@ -33,6 +33,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-11-15 — The Tao Te Ching's key terms, mapped across the book
+
+A chapter's Key Terms now say how often each entry appears and list the most frequent first, and a new page maps all of them across the 81 chapters.
+
+- **The Key Terms page**, `/library/sources/taoism-tao-te-ching/terms`, a child of the landing page. Read across a row for where a term lives, or down a column for what a chapter carries. Selecting a chapter lists its terms, and selecting a term lists its chapters and links to its ruling in the atlas. Every chapter's Key Terms links to it, opened at that chapter. The record is under [ADR 0020](docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md) § Updates.
+- **One count, made in taoteching.** The site sums the export's `where`, written by the same rule as taoteching's glossary index ([taoteching#82](https://github.com/opencosmos-ai/taoteching/pull/82)), and the count it had made itself is gone. How it fits: [`docs/architecture.md`](docs/architecture.md) → *The Library*.
+
 ## 2026-11-15 — The Library draws the rare characters the notes argue from
 
 The translator's notes reason from graphs no system font carries, such as 𤔔 (*luàn* — tangled silk) in chapter 3 and 𩠐 (*shǒu* — an old form of head) in chapter 15. Readers saw empty boxes where the explanation should be, on seven chapters' notes and in the character sheet's parts.

@@ -6,14 +6,15 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import Link from 'next/link'
 import { Badge, Button, GitHubIcon } from '@opencosmos/ui'
-import { ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import {
   discussionHrefs,
   type Discussion as DiscussionData,
   type TermView,
 } from '@/lib/tao-te-ching'
-import { TAO_TE_CHING_CHAPTERS, taoTeChingHref } from '@/lib/corpus-href'
+import { TAO_TE_CHING_CHAPTERS, taoTeChingHref, taoTeChingTermsHref } from '@/lib/corpus-href'
 import { DESC, H2 } from './styles'
+import TermList from './TermList'
 
 const external = { target: '_blank', rel: 'noopener noreferrer' } as const
 
@@ -39,18 +40,7 @@ export function Listen({ clips }: { clips: { seq: number; src: string }[] }) {
   )
 }
 
-function times(n: number): string {
-  return n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`
-}
-
-/** "Appears 4 times in this chapter", and for a pairing, each half's share. */
-function countTitle(t: TermView): string {
-  const total = `Appears ${times(t.count)} in this chapter`
-  if (t.halves.length < 2) return total
-  return `${total}: ${t.halves.map((h) => `${h.term} ${times(h.count)}`).join(', ')}`
-}
-
-export function Terms({ terms }: { terms: TermView[] }) {
+export function Terms({ n, terms }: { n: number; terms: TermView[] }) {
   return (
     <section aria-labelledby="terms">
       <h2 id="terms" className={H2}>Key Terms</h2>
@@ -62,41 +52,15 @@ export function Terms({ terms }: { terms: TermView[] }) {
             The glossary entries for words in this chapter: how this translation renders each one, and why.
             They are listed by how often each appears in the chapter, most first. Each opens in the Character Atlas.
           </p>
-          <ul className="list-none p-0 m-0 divide-y divide-foreground/10 border-y border-foreground/10">
-            {terms.map((t) => (
-              <li key={t.slug}>
-                <a
-                  href={t.href}
-                  {...external}
-                  className="group flex items-baseline gap-3 py-3 px-2 -mx-2 rounded hover:bg-foreground/10 transition-colors"
-                >
-                  <span lang="zh-Hant" className="font-han text-2xl text-foreground w-20 shrink-0">{t.term}</span>
-                  <span className="italic text-foreground/60 w-28 shrink-0 hidden sm:inline!">{t.pinyin}</span>
-                  <span className="text-foreground/80 flex-1 min-w-0">
-                    <span className="italic text-foreground/60 sm:hidden">{t.pinyin} · </span>
-                    {t.render}
-                  </span>
-                  <span
-                    className="text-sm tabular-nums text-foreground/50 w-10 shrink-0 text-right"
-                    title={countTitle(t)}
-                  >
-                    <span aria-hidden="true">{t.count}×</span>
-                    <span className="sr-only">{countTitle(t)}</span>
-                  </span>
-                  {t.status && t.status !== 'locked' && (
-                    <Badge variant="outline" className="text-foreground/50 shrink-0">{t.status}</Badge>
-                  )}
-                  <ExternalLink
-                    className="w-3.5 h-3.5 text-foreground group-hover:text-primary! transition-colors shrink-0 self-center"
-                    aria-hidden="true"
-                  />
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </li>
-            ))}
-          </ul>
+          <TermList terms={terms} />
         </>
       )}
+      <Link
+        href={taoTeChingTermsHref(n)}
+        className="inline-block mt-4 text-base text-foreground/60 hover:text-foreground transition-colors"
+      >
+        Every key term across the 81 chapters →
+      </Link>
     </section>
   )
 }

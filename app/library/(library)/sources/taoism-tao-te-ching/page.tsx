@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Badge, Button, GitHubIcon } from '@opencosmos/ui'
-import { BookOpen, ExternalLink } from 'lucide-react'
+import { ArrowRight, BookOpen, ExternalLink } from 'lucide-react'
 import { CATEGORY_LABELS } from '@/lib/knowledge-meta'
-import { TAO_TE_CHING_DOC, taoTeChingHref } from '@/lib/corpus-href'
-import { ATLAS_URL, TAOTECHING_URL, chapterNumbers } from '@/lib/tao-te-ching'
+import { TAO_TE_CHING_DOC, taoTeChingHref, taoTeChingTermsHref } from '@/lib/corpus-href'
+import { ATLAS_URL, TAOTECHING_URL, chapterNumbers, getBookTerms } from '@/lib/tao-te-ching'
 import TableOfContents from '../../[...slug]/TableOfContents'
 import LibraryBreadcrumb from '../../../LibraryBreadcrumb'
 import LegacyAnchorRedirect from './_components/LegacyAnchorRedirect'
 import TextFooter from './_components/TextFooter'
 import TextSearch from './_components/TextSearch'
-import { H2 } from './_components/styles'
+import { DESC, H2 } from './_components/styles'
 
 export const metadata: Metadata = {
   title: 'Tao Te Ching — OpenCosmos',
@@ -22,12 +22,14 @@ const external = { target: '_blank', rel: 'noopener noreferrer' } as const
 
 const TOC = [
   { id: 'chapters', text: 'Chapters', depth: 2 as const },
+  { id: 'key-terms', text: 'Key Terms', depth: 2 as const },
   { id: 'about-this-translation', text: 'About this translation', depth: 2 as const },
   { id: 'take-part', text: 'Take part', depth: 2 as const },
 ]
 
 export default function TaoTeChingPage() {
   const chapters = chapterNumbers()
+  const termCount = getBookTerms().length
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-16">
@@ -77,6 +79,20 @@ export default function TaoTeChingPage() {
                 </li>
               ))}
             </ol>
+          </section>
+
+          <section aria-labelledby="key-terms">
+            <h2 id="key-terms" className={H2}>Key Terms</h2>
+            <p className={`${DESC} max-w-prose mb-5`}>
+              The {termCount} words this translation makes a ruling on, mapped across all {chapters.length} chapters:
+              where each one lives, and what each chapter carries.
+            </p>
+            <Button variant="outline" size="sm" asChild className="gap-2">
+              <Link href={taoTeChingTermsHref()}>
+                See the key terms
+                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+              </Link>
+            </Button>
           </section>
 
           <section aria-labelledby="about-this-translation">
