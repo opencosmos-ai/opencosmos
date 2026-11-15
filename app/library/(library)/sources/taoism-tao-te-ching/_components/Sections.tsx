@@ -102,7 +102,15 @@ export function Notes({ markdown }: { markdown: string }) {
           <p className="text-xs uppercase tracking-widest text-foreground/40 mb-4">
             From the translator — why the English reads as it does
           </p>
-          <div className="text-lg leading-loose text-foreground/85">
+          {/* The notes are prose in the body face, with Chinese inline. The rare
+              face goes first: its unicode-range claims only the rare characters
+              (globals.css), and everything else falls through to the body face,
+              Tailwind's --font-sans. (--font-body is empty on this site, and a
+              var() that resolves to nothing voids the whole declaration.) */}
+          <div
+            className="text-lg leading-loose text-foreground/85"
+            style={{ fontFamily: '"OpenCosmos Rare Han", var(--font-sans, ui-sans-serif, system-ui, sans-serif)' }}
+          >
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{

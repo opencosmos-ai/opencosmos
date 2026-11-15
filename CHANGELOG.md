@@ -33,6 +33,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-11-15 — The Library draws the rare characters the notes argue from
+
+The translator's notes reason from graphs no system font carries, such as 𤔔 (*luàn* — tangled silk) in chapter 3 and 𩠐 (*shǒu* — an old form of head) in chapter 15. Readers saw empty boxes where the explanation should be, on seven chapters' notes and in the character sheet's parts.
+
+- **"OpenCosmos Rare Han"**, HanaMin cut to the 124 rare characters in the Tao Te Ching export, is first in `--font-han` and in the notes' font stack. Its `unicode-range` keeps it to the rare blocks, so no other character changes and a page without a rare character downloads nothing. The design is in [`docs/architecture.md`](docs/architecture.md) → *The Library*.
+- [`scripts/rare-han-font.py`](scripts/rare-han-font.py) cuts the font, and `pnpm check:tao-te-ching` warns when the export outgrows it. The Character Atlas uses the same face, cut the same way, so a rare character looks the same on both sites.
+
 ## 2026-10-29 — The iOS apps reach Cosmo again
 
 The BYOK change of 2026-10-28 made `/api/chat` read a visitor's key only from the browser cookie. The two iOS apps, Cosmo and Xensō, keep the key in the iPhone's Keychain and send it in each request's body, so every request they made arrived keyless, fell to the free tier's bot check, and was refused with `403 bot_suspected`. In the Cosmo app this showed as "Cosmo couldn't respond just now."

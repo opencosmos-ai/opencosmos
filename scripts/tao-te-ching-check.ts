@@ -154,5 +154,31 @@ if (!fs.existsSync(EXPORT)) {
   console.log(`  ${exact} of 81 chapters pair their lines exactly`)
 }
 
+// 4. The rare-character font. Every rare character the export can put on a
+// page must be in public/fonts/rare-han.txt, the list the font was cut to, or
+// a reader sees an empty box. A warning, not a failure: the translation is
+// never blocked by a font. Close it with scripts/rare-han-font.py.
+{
+  // Keep in step with is_rare in scripts/rare-han-font.py and the
+  // unicode-range in app/globals.css.
+  const RARE = (c: string) => {
+    const o = c.codePointAt(0)!
+    return (o >= 0x2e80 && o <= 0x2fdf) || (o >= 0x3400 && o <= 0x4dbf) || o >= 0x20000
+  }
+  const exportPath = path.join(process.cwd(), '.content/taoteching/data/atlas-export.json')
+  const listPath = path.join(process.cwd(), 'public/fonts/rare-han.txt')
+  check('the rare-character font ships with its list', fs.existsSync(listPath))
+  if (fs.existsSync(exportPath) && fs.existsSync(listPath)) {
+    const have = new Set(Array.from(fs.readFileSync(listPath, 'utf8').trim()))
+    const text = JSON.stringify(JSON.parse(fs.readFileSync(exportPath, 'utf8')))
+    const missing = [...new Set(Array.from(text).filter(RARE))].filter((c) => !have.has(c)).sort()
+    if (missing.length) {
+      console.log(`::warning::${missing.length} rare character(s) in the export are not in the Library's font: ${missing.join('')} — run python3 scripts/rare-han-font.py (see its docstring)`)
+    } else {
+      console.log(`  every rare character in the export is in the font (${have.size})`)
+    }
+  }
+}
+
 console.log(`\n${passes} passed, ${failures} failed`)
 process.exit(failures ? 1 : 0)
