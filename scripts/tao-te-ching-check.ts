@@ -32,7 +32,7 @@ import {
   taoTeChingChapterFromAnchor,
 } from '../lib/corpus-href'
 import { nodeHref } from '../app/library/graph/nodeHref'
-import { corpusHeadingFor, getChapter, getChapterTerms, titleNamesChapter, tokenize } from '../lib/tao-te-ching'
+import { corpusHeadingFor, chapterNumbers, getChapter, getChapterTerms, titleNamesChapter, tokenize } from '../lib/tao-te-ching'
 
 let failures = 0
 let passes = 0
@@ -151,6 +151,14 @@ if (!fs.existsSync(EXPORT)) {
   const wei = Object.entries(x.lines as Record<string, [string, string]>).find(([, [zh]]) => zh.includes('為'))
   check('為 keeps the translation’s reading', wei !== undefined && getChapter(Number(wei[0].split('.')[0]))!.lines.some((l) => l.tokens.some((t) => t.kind === 'han' && t.c === '為' && t.p === 'wéi')))
   check('chapter 1 has the 道 (dào) entry among its terms', getChapterTerms(1).some((t) => t.slug === 'dao-道'))
+  // Terms are counted in the chapter's Chinese and listed most frequent first.
+  // 常 (cháng — "ever") opens chapter 1's verse four times: 非常道, 非常名, 常無欲, 常有欲.
+  const terms1 = getChapterTerms(1)
+  check('chapter 1 counts 常 (cháng) four times', terms1.find((t) => t.term === '常')?.count === 4, { found: terms1.find((t) => t.term === '常') })
+  check('every chapter lists its terms most frequent first', chapterNumbers().every((n) => {
+    const ts = getChapterTerms(n)
+    return ts.every((t, i) => t.count > 0 && (i === 0 || ts[i - 1]!.count >= t.count))
+  }))
   console.log(`  ${exact} of 81 chapters pair their lines exactly`)
 }
 

@@ -129,6 +129,10 @@ export type TermView = {
   render: string
   status: string
   href: string
+  /** Occurrences in this chapter's Chinese; a pairing counts both halves. */
+  count: number
+  /** Each half of a pairing with its own count (one item for a single term). */
+  halves: { term: string; count: number }[]
 }
 
 export type ChapterView = {
@@ -267,24 +271,44 @@ export function getChapter(n: number): ChapterView | null {
   }
 }
 
+/** Non-overlapping occurrences of `term` in `text`. */
+function occurrences(text: string, term: string): number {
+  return term ? text.split(term).length - 1 : 0
+}
+
 /**
  * The glossary entries that stand in this chapter: an entry's term occurs in
  * the chapter's Chinese. A pairing (`我 & 吾`) stands where either half does.
  * The same substring test taoteching's build_index.py uses for an entry's
  * chapters, applied to every half rather than the first.
+ *
+ * Ordered by how often each occurs in the chapter, most first; a tie keeps the
+ * export's order. A pairing counts both halves. Each term is counted on its
+ * own, so 天 counts the 天 inside 天地.
  */
 export function getChapterTerms(n: number): TermView[] {
   const x = load()
   const text = lineKeys(x, n).map((k) => x.lines[k]![0]).join('')
   return x.entries
-    .filter((e) => e.term.split(' & ').some((t) => t.trim() && text.includes(t.trim())))
-    .map((e) => ({
+    .map((e) => {
+      const halves = e.term
+        .split(' & ')
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .map((t) => ({ term: t, count: occurrences(text, t) }))
+      return { e, halves, count: halves.reduce((sum, h) => sum + h.count, 0) }
+    })
+    .filter(({ count }) => count > 0)
+    .sort((a, b) => b.count - a.count)
+    .map(({ e, halves, count }) => ({
       slug: e.slug,
       term: e.term,
       pinyin: e.pinyin,
       render: plain(e.render),
       status: e.status,
       href: atlasEntryHref(e.slug),
+      count,
+      halves,
     }))
 }
 

@@ -39,6 +39,17 @@ export function Listen({ clips }: { clips: { seq: number; src: string }[] }) {
   )
 }
 
+function times(n: number): string {
+  return n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`
+}
+
+/** "Appears 4 times in this chapter", and for a pairing, each half's share. */
+function countTitle(t: TermView): string {
+  const total = `Appears ${times(t.count)} in this chapter`
+  if (t.halves.length < 2) return total
+  return `${total}: ${t.halves.map((h) => `${h.term} ${times(h.count)}`).join(', ')}`
+}
+
 export function Terms({ terms }: { terms: TermView[] }) {
   return (
     <section aria-labelledby="terms">
@@ -49,7 +60,7 @@ export function Terms({ terms }: { terms: TermView[] }) {
         <>
           <p className={`${DESC} mb-4`}>
             The glossary entries for words in this chapter: how this translation renders each one, and why.
-            Each opens in the Character Atlas.
+            They are listed by how often each appears in the chapter, most first. Each opens in the Character Atlas.
           </p>
           <ul className="list-none p-0 m-0 divide-y divide-foreground/10 border-y border-foreground/10">
             {terms.map((t) => (
@@ -64,6 +75,13 @@ export function Terms({ terms }: { terms: TermView[] }) {
                   <span className="text-foreground/80 flex-1 min-w-0">
                     <span className="italic text-foreground/60 sm:hidden">{t.pinyin} · </span>
                     {t.render}
+                  </span>
+                  <span
+                    className="text-sm tabular-nums text-foreground/50 w-10 shrink-0 text-right"
+                    title={countTitle(t)}
+                  >
+                    <span aria-hidden="true">{t.count}×</span>
+                    <span className="sr-only">{countTitle(t)}</span>
                   </span>
                   {t.status && t.status !== 'locked' && (
                     <Badge variant="outline" className="text-foreground/50 shrink-0">{t.status}</Badge>
