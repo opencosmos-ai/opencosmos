@@ -14,7 +14,7 @@
 
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Badge, Button, ScrollArea, ScrollBar, cn } from '@opencosmos/ui'
+import { Badge, Button, ScrollArea, ScrollBar, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, cn } from '@opencosmos/ui'
 import { useMotionPreference } from '@opencosmos/ui/hooks'
 import { ExternalLink } from 'lucide-react'
 import { taoTeChingHref } from '@/lib/corpus-href'
@@ -25,6 +25,29 @@ import { DESC } from './styles'
 type Selection = { kind: 'chapter'; n: number } | { kind: 'term'; slug: string } | null
 
 const NINE = Array.from({ length: 9 }, (_, i) => i)
+
+/** A column heading that explains itself in a tooltip, reachable by keyboard too. */
+function HeadTip({ label, tip }: { label: string; tip: string }) {
+  return (
+    <th
+      scope="col"
+      className="px-3 pt-3 pb-2 text-right text-xs font-normal uppercase tracking-widest text-foreground/40 align-bottom"
+    >
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            aria-label={`${label}: ${tip}`}
+            className="uppercase tracking-widest cursor-help underline decoration-dotted underline-offset-4 hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
+          >
+            {label}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent className="max-w-56 text-left text-sm normal-case tracking-normal font-normal">{tip}</TooltipContent>
+      </Tooltip>
+    </th>
+  )
+}
 
 function times(n: number): string {
   return n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`
@@ -109,6 +132,7 @@ export default function TermsMap({ terms, chapters }: { terms: BookTermView[]; c
           </p>
         )}
       </div>
+      <TooltipProvider delayDuration={150}>
       <ScrollArea className="w-full rounded-lg border border-foreground/10">
         <table className="border-separate border-spacing-0 text-left">
           <caption className="sr-only">
@@ -154,6 +178,8 @@ export default function TermsMap({ terms, chapters }: { terms: BookTermView[]; c
                   ))}
                 </div>
               </th>
+              <HeadTip label="Chapters" tip="The number of chapters this term appears in, out of 81. The rows are ordered by this." />
+              <HeadTip label="Count" tip="The total number of times this term appears in the text, counting every repeat within a single chapter." />
             </tr>
           </thead>
           <tbody>
@@ -201,11 +227,17 @@ export default function TermsMap({ terms, chapters }: { terms: BookTermView[]; c
                       ))}
                     </div>
                     <span className="sr-only">
-                      {t.total} times in {t.chapters} chapters:{' '}
+                      In {t.chapters} chapters:{' '}
                       {where.map((n, i) => (
                         <Fragment key={n}>{i > 0 && ', '}chapter {n} {times(t.byChapter[n]!)}</Fragment>
                       ))}
                     </span>
+                  </td>
+                  <td className="px-3 py-0.5 text-right text-sm tabular-nums text-foreground/70 align-middle">
+                    {t.chapters}
+                  </td>
+                  <td className="px-3 py-0.5 text-right text-sm tabular-nums text-foreground/70 align-middle">
+                    {t.total}
                   </td>
                 </tr>
               )
@@ -214,6 +246,7 @@ export default function TermsMap({ terms, chapters }: { terms: BookTermView[]; c
         </table>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
+      </TooltipProvider>
 
     </>
   )

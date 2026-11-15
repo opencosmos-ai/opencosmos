@@ -49,7 +49,8 @@ export default function TaoTeChingTermsPage() {
         <p className={DESC}>
           Read across a row to see where a term lives, and down a column to see what a chapter carries. The deeper
           the square, the more often the term appears there, measured against that term&rsquo;s own busiest
-          chapter. Terms are listed by how many chapters each reaches.
+          chapter. Chapters is how many of them a term appears in, and Count is how many times it appears in all, repeats
+          within a chapter included. Terms are listed by Chapters, then by Count.
         </p>
       </div>
 
