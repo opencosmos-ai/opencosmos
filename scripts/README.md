@@ -47,7 +47,25 @@ It proves that every stored citation form, `#one` … `#eighty-one` and
 `#chapter-1` … `#chapter-81` and `#notes-on-chapter-N`, lands on its chapter through the chat renderer
 and the constellation. It also checks that `Ch 1` never collects `Ch 12`'s
 discussion, and, once `pnpm content` has run, that lines are linked only in
-chapters whose alignment is exact. CI runs it after the build.
+chapters whose alignment is exact. CI runs it after the build. It also warns
+when the export holds a rare character the Library's font lacks (below).
+
+### `scripts/rare-han-font.py`
+
+Cuts the Library's rare-character font, "OpenCosmos Rare Han", to exactly the
+rare characters in the Tao Te Ching export: CJK Extension A and B and the
+Radicals Supplement, which no system font carries. Python, with
+`fonttools` and `brotli`, and HanaMin's two source files from
+[glyphwiki.org/hanazono](https://glyphwiki.org/hanazono/) (`hanazono-20170904.zip`):
+
+```bash
+pnpm content
+python3 scripts/rare-han-font.py --source <dir holding HanaMinA.ttf and HanaMinB.ttf>
+```
+
+It writes `public/fonts/rare-han-a.woff2`, `rare-han-b.woff2` and `rare-han.txt`.
+Run it when `pnpm check:tao-te-ching` warns. See
+[`docs/architecture.md`](../docs/architecture.md) → *The Library*.
 
 ### `pnpm xenso:check-iching`
 
