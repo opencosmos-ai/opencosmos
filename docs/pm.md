@@ -32,6 +32,7 @@
     - Add graceful error message when tokens are used up, or when there's an API error, or other error states
     - Token gauge: Make the green ∞ display in the sidebar the same size as it displays on the account page
     - Voice UI: Analyze the cost of adding voice using elevenlabs, Flash model. 
+    - **The Tao Te Ching character sheet doesn't say how a part is written in place** (found 2026-11-15). It lists 沖 (*chōng*)'s parts as 水 (*shuǐ* — water) and 中 (*zhōng* — middle), but 沖 writes water as 氵, so a reader can't find the part it names. The Character Atlas fixed the same confusion that day: under each part, *"Written here as 氵, its form at the left,"* only on characters that use the form. The export already carries the data (`forms`: `{part: [[form, where, chars], …]}`, from taoteching's `sources/component-forms.yaml`); `CharacterSheet.tsx`'s `Parts` would read it, and `lib/tao-te-ching.ts` would type it. Same words as the atlas, so the two sites agree.
 - Account page: 
     - Enable users to upload profile photos (~5MB max), which, when displayed, show instead of their initials in their account icon.
 
