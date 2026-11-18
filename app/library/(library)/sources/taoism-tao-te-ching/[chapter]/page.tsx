@@ -12,12 +12,15 @@ import {
   getChapterAudio,
   getChapterDiscussion,
   getChapterNotes,
+  getChapterSources,
   getChapterTerms,
+  getSourceCatalog,
 } from '@/lib/tao-te-ching'
 import TableOfContents from '../../../[...slug]/TableOfContents'
 import SourceLinks from '../../../../SourceLinks'
 import LibraryBreadcrumb from '../../../../LibraryBreadcrumb'
 import ChapterText from '../_components/ChapterText'
+import ChapterSources from '../_components/ChapterSources'
 import ChapterJump from '../_components/ChapterJump'
 import TextFooter from '../_components/TextFooter'
 import { ChapterNav, Discussion, Listen, Notes, Terms } from '../_components/Sections'
@@ -85,6 +88,7 @@ export default async function ChapterPage({ params }: Props) {
           <Listen clips={clips} />
           <Terms n={n} terms={getChapterTerms(n)} />
           <Notes markdown={getChapterNotes(n)} />
+          <ChapterSources evidence={getChapterSources(n)} sources={getSourceCatalog().records} />
           <Discussion n={n} data={getChapterDiscussion(n)} />
 
           <ChapterNav n={n} />

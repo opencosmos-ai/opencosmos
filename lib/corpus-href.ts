@@ -109,6 +109,11 @@ export function taoTeChingTermsHref(chapter?: number): string {
   return `${TAO_TE_CHING_BASE}/terms${chapter ? `#chapter-${chapter}` : ''}`
 }
 
+/** The sources catalogue, optionally at a source’s stable anchor. */
+export function taoTeChingSourcesHref(source?: string): string {
+  return `${TAO_TE_CHING_BASE}/sources${source ? `#${encodeURIComponent(source)}` : ''}`
+}
+
 /** Any citation anchor into the corpus document → where a reader should land. */
 function taoTeChingAnchorHref(anchor: string): string {
   const notes = /^notes-on-chapter-(\d{1,2})$/.exec(anchor.trim().toLowerCase())
