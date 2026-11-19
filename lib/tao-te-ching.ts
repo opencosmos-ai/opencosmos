@@ -300,7 +300,7 @@ export function getChapter(n: number): ChapterView | null {
 }
 
 /**
- * Each entry's occurrences by chapter, summed from the export's \`where\`.
+ * Each entry's occurrences by chapter, summed from the export's `where`.
  *
  * Summing is all this does. Where a term stands, and how often, is counted
  * once, in taoteching, by `term_where()` in tools/lib/corpus.py: every half of
