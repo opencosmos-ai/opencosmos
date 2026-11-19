@@ -33,6 +33,12 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-11-18 — Next.js 16.4.6, for two `use cache` advisories
+
+Next.js 16.4.3 carried two moderate advisories, [GHSA-vc7v-qv4w-wrv8](https://github.com/advisories/GHSA-vc7v-qv4w-wrv8) (a cache leak across root param values) and [GHSA-mfr8-8qww-v76h](https://github.com/advisories/GHSA-mfr8-8qww-v76h) (information disclosure through `unstable_cache()`), both fixed in 16.4.5. The site uses neither `use cache` nor `unstable_cache()`, so it wasn't exposed.
+
+- `next` 16.4.3 → 16.4.6. Nothing else in the lockfile moved.
+
 ## 2026-11-18 — Sources for the Open Tao Te Ching
 
 The Library draws its sources catalogue and chapter evidence from the translation’s export. See the update in [ADR 0020](docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md#updates).
