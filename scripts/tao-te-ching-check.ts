@@ -24,15 +24,20 @@
 
 import fs from 'fs'
 import path from 'path'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import ChapterSources, { ChapterSourcesEvidence } from '../app/library/(library)/sources/taoism-tao-te-ching/_components/ChapterSources'
+import { validateTaoTeChingSources } from '../lib/tao-te-ching-sources'
 import {
   TAO_TE_CHING_BASE,
   TAO_TE_CHING_DOC,
   chapterWord,
   docHref,
   taoTeChingChapterFromAnchor,
+  taoTeChingSourcesHref,
 } from '../lib/corpus-href'
 import { nodeHref } from '../app/library/graph/nodeHref'
-import { corpusHeadingFor, chapterNumbers, getBookTerms, getChapter, getChapterTerms, titleNamesChapter, tokenize } from '../lib/tao-te-ching'
+import { atlasCharHref, corpusHeadingFor, chapterNumbers, getBookTerms, getChapter, getChapterSources, getChapterTerms, getSourceCatalog, titleNamesChapter, tokenize } from '../lib/tao-te-ching'
 
 let failures = 0
 let passes = 0
@@ -113,6 +118,57 @@ check('stopgap heading', corpusHeadingFor(21, '## One\n\n## Twenty-One\n') === '
 check('generated heading wins', corpusHeadingFor(21, '## Chapter 21\n## Twenty-One\n') === 'Chapter 21')
 check('no corpus → Chapter N', corpusHeadingFor(5, null) === 'Chapter 5')
 
+// ── Sources contract and rendered evidence ───────────────────────────────────
+
+console.log('sources contract and rendering')
+const sourceFixture = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'scripts/fixtures/tao-te-ching-sources.json'), 'utf-8'))
+const fixture: unknown = sourceFixture
+validateTaoTeChingSources(fixture)
+const renderedEvidence = (n: number) => renderToStaticMarkup(createElement(ChapterSourcesEvidence, {
+  evidence: fixture.chapter_sources[n]!,
+  sources: fixture.sources.records,
+}))
+const evidenceHtml = renderedEvidence(3)
+const readings = fixture.chapter_sources[3]!.forks[0]!.readings
+const [withCard, withoutCard] = readings[1]!.text.split(' / ')
+check('the chapter renders readings directly beside pinyin and English',
+  /lang="zh-Hant"[^>]*>.*?<\/span>[^<]*\(<span lang="zh-Latn-pinyin"[^>]*>bāng \/ duī<\/span> — <span lang="en">state \/ mound<\/span>/.test(evidenceHtml))
+check('only a character with an Atlas card is linked', evidenceHtml.includes(atlasCharHref(withCard!)) &&
+  evidenceHtml.includes(withoutCard!) && !evidenceHtml.includes(atlasCharHref(withoutCard!)))
+check('only the silk reading awaits print', evidenceHtml.split('Print check pending').length === 2 &&
+  evidenceHtml.includes('Print verification unassessed') && evidenceHtml.includes(taoTeChingSourcesHref('online-edition')))
+check('the fork links its reference passage', evidenceHtml.includes('References') &&
+  evidenceHtml.includes('href="https://example.org/transcription#chapter-3"') &&
+  evidenceHtml.includes('Parallel transcription'))
+check('partial Guodian coverage is visible', renderedEvidence(5).includes('middle only') && renderedEvidence(16).includes('opening only'))
+check('the chapter source disclosure starts collapsed', renderToStaticMarkup(createElement(ChapterSources, {
+  evidence: fixture.chapter_sources[3]!,
+  sources: fixture.sources.records,
+})).includes('aria-expanded="false"'))
+check('the Guodian anchor is on the Sources route', taoTeChingSourcesHref('guodian') === `${TAO_TE_CHING_BASE}/sources#guodian`)
+
+function rejectSources(label: string, path: string, mutate: (input: typeof sourceFixture) => void) {
+  const copy = structuredClone(sourceFixture)
+  mutate(copy)
+  try {
+    validateTaoTeChingSources(copy)
+    fail(label)
+  } catch (error) {
+    check(label, error instanceof Error && error.message.includes(path), String(error))
+  }
+}
+
+rejectSources('a pre-registry export fails', 'at sources', (x) => { delete x.sources })
+rejectSources('a chapter without evidence fails', 'chapter_sources', (x) => { delete x.chapter_sources[16] })
+rejectSources('attestation must agree with the chapter tuple', 'chapter_sources.5.attestation.present', (x) => { x.chapter_sources[5].attestation.present = false })
+rejectSources('each reading needs its own pinyin', '.readings[1].pinyin', (x) => { delete x.chapter_sources[3].forks[0].readings[1].pinyin })
+rejectSources('a missing card cannot receive a link', '.readings[1].cards', (x) => { x.chapter_sources[3].forks[0].readings[1].cards.push(withoutCard) })
+rejectSources('a citation edition must exist', '.refs[0].edition', (x) => { x.entries[0].refs[0].edition = 'missing' })
+rejectSources('a citation must have a locator or passage URL', '.refs[0]', (x) => { delete x.entries[0].refs[0].locator })
+rejectSources('a fork citation must name a registered source', '.forks[0].refs[0].source', (x) => {
+  x.chapter_sources[3].forks[0].refs[0].source = 'missing'
+})
+
 // ── 3. The export ─────────────────────────────────────────────────────────────
 
 const EXPORT = path.join(process.cwd(), '.content', 'taoteching', 'data', 'atlas-export.json')
@@ -121,6 +177,9 @@ if (!fs.existsSync(EXPORT)) {
 } else {
   console.log('export')
   const x = JSON.parse(fs.readFileSync(EXPORT, 'utf-8'))
+  validateTaoTeChingSources(x)
+  check('the reader loads every generated chapter Sources record', chapterNumbers().every((n) => !!getChapterSources(n)))
+  check('the reader loads the generated source order', getSourceCatalog().records.map(({ id }) => id).join() === x.sources.records.map(({ id }) => id).join())
   const align = x.align as Record<string, [number, number, string][]>
   const certain = new Set(['exact-count', 'authored'])
   let exact = 0

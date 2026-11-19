@@ -55,6 +55,7 @@ import { execFileSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, rmSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { validateTaoTeChingSources } from '../lib/tao-te-ching-sources.ts'
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -118,6 +119,7 @@ const SOURCES = [
           throw new Error(`taoteching export has no "${key}" — it predates the Library reader (taoteching#30)`)
         }
       }
+      validateTaoTeChingSources(x)
       return `${chapters} chapters, ${lines} lines, ${x.entries.length} glossary entries`
     },
   },

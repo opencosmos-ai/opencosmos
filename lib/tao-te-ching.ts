@@ -15,6 +15,7 @@ import {
   TAO_TE_CHING_CHAPTERS,
   chapterWord,
 } from './corpus-href'
+import { type SourcesExport, validateTaoTeChingSources } from './tao-te-ching-sources'
 import { type BookTermView, type TermView, byReach, chapterTerms } from './tao-te-ching-terms'
 
 const CONTENT = path.join(process.cwd(), '.content')
@@ -42,7 +43,7 @@ type ExportChar = {
   entries: string[]
 }
 
-type ExportEntry = {
+type ExportEntry = SourcesExport['entries'][number] & {
   slug: string
   term: string
   pinyin: string
@@ -53,7 +54,7 @@ type ExportEntry = {
   where: [string, number][]
 }
 
-type AtlasExport = {
+type AtlasExport = Omit<SourcesExport, 'entries'> & {
   contract: number
   /** n → [title_zh, title_pinyin, title_en, guodian_attested, han_chars]: Heshang Gong's titles. */
   chapters: Record<string, [string | null, string | null, string | null, number, number]>
@@ -93,6 +94,7 @@ function load(): AtlasExport {
         `fetch a current export with \`pnpm content\``,
     )
   }
+  validateTaoTeChingSources(x)
   cached = x
   return cached
 }
@@ -212,6 +214,27 @@ function lineKeys(x: AtlasExport, n: number): string[] {
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
+
+export function getSourceCatalog() {
+  const { sources, entries } = load()
+  return { ...sources, entries }
+}
+
+export function getChapterSources(n: number) {
+  return load().chapter_sources[String(n)]!
+}
+
+/** Link to the copy held in the translation repository. */
+export function taoTeChingRepoHref(path: string): string {
+  const [file, anchor] = path.split('#', 2)
+  const target = file!.split('/').map(encodeURIComponent).join('/')
+  const action = /\.[a-z0-9]+$/i.test(file!) ? 'blob' : 'tree'
+  return `${TAOTECHING_URL}/${action}/main/${target}${anchor ? `#${encodeURIComponent(anchor)}` : ''}`
+}
+
+export function taoTeChingEvidenceHref(url: string): string {
+  return /^https?:\/\//.test(url) ? url : taoTeChingRepoHref(url)
+}
 
 export function chapterNumbers(): number[] {
   return Array.from({ length: TAO_TE_CHING_CHAPTERS }, (_, i) => i + 1)

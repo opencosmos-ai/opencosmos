@@ -3,14 +3,14 @@ import Link from 'next/link'
 import { Badge, Button, GitHubIcon } from '@opencosmos/ui'
 import { ArrowRight, BookOpen, ExternalLink } from 'lucide-react'
 import { CATEGORY_LABELS } from '@/lib/knowledge-meta'
-import { TAO_TE_CHING_DOC, taoTeChingHref, taoTeChingTermsHref } from '@/lib/corpus-href'
+import { TAO_TE_CHING_DOC, taoTeChingHref, taoTeChingSourcesHref, taoTeChingTermsHref } from '@/lib/corpus-href'
 import { ATLAS_URL, TAOTECHING_URL, chapterNumbers, getBookTerms } from '@/lib/tao-te-ching'
 import TableOfContents from '../../[...slug]/TableOfContents'
 import LibraryBreadcrumb from '../../../LibraryBreadcrumb'
 import LegacyAnchorRedirect from './_components/LegacyAnchorRedirect'
 import TextFooter from './_components/TextFooter'
 import TextSearch from './_components/TextSearch'
-import { DESC, H2 } from './_components/styles'
+import { DESC, H2, SOURCE_LINK } from './_components/styles'
 
 export const metadata: Metadata = {
   title: 'Tao Te Ching — OpenCosmos',
@@ -103,6 +103,11 @@ export default function TaoTeChingPage() {
                 histories of its characters, never from earlier English translations, and no phrasing is borrowed
                 from them. The aim is an honest, living English, free of what dynastic, Christian missionary, and New
                 Age readings overlaid upon the text.
+              </p>
+              <p>
+                The <Link href={taoTeChingSourcesHref()} className={SOURCE_LINK}>sources catalogue</Link> brings together
+                the manuscript witnesses, classical commentaries, character histories, texts read for context,
+                and earlier translations consulted for their range of interpretations.
               </p>
               <p>
                 So the sage is not “he”. 天 (<em>tiān</em>) is “sky”, not “Heaven”. The text’s own images come

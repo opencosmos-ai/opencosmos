@@ -33,6 +33,10 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## 2026-11-18 — Sources for the Open Tao Te Ching
+
+The Library draws its sources catalogue and chapter evidence from the translation’s export. See the update in [ADR 0020](docs/decisions/0020-the-tao-te-ching-is-read-in-the-library-a-chapter-to-a-page.md#updates).
+
 ## 2026-11-15 — The Tao Te Ching's key terms, mapped across the book
 
 A chapter's Key Terms now say how often each entry appears and list the most frequent first, and a new page maps all of them across the 81 chapters.

@@ -1,0 +1,88 @@
+{
+  "contract": 1,
+  "chapters": {
+    "3": [null, null, null, 0, 0],
+    "5": [null, null, null, 1, 0],
+    "16": [null, null, null, 1, 0]
+  },
+  "chars": [{ "c": "邦" }, { "c": "民" }],
+  "sources": {
+    "records": [
+      {
+        "id": "guodian", "name": "Guodian bamboo slips", "kind": "excavated", "use": "facts",
+        "editions": [{ "id": "jingmen-1998", "title": "Guodian Chu mu zhujian", "year": 1998 }],
+        "holds": ["sources/guodian-inventory.yaml"], "policy": "sources/PROVENANCE.md#excavated",
+        "chain": [], "coverage": { "chapters": [5, 16], "total": 3 },
+        "forks": [], "chapters": [], "entries": [], "pending_print": 0
+      },
+      {
+        "id": "heshanggong", "name": "Heshang Gong", "kind": "commentary", "use": "stored",
+        "editions": [], "holds": ["sources/commentaries/heshanggong"], "policy": "sources/PROVENANCE.md#admitted",
+        "chain": [], "coverage": { "chapters": [3] },
+        "forks": [1], "chapters": [3], "entries": [], "pending_print": 0
+      },
+      {
+        "id": "mawangdui-b", "name": "Mawangdui silk B", "kind": "excavated", "use": "facts",
+        "editions": [{ "id": "print-edition", "title": "Print edition" }],
+        "holds": [], "policy": "sources/PROVENANCE.md#excavated",
+        "chain": [], "coverage": { "chapters": [] },
+        "forks": [1], "chapters": [3], "entries": ["people"], "pending_print": 1
+      },
+      {
+        "id": "online-edition", "name": "Online transcription", "kind": "reference", "use": "consulted",
+        "editions": [], "holds": [], "policy": "sources/PROVENANCE.md#admitted",
+        "chain": [], "coverage": { "chapters": [] },
+        "forks": [1], "chapters": [3], "entries": ["people"], "pending_print": 0
+      }
+    ],
+    "totals": {
+      "sources": 4, "stored": 1, "facts": 2, "pending_print": 1, "citation_debt": 0,
+      "incomplete_entries": 1, "entries": 1, "readings": 2
+    }
+  },
+  "entries": [
+    {
+      "slug": "people", "refs_status": "incomplete",
+      "refs": [{ "source": "mawangdui-b", "via": "online-edition", "chain": ["online-edition"], "locator": "Chapter 3" }]
+    }
+  ],
+  "chapter_sources": {
+    "3": {
+      "attestation": { "source": "guodian", "present": false, "extent": null, "bundles": [], "units": [] },
+      "forks": [
+        {
+          "id": 1,
+          "base": { "text": "民", "pinyin": "mín", "english": "people", "gloss": "derived" },
+          "our_call": "base",
+          "meaning_bearing": true,
+          "refs": [
+            { "source": "online-edition", "chain": [], "locator": "Parallel transcription", "url": "https://example.org/transcription#chapter-3" }
+          ],
+          "readings": [
+            {
+              "source": "heshanggong", "text": "民", "pinyin": "mín", "english": "people", "gloss": "derived",
+              "verification": "unassessed", "chain": [], "cards": ["民"]
+            },
+            {
+              "source": "mawangdui-b", "text": "邦 / 𠂤", "pinyin": "bāng / duī", "english": "state / mound",
+              "gloss": "authored", "annotation": "The two forms are shown independently in this fixture.",
+              "verification": "pending-print", "via": "online-edition", "chain": ["online-edition"],
+              "locator": "Chapter 3, line 1", "confirm": "T2-79", "cards": ["邦"]
+            }
+          ]
+        }
+      ],
+      "commentary": [{ "source": "heshanggong", "path": "sources/commentaries/heshanggong/003.md" }]
+    },
+    "5": {
+      "attestation": { "source": "guodian", "present": true, "extent": "middle", "bundles": ["A"], "units": ["A.2"] },
+      "forks": [],
+      "commentary": []
+    },
+    "16": {
+      "attestation": { "source": "guodian", "present": true, "extent": "opening", "bundles": ["A"], "units": ["A.3"] },
+      "forks": [],
+      "commentary": []
+    }
+  }
+}
