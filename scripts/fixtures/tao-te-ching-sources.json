@@ -55,6 +55,9 @@
           "base": { "text": "民", "pinyin": "mín", "english": "people", "gloss": "derived" },
           "our_call": "base",
           "meaning_bearing": true,
+          "refs": [
+            { "source": "online-edition", "chain": [], "locator": "Parallel transcription", "url": "https://example.org/transcription#chapter-3" }
+          ],
           "readings": [
             {
               "source": "heshanggong", "text": "民", "pinyin": "mín", "english": "people", "gloss": "derived",

@@ -65,6 +65,7 @@ export type ChapterSources = {
     our_call: string
     meaning_bearing: boolean
     readings: WitnessReading[]
+    refs?: Omit<SourceReference, 'at'>[]
   }[]
   commentary: { source: string; path: string }[]
 }
@@ -260,15 +261,20 @@ export function validateTaoTeChingSources(value: unknown): asserts value is Sour
     optional(record, 'url', at, passageUrl)
   }
 
+  function citation(value: unknown, at: string) {
+    const ref = object(value, at)
+    const source = knownSource(ref.source, `${at}.source`)
+    reference(ref, at, source)
+    if (!ref.locator && !ref.url) invalid(at, 'a locator or passage URL')
+    return ref
+  }
+
   records.forEach((item, i) => provenance(object(item, `sources.records[${i}]`), `sources.records[${i}]`))
   entries.forEach((entry, i) => {
     const at = `entries[${i}]`
     oneOf(entry.refs_status, ['complete', 'incomplete'], `${at}.refs_status`)
     each(entry.refs, `${at}.refs`, (item, path) => {
-      const ref = object(item, path)
-      const source = knownSource(ref.source, `${path}.source`)
-      reference(ref, path, source)
-      if (!ref.locator && !ref.url) invalid(path, 'a locator or passage URL')
+      const ref = citation(item, path)
       optional(ref, 'at', path, text)
     })
   })
@@ -308,6 +314,7 @@ export function validateTaoTeChingSources(value: unknown): asserts value is Sour
       forks.add(key)
       pairing(fork.base, `${path}.base`)
       if (typeof fork.meaning_bearing !== 'boolean') invalid(`${path}.meaning_bearing`, 'a boolean')
+      optional(fork, 'refs', path, (refs, field) => each(refs, field, citation))
       const seen = new Set<string>()
       each(fork.readings, `${path}.readings`, (item, readingPath) => {
         const reading = object(item, readingPath)

@@ -3,7 +3,7 @@ import { Button, Collapsible, CollapsibleContent, CollapsibleTrigger } from '@op
 import { ChevronDown } from 'lucide-react'
 import { taoTeChingSourcesHref } from '@/lib/corpus-href'
 import { atlasCharHref, taoTeChingEvidenceHref, taoTeChingRepoHref } from '@/lib/tao-te-ching'
-import { REPO_LOCATOR, type AttestationExtent, type ChapterSources as Evidence, type Pairing, type SourceRecord, type WitnessReading } from '@/lib/tao-te-ching-sources'
+import { REPO_LOCATOR, type AttestationExtent, type ChapterSources as Evidence, type Pairing, type SourceRecord, type SourceReference, type WitnessReading } from '@/lib/tao-te-ching-sources'
 import { H2, SOURCE_LINK } from './styles'
 
 const extentLabel: Record<AttestationExtent, string> = {
@@ -54,15 +54,18 @@ function ReadingPair({ reading, cards = [] }: { reading: Pairing; cards?: string
   )
 }
 
+function referencePassage(citation: SourceReference, records: Map<string, SourceRecord>) {
+  const edition = [citation.source, ...citation.chain]
+    .flatMap((id) => records.get(id)?.editions ?? [])
+    .find(({ id }) => id === citation.edition)
+  const local = citation.locator && REPO_LOCATOR.test(citation.locator) ? citation.locator : null
+  const label = [edition?.title, local ? 'Source passage' : citation.locator].filter(Boolean).join(' · ')
+  return { local, href: citation.url ?? local, label }
+}
+
 function Witness({ reading, records }: { reading: WitnessReading; records: Map<string, SourceRecord> }) {
-  const source = records.get(reading.source)
-  const edition = [source, ...reading.chain.map((id) => records.get(id))]
-    .flatMap((record) => record?.editions ?? [])
-    .find(({ id }) => id === reading.edition)
-  const confirmed = source?.editions.find(({ id }) => id === reading.confirmed_edition)
-  const local = reading.locator && REPO_LOCATOR.test(reading.locator) ? reading.locator : null
-  const href = reading.url ?? local
-  const acquisition = [edition?.title, local ? 'Source passage' : reading.locator].filter(Boolean).join(' · ')
+  const confirmed = records.get(reading.source)?.editions.find(({ id }) => id === reading.confirmed_edition)
+  const { local, href, label: acquisition } = referencePassage(reading, records)
   const confirmedLocal = reading.confirmed_locator && REPO_LOCATOR.test(reading.confirmed_locator)
   const check = [confirmed?.title, confirmedLocal ? undefined : reading.confirmed_locator, reading.confirmed_on].filter(Boolean).join(' · ')
 
@@ -104,6 +107,19 @@ function Witness({ reading, records }: { reading: WitnessReading; records: Map<s
   )
 }
 
+function ForkCitation({ citation, records }: { citation: SourceReference; records: Map<string, SourceRecord> }) {
+  const { href, label } = referencePassage(citation, records)
+  return (
+    <li className="[overflow-wrap:anywhere]">
+      <SourceName id={citation.source} records={records} />
+      {citation.chain.map((id) => (
+        <span key={id}>{' via '}<SourceName id={id} records={records} /></span>
+      ))}
+      {' · '}{href ? <a href={taoTeChingEvidenceHref(href)} className={SOURCE_LINK}>{label || 'Source passage'}</a> : label}
+    </li>
+  )
+}
+
 type Props = { evidence: Evidence; sources: SourceRecord[] }
 
 export function ChapterSourcesEvidence({ evidence, sources }: Props) {
@@ -130,6 +146,16 @@ export function ChapterSourcesEvidence({ evidence, sources }: Props) {
                 <li><strong className="font-medium">Base text</strong>{' · '}<ReadingPair reading={fork.base} /></li>
                 {fork.readings.map((reading) => <Witness key={reading.source} reading={reading} records={records} />)}
               </ul>
+              {fork.refs && fork.refs.length > 0 && (
+                <div className="mt-2 text-sm text-foreground/80">
+                  <p className="font-medium">References</p>
+                  <ul className="mt-1 space-y-1">
+                    {fork.refs.map((citation, index) => (
+                      <ForkCitation key={`${citation.source}-${index}`} citation={citation} records={records} />
+                    ))}
+                  </ul>
+                </div>
+              )}
             </li>
           ))}
         </ul>

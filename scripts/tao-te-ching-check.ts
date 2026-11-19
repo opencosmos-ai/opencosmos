@@ -137,6 +137,9 @@ check('only a character with an Atlas card is linked', evidenceHtml.includes(atl
   evidenceHtml.includes(withoutCard!) && !evidenceHtml.includes(atlasCharHref(withoutCard!)))
 check('only the silk reading awaits print', evidenceHtml.split('Print check pending').length === 2 &&
   evidenceHtml.includes('Print verification unassessed') && evidenceHtml.includes(taoTeChingSourcesHref('online-edition')))
+check('the fork links its reference passage', evidenceHtml.includes('References') &&
+  evidenceHtml.includes('href="https://example.org/transcription#chapter-3"') &&
+  evidenceHtml.includes('Parallel transcription'))
 check('partial Guodian coverage is visible', renderedEvidence(5).includes('middle only') && renderedEvidence(16).includes('opening only'))
 check('the chapter source disclosure starts collapsed', renderToStaticMarkup(createElement(ChapterSources, {
   evidence: fixture.chapter_sources[3]!,
@@ -162,6 +165,9 @@ rejectSources('each reading needs its own pinyin', '.readings[1].pinyin', (x) =>
 rejectSources('a missing card cannot receive a link', '.readings[1].cards', (x) => { x.chapter_sources[3].forks[0].readings[1].cards.push(withoutCard) })
 rejectSources('a citation edition must exist', '.refs[0].edition', (x) => { x.entries[0].refs[0].edition = 'missing' })
 rejectSources('a citation must have a locator or passage URL', '.refs[0]', (x) => { delete x.entries[0].refs[0].locator })
+rejectSources('a fork citation must name a registered source', '.forks[0].refs[0].source', (x) => {
+  x.chapter_sources[3].forks[0].refs[0].source = 'missing'
+})
 
 // ── 3. The export ─────────────────────────────────────────────────────────────
 
