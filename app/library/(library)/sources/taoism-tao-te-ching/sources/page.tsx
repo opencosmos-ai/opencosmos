@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { taoTeChingHref } from '@/lib/corpus-href'
+import { TAO_TE_CHING_DOC, taoTeChingHref } from '@/lib/corpus-href'
 import { CATEGORY_LABELS } from '@/lib/knowledge-meta'
 import { atlasEntryHref, getSourceCatalog, plain, taoTeChingEvidenceHref, taoTeChingRepoHref } from '@/lib/tao-te-ching'
 import { REPO_LOCATOR, type Edition, type SourceKind, type SourceRecord, type SourceReference } from '@/lib/tao-te-ching-sources'
+import TableOfContents, { type TocEntry } from '../../../[...slug]/TableOfContents'
 import LibraryBreadcrumb from '../../../../LibraryBreadcrumb'
 import TextFooter from '../_components/TextFooter'
 import { DESC, H2, SOURCE_LINK } from '../_components/styles'
@@ -151,63 +152,76 @@ export default function TaoTeChingSourcesPage() {
   const sections = groups
     .map((group) => ({ ...group, records: records.filter((source) => group.kinds.includes(source.kind)) }))
     .filter((group) => group.records.length > 0)
+  // The outline lists every group and every source in it, the same headings the page renders.
+  const toc: TocEntry[] = sections.flatMap(({ id, title, records }) => [
+    { id: `sources-${id}`, text: title, depth: 2 as const },
+    ...records.map((source) => ({ id: source.id, text: source.name, depth: 3 as const })),
+  ])
 
   return (
     <div className="w-full min-w-0 max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-16">
-      <LibraryBreadcrumb
-        items={[
-          { label: 'The Library', href: '/library' },
-          { label: CATEGORY_LABELS.sources ?? 'Sources', href: '/library' },
-          { label: 'Tao Te Ching', href: taoTeChingHref() },
-          { label: 'Sources' },
-        ]}
-      />
-      <h1 className="text-3xl font-light tracking-wide text-foreground mb-2 leading-tight">Sources</h1>
-      <p className="text-sm text-foreground/80 mb-6">The Open Tao Te Ching · {totals.sources} sources</p>
-      <div className="max-w-prose space-y-4">
-        <p className={DESC}>
-          The evidence behind the translation, with the editions used, the records held by the project,
-          and links to the places that cite them.
-        </p>
-        <p className={DESC}>
-          The project records evidence from excavated manuscripts as facts. A full transcription can be
-          included when it meets the <a
-            href={taoTeChingRepoHref('sources/PROVENANCE.md#excavated')}
-            className={SOURCE_LINK}
-          >admission rules</a>.
-        </p>
-        {(totals.pending_print > 0 || totals.incomplete_entries > 0 || totals.citation_debt > 0) && (
-          <ul className={DESC}>
-            {totals.pending_print > 0 && <li>{totals.pending_print} readings await a print check.</li>}
-            {totals.incomplete_entries > 0 && <li>Recorded citations are incomplete for {totals.incomplete_entries} of {totals.entries} glossary entries.</li>}
-            {totals.citation_debt > 0 && <li>{totals.citation_debt} sources have open citation recovery work.</li>}
-          </ul>
-        )}
-      </div>
-      <nav aria-label="Source groups" className="mt-8">
-        <ul className="flex flex-wrap gap-x-5 gap-y-2">
-          {sections.map(({ id, title }) => (
-            <li key={id}><Link href={`#sources-${id}`} className={SOURCE_LINK}>{title}</Link></li>
-          ))}
-        </ul>
-      </nav>
-      <div className="max-w-prose">
-        {sections.map(({ id, title, records }) => (
-          <section aria-labelledby={`sources-${id}`} key={id}>
-            <h2 id={`sources-${id}`} className={`${H2} mb-1!`}>{title}</h2>
-            <ul role="list" className="[overflow-wrap:anywhere]">
-              {records.map((source) => {
-                const citations = source.entries.flatMap((slug) => {
-                  const entry = bySlug.get(slug)!
-                  return entry.refs
-                    .filter((ref) => ref.source === source.id || ref.chain.includes(source.id))
-                    .map((citation) => ({ entry, citation }))
-                })
-                return <Source key={source.id} source={source} records={byId} citations={citations} />
-              })}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_224px]! gap-12 items-start">
+        <div className="min-w-0" data-doc-content>
+          <LibraryBreadcrumb
+            items={[
+              { label: 'The Library', href: '/library' },
+              { label: CATEGORY_LABELS.sources ?? 'Sources', href: '/library' },
+              { label: 'Tao Te Ching', href: taoTeChingHref() },
+              { label: 'Sources' },
+            ]}
+          />
+          <h1 className="text-3xl font-light tracking-wide text-foreground mb-2 leading-tight">Sources</h1>
+          <p className="text-sm text-foreground/80 mb-6">The Open Tao Te Ching · {totals.sources} sources</p>
+          <div className="max-w-prose space-y-4">
+            <p className={DESC}>
+              The evidence behind the translation, with the editions used, the records held by the project,
+              and links to the places that cite them.
+            </p>
+            <p className={DESC}>
+              The project records evidence from excavated manuscripts as facts. A full transcription can be
+              included when it meets the <a
+                href={taoTeChingRepoHref('sources/PROVENANCE.md#excavated')}
+                className={SOURCE_LINK}
+              >admission rules</a>.
+            </p>
+            {(totals.pending_print > 0 || totals.incomplete_entries > 0 || totals.citation_debt > 0) && (
+              <ul className={DESC}>
+                {totals.pending_print > 0 && <li>{totals.pending_print} readings await a print check.</li>}
+                {totals.incomplete_entries > 0 && <li>Recorded citations are incomplete for {totals.incomplete_entries} of {totals.entries} glossary entries.</li>}
+                {totals.citation_debt > 0 && <li>{totals.citation_debt} sources have open citation recovery work.</li>}
+              </ul>
+            )}
+          </div>
+          {/* Narrow screens only: from lg up the outline beside the page lists these groups.
+              `lg:hidden!` needs the important modifier for the reason TableOfContents gives for `lg:block!`. */}
+          <nav aria-label="Source groups" className="mt-8 lg:hidden!">
+            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+              {sections.map(({ id, title }) => (
+                <li key={id}><Link href={`#sources-${id}`} className={SOURCE_LINK}>{title}</Link></li>
+              ))}
             </ul>
-          </section>
-        ))}
+          </nav>
+          <div className="max-w-prose">
+            {sections.map(({ id, title, records }) => (
+              <section aria-labelledby={`sources-${id}`} key={id}>
+                <h2 id={`sources-${id}`} className={`${H2} mb-1!`}>{title}</h2>
+                <ul role="list" className="[overflow-wrap:anywhere]">
+                  {records.map((source) => {
+                    const citations = source.entries.flatMap((slug) => {
+                      const entry = bySlug.get(slug)!
+                      return entry.refs
+                        .filter((ref) => ref.source === source.id || ref.chain.includes(source.id))
+                        .map((citation) => ({ entry, citation }))
+                    })
+                    return <Source key={source.id} source={source} records={byId} citations={citations} />
+                  })}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </div>
+
+        <TableOfContents toc={toc} docTitle="Tao Te Ching" docPath={TAO_TE_CHING_DOC} />
       </div>
       <TextFooter />
     </div>
